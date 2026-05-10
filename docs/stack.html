@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Stack Technologique — Espace_Opti</title>
+<link rel="stylesheet" href="shared.css">
+</head>
+<body>
+<button class="mobile-toggle" onclick="document.querySelector('.sidebar').classList.toggle('open')">☰</button>
+<div class="layout">
+  <aside class="sidebar">
+    <div class="sidebar-brand"><div class="sidebar-logo">EO</div><div class="sidebar-title">Espace_Opti</div></div>
+    <div class="sidebar-sub">Documentation v1.0</div>
+    <div class="sidebar-divider"></div>
+    <nav class="sidebar-nav">
+      <a href="index.html"><span class="icon">🏠</span>Accueil</a>
+      <a href="stack.html" class="active"><span class="icon">🔧</span>Stack</a>
+      <a href="organisation.html"><span class="icon">🗂</span>Organisation</a>
+      <a href="pipeline.html"><span class="icon">🔄</span>Pipeline</a>
+      <a href="decisions.html"><span class="icon">🧠</span>Décisions</a>
+      <a href="tutoriel.html"><span class="icon">📖</span>Tutoriel</a>
+      <a href="tips.html"><span class="icon">⚡</span>Tips &amp; Limites</a>
+      <a href="reference.html"><span class="icon">📋</span>Référence rapide</a>
+      <a href="bestpractices.html"><span class="icon">🏆</span>Best Practices</a>
+    </nav>
+    <div class="sidebar-footer">Claude Code v2.1.104<br>Claude Max — 10 agents natifs</div>
+  </aside>
+  <main class="main">
+    <div class="breadcrumb"><a href="index.html">Accueil</a> / Stack</div>
+    <h1>Stack Technologique</h1>
+    <p class="page-subtitle">Tous les composants de l'espace de travail, groupés par rôle.</p>
+
+    <h2>Runtime &amp; IDE</h2>
+    <div class="card-grid cols-2">
+      <div class="card">
+        <h4>Python 3.14</h4>
+        <p>Scripts d'automation, synchronisation mémoire, backend du dashboard FastAPI.</p>
+      </div>
+      <div class="card">
+        <h4>PowerShell 7</h4>
+        <p>Automation : <code>full.ps1</code>, <code>lite.ps1</code>, <code>new-project.ps1</code>.</p>
+      </div>
+      <div class="card">
+        <h4>Antigravity IDE</h4>
+        <p>Fork de VS Code avec intégration Claude Code native. Interface principale de travail.</p>
+      </div>
+      <div class="card">
+        <h4>Claude Code v2.1.104</h4>
+        <p>Moteur d'agents natifs, hooks PreToolUse/SubagentStart/Stop, MCP servers.</p>
+      </div>
+      <div class="card">
+        <h4>write-inbox.ps1</h4>
+        <p>Script PowerShell UTF-8 sans BOM pour écrire dans <code>inbox.md</code> sans corruption d'encodage. Remplace Notepad.</p>
+      </div>
+    </div>
+
+    <h2>Modèles IA</h2>
+    <table>
+      <thead>
+        <tr><th>Modèle</th><th>Agents</th><th>Budget tokens</th><th>Usage</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><strong>Claude Opus 4.6</strong></td><td>manager, architecte, qa-review</td><td>illimité</td><td>Décisions critiques</td></tr>
+        <tr><td><strong>Claude Sonnet 4.6</strong></td><td>frontend, backend, simplifier, playwright</td><td>illimité</td><td>Développement standard</td></tr>
+        <tr><td><strong>Claude Haiku 4.5</strong></td><td>securite</td><td>500 max</td><td>Scan mécanique rapide</td></tr>
+      </tbody>
+    </table>
+    <div class="notice tip"><strong>💡 Note</strong> — Tout sur Claude Max : 0 € supplémentaire, usage illimité.</div>
+
+    <h2>Mémoire — 3 couches</h2>
+    <div class="svg-container">
+      <svg viewBox="0 0 700 340" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <marker id="arrow" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto">
+            <path d="M0,0 L0,6 L9,3 z" fill="#52525b"/>
+          </marker>
+        </defs>
+        <!-- Layer 1 - Graphify -->
+        <rect x="80" y="30" width="540" height="70" rx="10" fill="#f5f3ff" stroke="#7c3aed" stroke-width="2"/>
+        <text x="100" y="58" font-family="Inter" font-size="16" font-weight="700" fill="#7c3aed">Graphify — Structurelle</text>
+        <text x="100" y="82" font-family="Inter" font-size="13" fill="#52525b">AST, topologie du code, Leiden clustering (communautés)</text>
+        <!-- Layer 2 - Obsidian -->
+        <rect x="80" y="130" width="540" height="70" rx="10" fill="#eff6ff" stroke="#2563eb" stroke-width="2"/>
+        <text x="100" y="158" font-family="Inter" font-size="16" font-weight="700" fill="#2563eb">Obsidian — Documentaire</text>
+        <text x="100" y="182" font-family="Inter" font-size="13" fill="#52525b">ADR (decisions/), specs (specs/), journal (journal/)</text>
+        <!-- Layer 3 - Pinecone -->
+        <rect x="80" y="230" width="540" height="70" rx="10" fill="#f0fdf4" stroke="#16a34a" stroke-width="2"/>
+        <text x="100" y="258" font-family="Inter" font-size="16" font-weight="700" fill="#16a34a">Pinecone — Sémantique</text>
+        <text x="100" y="282" font-family="Inter" font-size="13" fill="#52525b">Vecteurs dim=384, cosine, AWS us-east-1, index obsidian-memory</text>
+        <!-- Arrows -->
+        <line x1="350" y1="100" x2="350" y2="130" stroke="#52525b" stroke-width="1.5" marker-end="url(#arrow)"/>
+        <line x1="350" y1="200" x2="350" y2="230" stroke="#52525b" stroke-width="1.5" marker-end="url(#arrow)"/>
+      </svg>
+    </div>
+    <div class="notice tip"><strong>💡 Embeddings</strong> — <code>all-MiniLM-L6-v2</code> local via sentence-transformers. Aucun coût, aucune API externe.</div>
+
+    <h3>Mémoire agents — <code>claude-mem</code></h3>
+    <div class="notice tip"><strong>Plugin officiel</strong> — Capture automatique des actions agents via <code>npx claude-mem install</code>. Dashboard sur <code>http://localhost:37777</code>, recherche via <code>/mem-search</code>. Voir <a href="bestpractices.html#section-9">Best Practices — Section 9</a> pour les détails.</div>
+
+    <h2>Slash Commands</h2>
+    <table>
+      <thead><tr><th>Commande</th><th>Usage</th></tr></thead>
+      <tbody>
+        <tr><td><code>/run-project</code></td><td>Orchestration complète via <span class="badge manager">@manager</span></td></tr>
+        <tr><td><code>/start-prd</code></td><td>PRD interactif (8 questions)</td></tr>
+        <tr><td><code>/new-module</code></td><td>Développer un module</td></tr>
+        <tr><td><code>/deliver</code></td><td>Pipeline livraison complet</td></tr>
+        <tr><td><code>/dashboard</code></td><td>Lance <code>http://localhost:3131</code></td></tr>
+        <tr><td><code>/start-feature</code></td><td>Workflow feature + contexte mémoire</td></tr>
+        <tr><td><code>/loop [intervalle] [tâche]</code></td><td>Tâche récurrente jusqu'à 72h (monitoring, polling)</td></tr>
+      </tbody>
+    </table>
+
+    <h2>Dashboard &amp; API</h2>
+    <div class="card-grid cols-2">
+      <div class="card">
+        <h4>FastAPI</h4>
+        <p>Serveur REST + WebSocket pour le dashboard <code>http://localhost:3131</code>.</p>
+      </div>
+      <div class="card">
+        <h4>Uvicorn</h4>
+        <p>Serveur ASGI asynchrone, port 3131.</p>
+      </div>
+      <div class="card">
+        <h4>Watchdog</h4>
+        <p>Surveillance temps réel de <code>.claude/agent-log.txt</code> pour broadcast WebSocket.</p>
+      </div>
+      <div class="card">
+        <h4>WebSocket</h4>
+        <p>Streaming temps réel des événements agents vers le navigateur.</p>
+      </div>
+    </div>
+
+    <h2>MCP Servers</h2>
+    <table>
+      <thead><tr><th>Serveur</th><th>Port / URL</th><th>Usage</th></tr></thead>
+      <tbody>
+        <tr><td><code>obsidian-mcp-server</code></td><td><code>https://127.0.0.1:27124</code></td><td>Lecture/écriture du vault Obsidian</td></tr>
+        <tr><td><code>@pinecone-database/mcp</code></td><td>cloud</td><td>Recherche vectorielle, upsert records</td></tr>
+        <tr><td>Playwright MCP</td><td>stdio</td><td>Tests E2E Chromium headless</td></tr>
+      </tbody>
+    </table>
+
+    <h2>Qualité &amp; Standards</h2>
+    <div class="card-grid cols-2">
+      <div class="card">
+        <h4>OWASP Top 9</h4>
+        <p>9 patterns scannés automatiquement par <span class="badge securite">@securite</span> (hook PreToolUse sur chaque Edit/Write).</p>
+      </div>
+      <div class="card">
+        <h4>Git worktrees</h4>
+        <p>Isolation parallèle de <span class="badge frontend">@frontend</span> et <span class="badge backend">@backend</span>.</p>
+      </div>
+      <div class="card">
+        <h4>TDD strict</h4>
+        <p>Tests avant code pour <span class="badge backend">@backend</span>. RED → GREEN → REFACTOR.</p>
+      </div>
+      <div class="card">
+        <h4>WCAG 2.1 AA</h4>
+        <p>Accessibilité obligatoire pour <span class="badge frontend">@frontend</span>. Contrast 4.5:1, focus visible, aria-labels.</p>
+      </div>
+      <div class="card">
+        <h4>effort=max</h4>
+        <p>Raisonnement complet forcé sur tous les agents (<code>CLAUDE_CODE_EFFORT_LEVEL=max</code>). Contourne la réduction introduite en mars 2026.</p>
+      </div>
+      <div class="card">
+        <h4>Adaptive thinking désactivé</h4>
+        <p>Budget fixe par tour (<code>CLAUDE_CODE_DISABLE_ADAPTIVE_THINKING=1</code>). Pas de réduction dynamique du raisonnement.</p>
+      </div>
+      <div class="card">
+        <h4>ASCII-only inbox.md</h4>
+        <p>Tous les agents utilisent uniquement ASCII dans inbox.md. Emojis remplacés par <code>[VALIDE]</code> <code>[BLOQUE]</code> <code>[DONE]</code> etc.</p>
+      </div>
+      <div class="card">
+        <h4><code>claude-mem</code> (plugin officiel)</h4>
+        <p>Capture automatique des actions des agents via plugin global. Dashboard sur <code>http://localhost:37777</code>, recherche via <code>/mem-search</code>.</p>
+      </div>
+    </div>
+  </main>
+</div>
+</body>
+</html>

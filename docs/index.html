@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Espace_Opti — Documentation</title>
+<link rel="stylesheet" href="shared.css">
+</head>
+<body>
+<button class="mobile-toggle" onclick="document.querySelector('.sidebar').classList.toggle('open')">☰</button>
+<div class="layout">
+  <aside class="sidebar">
+    <div class="sidebar-brand">
+      <div class="sidebar-logo">EO</div>
+      <div class="sidebar-title">Espace_Opti</div>
+    </div>
+    <div class="sidebar-sub">Documentation v1.0</div>
+    <div class="sidebar-divider"></div>
+    <nav class="sidebar-nav">
+      <a href="index.html" class="active"><span class="icon">🏠</span>Accueil</a>
+      <a href="stack.html"><span class="icon">🔧</span>Stack</a>
+      <a href="organisation.html"><span class="icon">🗂</span>Organisation</a>
+      <a href="pipeline.html"><span class="icon">🔄</span>Pipeline</a>
+      <a href="decisions.html"><span class="icon">🧠</span>Décisions</a>
+      <a href="tutoriel.html"><span class="icon">📖</span>Tutoriel</a>
+      <a href="tips.html"><span class="icon">⚡</span>Tips &amp; Limites</a>
+      <a href="reference.html"><span class="icon">📋</span>Référence rapide</a>
+      <a href="bestpractices.html"><span class="icon">🏆</span>Best Practices</a>
+    </nav>
+    <div class="sidebar-footer">
+      Claude Code v2.1.104<br>Claude Max — 10 agents natifs
+    </div>
+  </aside>
+  <main class="main">
+    <div class="hero">
+      <h1 class="hero-title">🏭 Espace_Opti</h1>
+      <div class="hero-subtitle">Usine logicielle IA — De l'idée au MVP livré</div>
+      <p class="hero-desc">
+        Espace_Opti est un espace de travail structuré autour de Claude Code qui orchestre 10 agents IA spécialisés pour produire du logiciel de qualité production. Il ne nécessite aucune connaissance en développement — seulement une idée et la validation des étapes clés. En moins de 30 secondes, un nouveau projet est dérivé du template et prêt à être orchestré.
+      </p>
+    </div>
+
+    <div class="card-grid cols-3">
+      <div class="stat-card">
+        <div class="stat-value">10</div>
+        <div class="stat-label">Agents natifs</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-value">3</div>
+        <div class="stat-label">Couches mémoire</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-value">10</div>
+        <div class="stat-label">Slash commands</div>
+      </div>
+    </div>
+
+    <h2>Concept central</h2>
+    <p>
+      Un <strong>template maître</strong> (Espace_Opti) est dérivé à la demande par <code>new-project.ps1</code>. Chaque nouveau projet hérite de l'équipe d'agents, des slash commands, des hooks de sécurité et de la mémoire persistante. L'agent <span class="badge manager">@manager</span> orchestre ensuite le cycle complet : PRD → Architecture → Dev parallèle → QA → Simplification → Tests E2E → Livraison.
+    </p>
+
+    <h2>Prérequis</h2>
+    <div class="card">
+      <ul>
+        <li><strong>Windows 10/11</strong> — l'automation PowerShell est spécifique à Windows</li>
+        <li><strong>Claude Max</strong> — abonnement Anthropic avec usage illimité</li>
+        <li><strong>Python 3.10+</strong> — recommandé : 3.14 (testé)</li>
+        <li><strong>Git for Windows</strong> — pour les worktrees des agents</li>
+        <li><strong>Antigravity IDE</strong> — fork VS Code, interface principale Claude Code</li>
+        <li><strong>Obsidian</strong> — avec plugin Local REST API activé</li>
+      </ul>
+    </div>
+
+    <h2>Quick Start</h2>
+    <pre data-lang="powershell"><code># 1. Créer un projet dérivé
+.\new-project.ps1 "MonProjet"
+cd C:\Users\caste\Desktop\MonProjet
+.\full.ps1
+
+# 2. Orchestrer (dans Claude Code)
+/run-project Je veux créer une app de gestion de factures pour PME</code></pre>
+
+    <div class="notice tip">
+      <strong>💡 TIP</strong> — Le manager posera 8 questions pour cadrer le PRD, puis attendra ta validation avant de lancer l'architecture. Tu n'interviens que sur les décisions stratégiques.
+    </div>
+
+    <h2>Explorer la documentation</h2>
+    <div class="card-grid cols-2">
+      <a href="stack.html" class="nav-card">
+        <span class="nav-card-icon">🔧</span>
+        <div class="nav-card-title">Stack technologique</div>
+        <div class="nav-card-desc">Runtime, modèles IA, mémoire, MCP, qualité</div>
+      </a>
+      <a href="organisation.html" class="nav-card">
+        <span class="nav-card-icon">🗂</span>
+        <div class="nav-card-title">Organisation</div>
+        <div class="nav-card-desc">Structure fichiers, org chart agents, mémoire</div>
+      </a>
+      <a href="pipeline.html" class="nav-card">
+        <span class="nav-card-icon">🔄</span>
+        <div class="nav-card-title">Pipeline de développement</div>
+        <div class="nav-card-desc">7 phases du PRD à la livraison</div>
+      </a>
+      <a href="decisions.html" class="nav-card">
+        <span class="nav-card-icon">🧠</span>
+        <div class="nav-card-title">Arbre de décision</div>
+        <div class="nav-card-desc">3 niveaux d'autonomie du @manager</div>
+      </a>
+      <a href="tutoriel.html" class="nav-card">
+        <span class="nav-card-icon">📖</span>
+        <div class="nav-card-title">Guide d'utilisation</div>
+        <div class="nav-card-desc">Tutoriel pas à pas avec exemples</div>
+      </a>
+      <a href="tips.html" class="nav-card">
+        <span class="nav-card-icon">⚡</span>
+        <div class="nav-card-title">Tips &amp; Limites</div>
+        <div class="nav-card-desc">Astuces avancées et problèmes connus</div>
+      </a>
+      <a href="reference.html" class="nav-card">
+        <span class="nav-card-icon">📋</span>
+        <div class="nav-card-title">Référence rapide</div>
+        <div class="nav-card-desc">Cheat sheet imprimable (agents, commandes)</div>
+      </a>
+      <a href="bestpractices.html" class="nav-card">
+        <span class="nav-card-icon">🏆</span>
+        <div class="nav-card-title">Best Practices</div>
+        <div class="nav-card-desc">Mémoire persistante (claude-mem), Prompt Engineering</div>
+      </a>
+      <a href="bestpractices.html#section-11" class="nav-card">
+        <span class="nav-card-icon">📊</span>
+        <div class="nav-card-title">Tableau récapitulatif</div>
+        <div class="nav-card-desc">Vue exhaustive de tous les composants de l'espace de travail</div>
+      </a>
+    </div>
+  </main>
+</div>
+</body>
+</html>

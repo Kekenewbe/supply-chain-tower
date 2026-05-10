@@ -1,0 +1,2 @@
+{"ts": "2026-04-18T01:19:42", "file": "C:\\Users\\caste\\Desktop\\VisualPrompt\\.claude\\worktrees\\agent-a7cc4dcf\\apps\\web\\src\\lib\\security\\sanitize.ts", "pattern": "XSS", "level": "WARN", "line": 7}
+{"ts": "2026-04-18T01:48:36", "file": "C:\\Users\\caste\\Desktop\\VisualPrompt\\.claude\\worktrees\\agent-a7cc4dcf\\apps\\web\\src\\components\\canvas\\FeedbackPanel.tsx", "pattern": "XSS", "level": "WARN", "line": 301}

@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Best Practices — Espace_Opti</title>
+<link rel="stylesheet" href="shared.css">
+</head>
+<body>
+<button class="mobile-toggle" onclick="document.querySelector('.sidebar').classList.toggle('open')">☰</button>
+<div class="layout">
+  <aside class="sidebar">
+    <div class="sidebar-brand"><div class="sidebar-logo">EO</div><div class="sidebar-title">Espace_Opti</div></div>
+    <div class="sidebar-sub">Documentation v1.0</div>
+    <div class="sidebar-divider"></div>
+    <nav class="sidebar-nav">
+      <a href="index.html"><span class="icon">🏠</span>Accueil</a>
+      <a href="stack.html"><span class="icon">🔧</span>Stack</a>
+      <a href="organisation.html"><span class="icon">🗂</span>Organisation</a>
+      <a href="pipeline.html"><span class="icon">🔄</span>Pipeline</a>
+      <a href="decisions.html"><span class="icon">🧠</span>Décisions</a>
+      <a href="tutoriel.html"><span class="icon">📖</span>Tutoriel</a>
+      <a href="tips.html"><span class="icon">⚡</span>Tips &amp; Limites</a>
+      <a href="reference.html"><span class="icon">📋</span>Référence rapide</a>
+      <a href="bestpractices.html" class="active"><span class="icon">✨</span>Best Practices</a>
+    </nav>
+    <div class="sidebar-footer">Claude Code v2.1.104<br>Claude Max — 10 agents natifs</div>
+  </aside>
+  <main class="main">
+    <div class="breadcrumb"><a href="index.html">Accueil</a> / Best Practices</div>
+    <h1>Best Practices</h1>
+    <p class="page-subtitle">Pratiques recommandées pour tirer le meilleur d'Espace_Opti.</p>
+
+    <div class="notice tip"><strong>💡 Note structurelle</strong> — Les <strong>Sections 9</strong> (Mémoire persistante), <strong>10</strong> (Prompt Engineering) et <strong>11</strong> (Tableau récapitulatif global) sont documentées. Les sections 1 à 8 (Ressources, Gouvernance, Tests, Sécurité, Performance, Accessibilité, Documentation, Git/Worktrees) seront ajoutées au fil des améliorations.</div>
+
+    <h2 id="section-9">Section 9 — Mémoire persistante (écosystème <code>claude-mem</code>)</h2>
+    <p class="page-subtitle" style="margin-top:-8px">Plugin Claude Code global — installé via <code>npx claude-mem install</code>. 5 composants techniques, 5 hooks de cycle de vie, 4 outils MCP, 7 skills auto-installés.</p>
+
+    <h3>9.1 — Vue d'ensemble</h3>
+    <p><code>claude-mem</code> est un plugin Claude Code installé globalement qui capture automatiquement toutes les actions des agents, sans configuration par projet. Il combine une base SQLite locale (observations + FTS5 plein-texte), un index vectoriel Chroma pour la recherche sémantique, et une UI web sur <code>http://localhost:37777</code>. Tous les projets dérivés d'Espace_Opti en bénéficient sans action supplémentaire.</p>
+
+    <h3>9.2 — Architecture technique (5 composants)</h3>
+    <table>
+      <thead>
+        <tr><th>#</th><th>Composant</th><th>Technologie</th><th>Rôle</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>1</td><td><strong>SQLite</strong></td><td>FTS5 plein-texte</td><td>Stockage observations + sessions + summaries</td></tr>
+        <tr><td>2</td><td><strong>Chroma Vector DB</strong></td><td>Vecteurs locaux</td><td>Recherche sémantique vectorielle, zéro cloud</td></tr>
+        <tr><td>3</td><td><strong>Bun</strong></td><td>Runtime JavaScript</td><td>Worker HTTP + gestion des hooks</td></tr>
+        <tr><td>4</td><td><strong>uv</strong></td><td>Package manager Python</td><td>Gestion des dépendances pour vector search</td></tr>
+        <tr><td>5</td><td><strong>Worker HTTP</strong></td><td>Port 37777</td><td>API + UI web, 10 endpoints de recherche</td></tr>
+      </tbody>
+    </table>
+
+    <h3>9.3 — Hooks de cycle de vie (5)</h3>
+    <table>
+      <thead>
+        <tr><th>#</th><th>Hook</th><th>Déclencheur</th><th>Action</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>1</td><td><code>SessionStart</code></td><td>Lancement de Claude Code</td><td>Démarre le worker HTTP sur 37777</td></tr>
+        <tr><td>2</td><td><code>UserPromptSubmit</code></td><td>Chaque prompt utilisateur</td><td>Capture le prompt dans la timeline</td></tr>
+        <tr><td>3</td><td><code>PostToolUse</code></td><td>Chaque tool call</td><td>Capture l'action + résultat dans observations</td></tr>
+        <tr><td>4</td><td><code>Stop</code></td><td>Arrêt de Claude</td><td>Enregistre la fin de réponse</td></tr>
+        <tr><td>5</td><td><code>SessionEnd</code></td><td>Fin de session</td><td>Compresse la session en summary + indexe</td></tr>
+      </tbody>
+    </table>
+
+    <h3>9.4 — Outils MCP (4)</h3>
+    <table>
+      <thead>
+        <tr><th>#</th><th>Outil</th><th>Coût tokens</th><th>Rôle</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>1</td><td><code>search</code></td><td>50-100 tokens / résultat</td><td>Index initial — scan rapide des matches</td></tr>
+        <tr><td>2</td><td><code>timeline</code></td><td>~200 tokens</td><td>Contexte chronologique autour d'une observation</td></tr>
+        <tr><td>3</td><td><code>get_observations</code></td><td>500-1000 tokens / ID</td><td>Détails complets par IDs</td></tr>
+        <tr><td>4</td><td><em>workflow 3 couches</em></td><td><strong>10× moins de tokens</strong></td><td><code>search</code> → filtrer IDs → <code>get_observations</code> cible</td></tr>
+      </tbody>
+    </table>
+    <div class="notice tip"><strong>💡 Workflow optimal</strong> — Ne jamais appeler <code>get_observations</code> sans avoir filtré les IDs via <code>search</code> d'abord. Le coût en tokens est divisé par 10 ou plus.</div>
+
+    <h3>9.5 — Skills auto-installés (7)</h3>
+    <table>
+      <thead>
+        <tr><th>#</th><th>Skill</th><th>Usage</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>1</td><td><code>mem-search</code></td><td>Recherche naturelle dans les mémoires (question libre)</td></tr>
+        <tr><td>2</td><td><code>knowledge-agent</code></td><td>Agent dédié à la récupération de contexte depuis la mémoire</td></tr>
+        <tr><td>3</td><td><code>timeline-report</code></td><td>Rapport temporel « Journey Into [Project] » sur le travail passé</td></tr>
+        <tr><td>4</td><td><code>make-plan</code></td><td>Plan d'implémentation basé sur les mémoires passées</td></tr>
+        <tr><td>5</td><td><code>do</code></td><td>Exécute un plan phasé avec contexte mémoire (subagents)</td></tr>
+        <tr><td>6</td><td><code>smart-explore</code></td><td>Exploration de codebase token-optimisée via tree-sitter</td></tr>
+        <tr><td>7</td><td><code>troubleshoot</code></td><td>Diagnostic automatique + versioning de plugins Claude Code</td></tr>
+      </tbody>
+    </table>
+
+    <h3>9.6 — Privacy et contrôle</h3>
+    <ul>
+      <li><strong>Tags <code>&lt;private&gt;</code></strong> dans un message = contenu <em>non stocké</em> dans la mémoire claude-mem ni vectorisé dans Pinecone (<code>sync_memory.py</code> supprime aussi les blocs <code>&lt;private&gt;</code> avant vectorisation).</li>
+      <li><strong>Citations par IDs</strong> — chaque observation est accessible via <code>http://localhost:37777/api/observation/&lt;ID&gt;</code>.</li>
+      <li><strong>UI web</strong> — <code>http://localhost:37777</code> — trois onglets : <em>All</em> (tout), <em>Claude</em> (Claude Code), <em>Codex</em> (OpenAI Codex / autre runtime).</li>
+      <li><strong>Migration</strong> — les anciens fichiers <code>memory_worker.py</code> et <code>memory_db.py</code> (SQLite maison) ont été remplacés par <code>claude-mem</code>. Installation globale = zéro configuration par projet.</li>
+    </ul>
+
+    <h3>9.7 — Commandes utiles</h3>
+    <pre data-lang="powershell"><code># Recherche dans la memoire claude-mem
+/mem-search "schema migration"
+
+# Dashboard memoire (navigateur)
+npx claude-mem start    # puis http://localhost:37777
+
+# Sync Obsidian vers Pinecone
+python sync_memory.py
+
+# Voir la version installee
+npx claude-mem --version</code></pre>
+
+    <h2>Section 10 — Prompt Engineering</h2>
+    <p class="page-subtitle" style="margin-top:-8px">Source : documentation officielle Anthropic (<code>platform.claude.com</code>).</p>
+
+    <h3>Principes fondamentaux</h3>
+    <ul>
+      <li><strong>Clarté avant tout</strong> — Claude est comme un employé brillant sans contexte. Plus tu es précis, meilleur est le résultat. <em>Règle d'or :</em> montre ton prompt à quelqu'un qui n'a pas ton contexte ; si cette personne est confuse, Claude le sera aussi.</li>
+      <li><strong>Instructions séquentielles</strong> — utiliser des listes numérotées pour décrire les étapes à suivre.</li>
+      <li><strong>Contexte et motivation</strong> — expliquer <em>pourquoi</em> la tâche doit être faite, pas seulement <em>quoi</em> faire. Le pourquoi guide les décisions dans les cas non explicités.</li>
+    </ul>
+
+    <h3>Techniques avancées</h3>
+    <table>
+      <thead>
+        <tr><th>Technique</th><th>Quand l'utiliser</th><th>Exemple</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><strong>Balises XML</strong></td><td>Prompts complexes avec sections multiples</td><td>wrapper <code>&lt;instructions&gt;</code> <code>&lt;contexte&gt;</code> <code>&lt;exemples&gt;</code></td></tr>
+        <tr><td><strong>Few-shot examples</strong></td><td>Format ou style critique</td><td>3 à 5 exemples dans <code>&lt;examples&gt;</code></td></tr>
+        <tr><td><strong>Rôle et persona</strong></td><td>Toujours pour les agents spécialisés</td><td>« Tu es un expert backend spécialisé en API REST et sécurité OWASP »</td></tr>
+        <tr><td><code>ultrathink</code></td><td>Décisions critiques ou complexes</td><td>Ajouter <code>ultrathink</code> en tout début de prompt</td></tr>
+        <tr><td><strong>Long context</strong></td><td>Documents &gt; 20k tokens</td><td>Placer les données longues <strong>en haut</strong> du prompt, instructions en bas</td></tr>
+      </tbody>
+    </table>
+
+    <h3>Agent <code>@optimiseur</code> dans Espace_Opti</h3>
+    <ul>
+      <li>Agent dédié à l'optimisation des prompts <strong>avant</strong> envoi aux autres agents.</li>
+      <li><strong>Invocation</strong> : dire « optimise ce prompt » ou « améliore ce prompt ».</li>
+      <li><strong>Modèle</strong> : <code>sonnet</code> — bon rapport qualité / vitesse.</li>
+      <li><strong>Workflow</strong> : prompt brut → analyse des faiblesses → version améliorée → validation utilisateur → écriture dans <code>inbox.md</code> du projet cible via <code>write-inbox.ps1</code>.</li>
+      <li><strong>Techniques appliquées</strong> : clarté, XML, exemples, rôle, critères de succès, <code>ultrathink</code>.</li>
+      <li><strong>Mémoire persistante</strong> : <code>.claude/agent-memory/optimiseur/</code> (workflow 3 couches identique aux autres agents).</li>
+    </ul>
+
+    <h3>Outils Anthropic disponibles</h3>
+    <ul>
+      <li><strong>Prompt generator</strong> — <code>platform.claude.com/dashboard</code> — résout le problème de la page blanche, génère un premier draft.</li>
+      <li><strong>Console Anthropic</strong> — <code>platform.claude.com</code> — test et itération de prompts, évaluation, variables.</li>
+      <li><strong>Prompt templates</strong> — séparent contenu fixe et contenu variable via <code>{{variable}}</code>.</li>
+    </ul>
+
+    <h3>Erreurs courantes à éviter</h3>
+    <div class="notice warn"><strong>⚠️ Prompt vague</strong> — <code>« améliore ce code »</code> → préférer <code>« ajoute la validation des inputs dans la fonction login de auth.ts selon les règles OWASP »</code>.</div>
+    <div class="notice warn"><strong>⚠️ Pas de format spécifié</strong> — toujours spécifier le format de sortie attendu (JSON, liste, tableau, markdown, diff…).</div>
+    <div class="notice warn"><strong>⚠️ Trop long et non structuré</strong> — au-delà de 200 lignes, utiliser impérativement les balises XML pour organiser le prompt.</div>
+    <div class="notice warn"><strong>⚠️ Pas d'exemples</strong> — pour les formats complexes, fournir 1 à 3 exemples avant la tâche réelle (few-shot).</div>
+    <div class="notice warn"><strong>⚠️ Micromanager les étapes</strong> — donner le <em>but</em> et les <em>contraintes</em>, pas les étapes exactes. Les agents trouvent le chemin eux-mêmes.</div>
+
+    <h2 id="section-11">Section 11 — Tableau récapitulatif global de l'écosystème</h2>
+    <p class="page-subtitle" style="margin-top:-8px">Vue exhaustive (tableau recapitulatif) de tous les composants Espace_Opti + claude-mem, organisés en 11 catégories.</p>
+
+    <h3>Catégorie 1 — Agents natifs Espace_Opti (10)</h3>
+    <table>
+      <thead>
+        <tr><th>#</th><th>Nom</th><th>Modèle</th><th>Mémoire</th><th>Isolation</th><th>Rôle</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>1</td><td><span class="badge manager">manager</span></td><td>claude-opus-4-7</td><td>oui</td><td>non</td><td>Chef d'orchestre</td></tr>
+        <tr><td>2</td><td><span class="badge architecte">architecte</span></td><td>claude-opus-4-7</td><td>oui</td><td>non</td><td>Décompose PRD</td></tr>
+        <tr><td>3</td><td><span class="badge frontend">frontend</span></td><td>sonnet</td><td>oui</td><td>worktree</td><td>UI/UX composants</td></tr>
+        <tr><td>4</td><td><span class="badge backend">backend</span></td><td>sonnet</td><td>oui</td><td>worktree</td><td>API + DB</td></tr>
+        <tr><td>5</td><td><span class="badge qa-review">qa-review</span></td><td>claude-opus-4-7</td><td>oui</td><td>non</td><td>Audit qualité /100</td></tr>
+        <tr><td>6</td><td><span class="badge securite">securite</span></td><td>haiku</td><td>non</td><td>non</td><td>Scan OWASP</td></tr>
+        <tr><td>7</td><td><span class="badge simplifier">simplifier</span></td><td>sonnet</td><td>oui</td><td>non</td><td>Anti-bloat</td></tr>
+        <tr><td>8</td><td><span class="badge playwright">playwright</span></td><td>sonnet</td><td>oui</td><td>non</td><td>Tests E2E</td></tr>
+        <tr><td>9</td><td>estimateur</td><td>haiku</td><td>non</td><td>non</td><td>Gestion tokens</td></tr>
+        <tr><td>10</td><td><span class="badge optimiseur" data-color="teal">optimiseur</span></td><td>sonnet</td><td>oui</td><td>non</td><td>Prompt engineering</td></tr>
+      </tbody>
+    </table>
+
+    <h3>Catégorie 2 — Skills natifs Espace_Opti (5)</h3>
+    <table>
+      <thead><tr><th>#</th><th>Nom</th><th>Usage</th></tr></thead>
+      <tbody>
+        <tr><td>1</td><td><code>architecture-decomposer</code></td><td>Découpe PRD en modules indépendants</td></tr>
+        <tr><td>2</td><td><code>parallel-coordinator</code></td><td>Coordonne agents frontend/backend en parallèle</td></tr>
+        <tr><td>3</td><td><code>prd-generator</code></td><td>Génère PRD structuré via 8 questions (SOP-002)</td></tr>
+        <tr><td>4</td><td><code>qa-scorer</code></td><td>Score qualité multi-dimensions (logic/types/tests/arch)</td></tr>
+        <tr><td>5</td><td><code>security-scanner</code></td><td>9 patterns OWASP via regex</td></tr>
+      </tbody>
+    </table>
+
+    <h3>Catégorie 3 — Skills claude-mem auto-installés (7)</h3>
+    <table>
+      <thead><tr><th>#</th><th>Nom</th><th>Usage</th></tr></thead>
+      <tbody>
+        <tr><td>1</td><td><code>mem-search</code></td><td>Recherche naturelle dans mémoires</td></tr>
+        <tr><td>2</td><td><code>knowledge-agent</code></td><td>Récupération contexte depuis mémoire</td></tr>
+        <tr><td>3</td><td><code>timeline-report</code></td><td>Rapport temporel « Journey Into [Project] »</td></tr>
+        <tr><td>4</td><td><code>make-plan</code></td><td>Plan basé sur mémoires passées</td></tr>
+        <tr><td>5</td><td><code>do</code></td><td>Exécute tâche avec contexte mémoire (subagents)</td></tr>
+        <tr><td>6</td><td><code>smart-explore</code></td><td>Exploration codebase token-optimisée (tree-sitter)</td></tr>
+        <tr><td>7</td><td><code>troubleshoot</code></td><td>Diagnostic automatique + versioning plugins</td></tr>
+      </tbody>
+    </table>
+
+    <h3>Catégorie 4 — Hooks actifs (5 + 5 = 10)</h3>
+    <p><strong>Espace_Opti hooks (5)</strong></p>
+    <table>
+      <thead><tr><th>#</th><th>Nom</th><th>Matcher</th><th>Fichier</th></tr></thead>
+      <tbody>
+        <tr><td>1</td><td>PreToolUse Graphify</td><td><code>Glob|Grep</code></td><td>graphify hook</td></tr>
+        <tr><td>2</td><td>PreToolUse Security</td><td><code>Write|Edit</code></td><td><code>security_prefilter.py</code></td></tr>
+        <tr><td>3</td><td>UserPromptSubmit</td><td>tous</td><td><code>inbox_inject.py</code></td></tr>
+        <tr><td>4</td><td>Stop</td><td>tous</td><td><code>stop_check.py</code></td></tr>
+        <tr><td>5</td><td>SubagentStart / SubagentStop</td><td>agents</td><td><code>agent-log.txt</code></td></tr>
+      </tbody>
+    </table>
+    <p><strong>claude-mem hooks (5)</strong></p>
+    <table>
+      <thead><tr><th>#</th><th>Nom</th><th>Rôle</th></tr></thead>
+      <tbody>
+        <tr><td>1</td><td>SessionStart</td><td>Démarre worker HTTP port 37777</td></tr>
+        <tr><td>2</td><td>UserPromptSubmit</td><td>Capture chaque prompt utilisateur</td></tr>
+        <tr><td>3</td><td>PostToolUse</td><td>Capture chaque tool call</td></tr>
+        <tr><td>4</td><td>Stop</td><td>Capture l'arrêt de Claude</td></tr>
+        <tr><td>5</td><td>SessionEnd</td><td>Compresse la session en summary</td></tr>
+      </tbody>
+    </table>
+
+    <h3>Catégorie 5 — MCP Servers (3)</h3>
+    <table>
+      <thead><tr><th>#</th><th>Nom</th><th>Port / Protocole</th><th>Outils</th></tr></thead>
+      <tbody>
+        <tr><td>1</td><td><code>obsidian-mcp-server</code></td><td>HTTPS 27124</td><td>8 tools (lecture/écriture vault)</td></tr>
+        <tr><td>2</td><td><code>pinecone</code></td><td>API cloud</td><td>9 tools (recherche vectorielle cloud)</td></tr>
+        <tr><td>3</td><td><code>claude-mem worker</code></td><td>HTTP 37777</td><td>4 MCP tools (search / timeline / get_observations)</td></tr>
+      </tbody>
+    </table>
+
+    <h3>Catégorie 6 — Bases de données (3)</h3>
+    <table>
+      <thead><tr><th>#</th><th>Nom</th><th>Technologie</th><th>Usage</th></tr></thead>
+      <tbody>
+        <tr><td>1</td><td><strong>Pinecone</strong></td><td>Cloud vector (dim 384)</td><td>Notes Obsidian stables — recherche sémantique</td></tr>
+        <tr><td>2</td><td><strong>Chroma</strong></td><td>Vector local</td><td>Observations temps réel — recherche vectorielle</td></tr>
+        <tr><td>3</td><td><strong>SQLite claude-mem</strong></td><td>Local + FTS5</td><td>Sessions, summaries, observations plein-texte</td></tr>
+      </tbody>
+    </table>
+
+    <h3>Catégorie 7 — Slash Commands (5 + 5 = 10)</h3>
+    <p><strong>Espace_Opti commands (5)</strong></p>
+    <table>
+      <thead><tr><th>#</th><th>Nom</th><th>Usage</th></tr></thead>
+      <tbody>
+        <tr><td>1</td><td><code>/start-prd</code></td><td>Crée PRD via SOP-002</td></tr>
+        <tr><td>2</td><td><code>/new-module</code></td><td>Démarre un module</td></tr>
+        <tr><td>3</td><td><code>/deliver</code></td><td>Livraison SOP-004</td></tr>
+        <tr><td>4</td><td><code>/dashboard</code></td><td>Ouvre dashboard 3131</td></tr>
+        <tr><td>5</td><td><code>/loop</code></td><td>Tâche récurrente, max 72h</td></tr>
+      </tbody>
+    </table>
+    <p><strong>claude-mem commands (5)</strong></p>
+    <table>
+      <thead><tr><th>#</th><th>Nom</th><th>Usage</th></tr></thead>
+      <tbody>
+        <tr><td>1</td><td><code>/mem-search</code></td><td>Recherche dans les mémoires</td></tr>
+        <tr><td>2</td><td><code>/plugin list</code></td><td>Liste des plugins installés</td></tr>
+        <tr><td>3</td><td><code>/ultrareview</code></td><td>Revue de code approfondie (3 gratuits)</td></tr>
+        <tr><td>4</td><td><code>/mcp</code></td><td>État des MCP servers</td></tr>
+        <tr><td>5</td><td><code>/cost</code></td><td>Coût tokens de la session</td></tr>
+      </tbody>
+    </table>
+
+    <h3>Catégorie 8 — Runtimes et outils (5)</h3>
+    <table>
+      <thead><tr><th>#</th><th>Nom</th><th>Usage</th></tr></thead>
+      <tbody>
+        <tr><td>1</td><td><strong>Python 3.14.2</strong></td><td>Scripts + <code>sync_memory.py</code> + hooks</td></tr>
+        <tr><td>2</td><td><strong>Node.js 18+</strong></td><td>Claude Code + MCP servers</td></tr>
+        <tr><td>3</td><td><strong>Bun</strong></td><td>Runtime JS claude-mem + worker HTTP</td></tr>
+        <tr><td>4</td><td><strong>uv</strong></td><td>Package manager Python pour claude-mem</td></tr>
+        <tr><td>5</td><td><strong>Git 2.52</strong></td><td>Versioning + worktrees parallèles agents</td></tr>
+      </tbody>
+    </table>
+
+    <h3>Catégorie 9 — Scripts PowerShell (4)</h3>
+    <table>
+      <thead><tr><th>#</th><th>Nom</th><th>Usage</th></tr></thead>
+      <tbody>
+        <tr><td>1</td><td><code>full.ps1</code></td><td>Lance l'équipe complète avec hooks</td></tr>
+        <tr><td>2</td><td><code>lite.ps1</code></td><td>Lance Claude seul, sans hooks</td></tr>
+        <tr><td>3</td><td><code>new-project.ps1</code></td><td>Clone le template pour nouveau projet</td></tr>
+        <tr><td>4</td><td><code>write-inbox.ps1</code></td><td>Écrit dans <code>inbox.md</code> en UTF-8 sans BOM</td></tr>
+      </tbody>
+    </table>
+
+    <h3>Catégorie 10 — Scripts Python (2)</h3>
+    <table>
+      <thead><tr><th>#</th><th>Nom</th><th>Usage</th></tr></thead>
+      <tbody>
+        <tr><td>1</td><td><code>sync_memory.py</code></td><td>Vectorise Obsidian vers Pinecone</td></tr>
+        <tr><td>2</td><td><code>dashboard.py</code></td><td>Serveur FastAPI dashboard port 3131</td></tr>
+      </tbody>
+    </table>
+
+    <h3>Catégorie 11 — Dashboard web (2)</h3>
+    <table>
+      <thead><tr><th>#</th><th>URL</th><th>Usage</th></tr></thead>
+      <tbody>
+        <tr><td>1</td><td><code>http://localhost:3131</code></td><td>Dashboard Espace_Opti — kanban projets</td></tr>
+        <tr><td>2</td><td><code>http://localhost:37777</code></td><td>UI claude-mem — mémoires agents</td></tr>
+      </tbody>
+    </table>
+
+    <div class="notice tip"><strong>💡 Total écosystème</strong> — 10 agents natifs · 12 skills (5 Espace_Opti + 7 claude-mem) · 10 hooks (5+5) · 3 MCP servers · 3 bases de données · 10 slash commands (5+5) · 5 runtimes · 4 scripts PowerShell · 2 scripts Python · 2 dashboards web.</div>
+
+    <h2 id="section-12">Section 12 — Tips avancés Boris Cherny (10 tips appliqués)</h2>
+    <p class="page-subtitle" style="margin-top:-8px">Best practices officielles Anthropic via <a href="https://github.com/shanraisshan/claude-code-best-practice" target="_blank" rel="noopener">shanraisshan/claude-code-best-practice</a> (19.7k stars) — tips sourcés directement de Boris Cherny, créateur de Claude Code.</p>
+
+    <h3>Configuration workspace (4 améliorations appliquées)</h3>
+    <table>
+      <thead>
+        <tr><th>#</th><th>Amélioration</th><th>Où</th><th>Source</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>1</td><td><code>CLAUDE_CODE_OUTPUT_STYLE=Explanatory</code> par défaut</td><td><code>settings.json</code> env</td><td>Boris Cherny</td></tr>
+        <tr><td>2</td><td><code>CLAUDE_CODE_THINKING=true</code> par défaut</td><td><code>settings.json</code> env</td><td>Boris Cherny</td></tr>
+        <tr><td>3</td><td>Permissions wildcards explicites (au lieu de <code>dangerously-skip</code>)</td><td><code>settings.json</code> <code>permissions.allow</code></td><td>Boris Cherny — <em>« 84% de réduction des prompts »</em></td></tr>
+        <tr><td>4</td><td>Wrapper règles critiques avec <code>&lt;important if="..."&gt;</code></td><td><code>CLAUDE.md</code></td><td>Dex (HumanLayer) + Boris</td></tr>
+      </tbody>
+    </table>
+
+    <h3>Tips pratiques (6 tips appliqués)</h3>
+    <table>
+      <thead>
+        <tr><th>#</th><th>Tip</th><th>Où</th><th>Source</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>1</td><td>Commit automatique par phase (conventional commit)</td><td><code>.claude/agents/manager.md</code> <code>regles_dures</code></td><td>Boris Cherny</td></tr>
+        <tr><td>2</td><td>Rewind (Escape×2 ou <code>/rewind</code>) au lieu de corriger</td><td><code>CLAUDE.md</code> Tips utilisateur</td><td>Boris Cherny</td></tr>
+        <tr><td>3</td><td><code>/compact</code> manuel à 50% max</td><td><code>CLAUDE.md</code> Tips utilisateur</td><td>Boris Cherny</td></tr>
+        <tr><td>4</td><td>Screenshots (Win+Shift+S puis Ctrl+V) pour debugging</td><td><code>CLAUDE.md</code> Tips utilisateur</td><td>Thariq</td></tr>
+        <tr><td>5</td><td>Slash command <code>/status</code> pour suivi rapide</td><td><code>.claude/commands/status.md</code></td><td>Boris Cherny</td></tr>
+        <tr><td>6</td><td>Diagrammes ASCII dans <code>ARCHITECTURE.md</code></td><td><code>.claude/agents/architecte.md</code></td><td>Boris Cherny</td></tr>
+      </tbody>
+    </table>
+
+    <h3>Règles critiques wrappées <code>&lt;important if="..."&gt;</code></h3>
+    <ul>
+      <li><code>if="writing code or calling tools"</code> — interdits hard : pas de clé API en clair, pas de <code>git push</code> non validé, pas de modification directe d'Espace_Opti, pas de suppression de worktrees.</li>
+      <li><code>if="consulting or updating agent memory"</code> — consultation 3 couches obligatoire (index → timeline → détails).</li>
+      <li><code>if="starting a new project or module"</code> — respecter l'ordre des 7 phases, ne jamais skip la validation utilisateur.</li>
+    </ul>
+    <div class="notice tip"><strong>💡 Pourquoi <code>&lt;important if="..."&gt;</code></strong> — Les balises <em>important conditionnelles</em> empêchent Claude d'ignorer les règles quand le fichier <code>CLAUDE.md</code> grossit. Attention sélective déclenchée par le contexte d'exécution. <strong>Source :</strong> Dex (HumanLayer).</div>
+
+    <h3>Ce qu'on a explicitement exclu</h3>
+    <div class="notice warn"><strong>⚠️ Jamais ajouté aux permissions</strong> — <code>Bash(rm*)</code>, <code>Bash(git push*)</code>, <code>Write(.env*)</code>. Ces wildcards sont trop dangereux même en mode wildcards. Boris préfère la liste explicite au blanket <code>dangerously-skip-permissions</code>.</div>
+  </main>
+</div>
+</body>
+</html>

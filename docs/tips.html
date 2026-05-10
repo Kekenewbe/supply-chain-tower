@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tips &amp; Limites — Espace_Opti</title>
+<link rel="stylesheet" href="shared.css">
+</head>
+<body>
+<button class="mobile-toggle" onclick="document.querySelector('.sidebar').classList.toggle('open')">☰</button>
+<div class="layout">
+  <aside class="sidebar">
+    <div class="sidebar-brand"><div class="sidebar-logo">EO</div><div class="sidebar-title">Espace_Opti</div></div>
+    <div class="sidebar-sub">Documentation v1.0</div>
+    <div class="sidebar-divider"></div>
+    <nav class="sidebar-nav">
+      <a href="index.html"><span class="icon">🏠</span>Accueil</a>
+      <a href="stack.html"><span class="icon">🔧</span>Stack</a>
+      <a href="organisation.html"><span class="icon">🗂</span>Organisation</a>
+      <a href="pipeline.html"><span class="icon">🔄</span>Pipeline</a>
+      <a href="decisions.html"><span class="icon">🧠</span>Décisions</a>
+      <a href="tutoriel.html"><span class="icon">📖</span>Tutoriel</a>
+      <a href="tips.html" class="active"><span class="icon">⚡</span>Tips &amp; Limites</a>
+      <a href="reference.html"><span class="icon">📋</span>Référence rapide</a>
+      <a href="bestpractices.html"><span class="icon">🏆</span>Best Practices</a>
+    </nav>
+    <div class="sidebar-footer">Claude Code v2.1.104<br>Claude Max — 10 agents natifs</div>
+  </aside>
+  <main class="main">
+    <div class="breadcrumb"><a href="index.html">Accueil</a> / Tips &amp; Limites</div>
+    <h1>Tips, Limites &amp; Problèmes Connus</h1>
+    <p class="page-subtitle">Tout ce qu'on aurait aimé savoir dès le départ.</p>
+
+    <h2>Tips avancés</h2>
+
+    <div class="notice tip"><strong>💡 TIP 1 — Mémoire persistante des agents</strong><br>
+    La mémoire dans <code>.claude/agent-memory/&lt;nom&gt;/</code> s'accumule au fil du temps. Plus tu utilises un agent, plus il devient performant sur ton style de projets. Consulte <code>.claude/agent-memory/manager/MEMORY.md</code> pour voir ce que le manager a appris.</div>
+
+    <div class="notice tip"><strong>💡 TIP 2 — Parallélisme @frontend + @backend</strong><br>
+    Ces deux agents ont <code>isolation: worktree</code> — ils travaillent sur des copies git isolées. Lance-les dans deux fenêtres Antigravity simultanément sans risque de conflit de fichiers.</div>
+
+    <div class="notice tip"><strong>💡 TIP 3 — Bypass sécurité légitime</strong><br>
+    Si <span class="badge securite">@securite</span> bloque du code légitime (faux positif), ajoute en fin de ligne :
+    <pre data-lang="python"><code>result = md5(config_key)  # security-ok: not a password hash</code></pre></div>
+
+    <div class="notice tip"><strong>💡 TIP 4 — Coût réel = 0 € supplémentaire</strong><br>
+    Claude Max = usage illimité. Embeddings = locaux (<code>all-MiniLM-L6-v2</code>). Pinecone = tier gratuit (1 index, 100k vecteurs). Obsidian = gratuit. Graphify = gratuit.</div>
+
+    <div class="notice tip"><strong>💡 TIP 5 — new-project.ps1 reset automatique</strong><br>
+    Chaque nouveau projet repart avec <code>.claude/agent-memory/</code> vide — les agents apprennent projet par projet, indépendamment.</div>
+
+    <div class="notice tip"><strong>💡 TIP 6 — git worktree et isolation</strong><br>
+    Les worktrees des agents <span class="badge frontend">@frontend</span> et <span class="badge backend">@backend</span> sont nettoyés automatiquement s'ils ne produisent aucun changement. En cas de résidu : <code>git worktree prune</code>.</div>
+
+    <div class="notice tip"><strong>💡 TIP 7 — Recharger les agents sans redémarrer</strong><br>
+    Si tu modifies un fichier dans <code>.claude/agents/</code>, tape <code>/agents</code> dans Claude Code pour recharger sans fermer Antigravity.</div>
+
+    <div class="notice tip"><strong>💡 TIP 8 — claude-mem capture tout automatiquement</strong><br>
+    Le plugin <code>claude-mem</code> (officiel, installé via <code>npx claude-mem install</code>) capture automatiquement toutes les mémoires des agents. Consulter l'UI sur <code>http://localhost:37777</code> ou utiliser <code>/mem-search "query"</code> dans Claude Code pour chercher dans l'historique.</div>
+
+    <div class="notice tip"><strong>💡 TIP 9 — /loop pour tâches récurrentes</strong><br>
+    La slash command <code>/loop</code> fait tourner @manager sur un intervalle fixe jusqu'à 72h maximum. Pratique pour monitoring de build, polling de déploiement, ou vérifications périodiques :
+    <pre data-lang="bash"><code>/loop 30m verifier que les tests passent toujours
+/loop 1h  surveiller le build et alerter si echec</code></pre>
+    Chaque itération est capturée automatiquement par <code>claude-mem</code>. Stop automatique après 3 échecs consécutifs.</div>
+
+    <div class="notice tip"><strong>💡 TIP 10 — Workflow 3 couches mémoire dans les agents</strong><br>
+    Tous les agents (manager, architecte, frontend, backend, qa-review, simplifier, playwright) consultent leur mémoire en 3 passes : index rapide (50 tokens) → timeline filtrée → détails à la demande via <code>/mem-search</code>. Évite de charger toute la mémoire pour chaque tâche.</div>
+
+    <h2>Tips Boris Cherny (intégrés 2026-04-17)</h2>
+
+    <div class="notice tip"><strong>💡 TIP 12 — Commit automatique par phase</strong><br>
+    Le <span class="badge manager">@manager</span> propose maintenant un <code>git commit</code> descriptif après chaque phase du pipeline 7 phases validée par l'utilisateur (<em>conventional commit</em>). Avoir un point de restauration par phase permet de revenir en arrière facilement. <strong>Source :</strong> Boris Cherny — « commit au moins 1x par heure ».</div>
+
+    <div class="notice tip"><strong>💡 TIP 13 — Rewind plutôt que corriger</strong><br>
+    Si Claude part dans la mauvaise direction, ne pas essayer de corriger dans la même session (le contexte est déjà pollué). Solutions rapides :
+    <ul>
+      <li>Appuyer <strong>2× sur Escape</strong> pour annuler le dernier changement</li>
+      <li>Taper <code>/rewind</code> pour revenir à un checkpoint antérieur</li>
+    </ul>
+    Évite de brûler des tokens à corriger une session qui déraille.</div>
+
+    <div class="notice tip"><strong>💡 TIP 14 — Compact manuel à 50% max</strong><br>
+    Pour éviter la <em>« agent dumb zone »</em> (dégradation de Claude en fin de contexte), faire <code>/compact</code> manuellement dès que le contexte atteint <strong>50%</strong>. Ne pas attendre l'auto-compact qui intervient trop tard. <strong>Source :</strong> Boris Cherny.</div>
+
+    <div class="notice tip"><strong>💡 TIP 15 — Screenshots pour debugging</strong><br>
+    Quand bloqué sur un problème visuel ou UI :
+    <ul>
+      <li>Prendre un screenshot avec <code>Windows + Shift + S</code></li>
+      <li>Coller directement dans le chat Claude Code avec <code>Ctrl + V</code></li>
+      <li>Claude voit l'image et peut analyser le problème</li>
+    </ul>
+    Bien plus efficace que décrire le problème en texte.</div>
+
+    <div class="notice tip"><strong>💡 TIP 16 — <code>/status</code> pour suivi rapide</strong><br>
+    Taper <code>/status</code> à tout moment pour afficher l'état complet du workspace : <code>modules.json</code>, phase courante, dernier commit, fichiers non committés, budget tokens, agents actifs, santé claude-mem. Sans interrompre le flux de travail.</div>
+
+    <div class="notice tip"><strong>💡 TIP 17 — Diagrammes ASCII dans l'architecture</strong><br>
+    L'<span class="badge architecte">@architecte</span> génère systématiquement un diagramme ASCII dans <code>ARCHITECTURE.md</code> montrant les modules, leurs dépendances et les flux de données.
+    <pre data-lang="text"><code>+-------------+       +-------------+
+|  Frontend   | <---> |   Backend   |
+|  React      |  API  |  FastAPI    |
++-------------+       +-------------+
+                            |
+                            v
+                      +-------------+
+                      |  Postgres   |
+                      +-------------+</code></pre>
+    Les diagrammes ASCII sont plus efficaces pour Claude que les descriptions textuelles, et ne nécessitent aucune dépendance externe.</div>
+
+    <h2>Limites connues</h2>
+
+    <div class="notice warn"><strong>⚠️ LIMIT 1 — Contexte ~200k tokens par session</strong><br>
+    Claude Max offre un contexte d'environ 200k tokens. Pour de très gros projets, divise le développement en plusieurs sessions ou utilise <code>/new-module</code> module par module.</div>
+
+    <div class="notice warn"><strong>⚠️ LIMIT 2 — Parallélisme = sessions manuelles</strong><br>
+    Le vrai parallélisme <span class="badge frontend">@frontend</span> + <span class="badge backend">@backend</span> nécessite deux sessions Antigravity manuelles. Dans une session unique, <span class="badge manager">@manager</span> les lance séquentiellement par défaut.</div>
+
+    <div class="notice warn"><strong>⚠️ LIMIT 3 — Pinecone tier gratuit</strong><br>
+    1 index, 100k vecteurs max. Suffisant pour des dizaines de projets. Si tu dépasses : supprimer les vieux vecteurs ou upgrader vers un tier payant.</div>
+
+    <div class="notice warn"><strong>⚠️ LIMIT 4 — Obsidian doit être ouvert</strong><br>
+    Le MCP Obsidian ne fonctionne que si l'application Obsidian est lancée. Un hook de démarrage automatique est prévu pour la prochaine version.</div>
+
+    <div class="notice warn"><strong>⚠️ LIMIT 5 — @securite : faux positifs possibles</strong><br>
+    L'agent haiku sur 500 tokens peut bloquer du code de configuration ou de test légitime. Utilise <code># security-ok: raison</code> pour bypass ponctuel.</div>
+
+    <div class="notice warn"><strong>⚠️ LIMIT 6 — Graphify sur gros projets</strong><br>
+    Graphify v0.4.2 peut être lent sur des codebases &gt; 10k lignes. Le hook PreToolUse sur Glob/Grep peut ralentir les recherches.</div>
+
+    <h2>Problèmes connus &amp; solutions</h2>
+
+    <div class="notice problem"><strong>❌ PROBLEM 1 — "Les agents ne sont pas détectés"</strong><br>
+    <strong>Cause :</strong> Claude Code nécessite un redémarrage pour charger les nouveaux agents.</div>
+    <div class="notice fix"><strong>✅ FIX</strong> — Dans Claude Code : taper <code>/agents</code>, ou fermer/rouvrir Antigravity.</div>
+
+    <div class="notice problem"><strong>❌ PROBLEM 2 — "sync_memory.py échoue (UnicodeDecodeError ou BOM)"</strong><br>
+    <strong>Cause :</strong> <code>.env</code> sauvegardé avec BOM UTF-8 (éditeur Windows).</div>
+    <div class="notice fix"><strong>✅ FIX</strong>
+    <pre data-lang="powershell"><code>python -c "
+p=open('.env','rb'); d=p.read(); p.close()
+open('.env','wb').write(d.lstrip(b'\xef\xbb\xbf'))
+print('BOM removed')
+"</code></pre></div>
+
+    <div class="notice problem"><strong>❌ PROBLEM 3 — "Obsidian MCP : connexion refusée (WinError 10061)"</strong><br>
+    <strong>Cause :</strong> Obsidian non ouvert ou plugin Local REST API désactivé.</div>
+    <div class="notice fix"><strong>✅ FIX</strong> — Ouvrir Obsidian → Settings → Community Plugins → Local REST API → Enable. Vérifier le port : <code>27124</code>.</div>
+
+    <div class="notice problem"><strong>❌ PROBLEM 4 — "Port 3131 déjà utilisé"</strong><br>
+    <strong>Cause :</strong> Instance du dashboard déjà en cours d'exécution.</div>
+    <div class="notice fix"><strong>✅ FIX</strong>
+    <pre data-lang="powershell"><code>taskkill /F /IM python.exe
+python dashboard.py</code></pre></div>
+
+    <div class="notice problem"><strong>❌ PROBLEM 5 — "@securite bloque du code légitime"</strong><br>
+    <strong>Cause :</strong> Faux positif sur pattern OWASP.</div>
+    <div class="notice fix"><strong>✅ FIX</strong> — Ajouter en fin de ligne concernée : <code># security-ok: raison de la dérogation</code></div>
+
+    <div class="notice problem"><strong>❌ PROBLEM 6 — "git worktree error: already exists"</strong><br>
+    <strong>Cause :</strong> Worktree résiduel d'une session précédente (bug Claude Code v2.1.x).</div>
+    <div class="notice fix"><strong>✅ FIX</strong>
+    <pre data-lang="bash"><code>git worktree prune
+# puis relancer l'agent</code></pre></div>
+
+    <div class="notice problem"><strong>❌ PROBLEM 7 — "modules.json mal formé après drag-and-drop"</strong><br>
+    <strong>Cause :</strong> Race condition entre WebSocket et sauvegarde fichier.</div>
+    <div class="notice fix"><strong>✅ FIX</strong> — Rafraîchir le dashboard (F5) et refaire le drag-and-drop.</div>
+  </main>
+</div>
+</body>
+</html>

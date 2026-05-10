@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Référence Rapide — Espace_Opti</title>
+<link rel="stylesheet" href="shared.css">
+</head>
+<body>
+<button class="mobile-toggle" onclick="document.querySelector('.sidebar').classList.toggle('open')">☰</button>
+<div class="layout">
+  <aside class="sidebar">
+    <div class="sidebar-brand"><div class="sidebar-logo">EO</div><div class="sidebar-title">Espace_Opti</div></div>
+    <div class="sidebar-sub">Documentation v1.0</div>
+    <div class="sidebar-divider"></div>
+    <nav class="sidebar-nav">
+      <a href="index.html"><span class="icon">🏠</span>Accueil</a>
+      <a href="stack.html"><span class="icon">🔧</span>Stack</a>
+      <a href="organisation.html"><span class="icon">🗂</span>Organisation</a>
+      <a href="pipeline.html"><span class="icon">🔄</span>Pipeline</a>
+      <a href="decisions.html"><span class="icon">🧠</span>Décisions</a>
+      <a href="tutoriel.html"><span class="icon">📖</span>Tutoriel</a>
+      <a href="tips.html"><span class="icon">⚡</span>Tips &amp; Limites</a>
+      <a href="reference.html" class="active"><span class="icon">📋</span>Référence rapide</a>
+      <a href="bestpractices.html"><span class="icon">🏆</span>Best Practices</a>
+    </nav>
+    <div class="sidebar-footer">Claude Code v2.1.104<br>Claude Max — 10 agents natifs</div>
+  </aside>
+  <main class="main">
+    <div class="breadcrumb"><a href="index.html">Accueil</a> / Référence rapide</div>
+    <h1>Référence Rapide — Cheat Sheet</h1>
+    <p class="page-subtitle">Vue d'ensemble imprimable (Ctrl+P → PDF).</p>
+
+    <h2>Agents</h2>
+    <table>
+      <thead>
+        <tr><th>Agent</th><th>@mention</th><th>Modèle</th><th>Rôle</th><th>Mémoire</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><span class="badge manager">manager</span></td><td><code>@manager</code></td><td>opus</td><td>Chef d'orchestre A→Z</td><td>project</td></tr>
+        <tr><td><span class="badge architecte">architecte</span></td><td><code>@architecte</code></td><td>opus</td><td>PRD → modules + contrats</td><td>project</td></tr>
+        <tr><td><span class="badge frontend">frontend</span></td><td><code>@frontend</code></td><td>sonnet</td><td>UI React + Tailwind <em>[worktree]</em></td><td>project</td></tr>
+        <tr><td><span class="badge backend">backend</span></td><td><code>@backend</code></td><td>sonnet</td><td>API + DB + TDD <em>[worktree]</em></td><td>project</td></tr>
+        <tr><td><span class="badge securite">securite</span></td><td>automatique</td><td>haiku</td><td>Scan OWASP (hook auto)</td><td>—</td></tr>
+        <tr><td><span class="badge qa-review">qa-review</span></td><td><code>@qa-review</code></td><td>opus</td><td>Audit seuil 80/100</td><td>project</td></tr>
+        <tr><td><span class="badge simplifier">simplifier</span></td><td><code>@simplifier</code></td><td>sonnet</td><td>Anti-bloat après QA</td><td>project</td></tr>
+        <tr><td><span class="badge playwright">playwright</span></td><td><code>@playwright</code></td><td>sonnet</td><td>Tests E2E Chromium</td><td>project</td></tr>
+        <tr><td><span class="badge optimiseur" data-color="teal">optimiseur</span></td><td><code>@optimiseur</code></td><td>sonnet</td><td>Optimisation des prompts (best practices Anthropic)</td><td>project</td></tr>
+      </tbody>
+    </table>
+
+    <h2>Slash Commands</h2>
+    <table>
+      <thead><tr><th>Commande</th><th>Usage</th></tr></thead>
+      <tbody>
+        <tr><td><code>/run-project [idée]</code></td><td>Orchestration complète via <span class="badge manager">@manager</span></td></tr>
+        <tr><td><code>/start-prd [idée]</code></td><td>PRD interactif (8 questions)</td></tr>
+        <tr><td><code>/new-module [nom]</code></td><td>Développer un module</td></tr>
+        <tr><td><code>/deliver</code></td><td>Pipeline livraison complet</td></tr>
+        <tr><td><code>/dashboard</code></td><td>Lance <code>http://localhost:3131</code></td></tr>
+        <tr><td><code>/start-feature [desc]</code></td><td>Workflow feature avec contexte mémoire</td></tr>
+        <tr><td><code>/loop [intervalle] [tâche]</code></td><td>Tâche récurrente, max 72h (monitoring, polling)</td></tr>
+      </tbody>
+    </table>
+
+    <h2>Mémoire <code>claude-mem</code> — commandes utiles</h2>
+    <pre data-lang="powershell"><code># Recherche dans Claude Code
+/mem-search "schema migration"
+
+# Dashboard web (UI)
+# Ouvrir : http://localhost:37777
+
+# Worker temps reel
+npx claude-mem start
+
+# Recherche CLI
+npx claude-mem search "query"
+
+# Version installee
+npx claude-mem --version</code></pre>
+    <div class="notice tip"><strong>Stockage</strong> — Plugin <code>claude-mem</code> (Chroma local). Installé globalement via <code>npx claude-mem install</code>. Capture automatique des actions agents, sans configuration par projet.</div>
+
+    <h2>Niveaux d'autonomie @manager</h2>
+    <table>
+      <thead><tr><th>Niveau</th><th>Comportement</th><th>Visibilité utilisateur</th></tr></thead>
+      <tbody>
+        <tr><td><span class="badge level-1">🟢 NIVEAU 1</span></td><td>Manager gère seul</td><td>Aucune alerte</td></tr>
+        <tr><td><span class="badge level-2">🟡 NIVEAU 2</span></td><td>Manager agit + informe</td><td>Alerte ⚡</td></tr>
+        <tr><td><span class="badge level-3">🔴 NIVEAU 3</span></td><td>Attend décision utilisateur</td><td>Bloqué 🛑</td></tr>
+      </tbody>
+    </table>
+
+    <h2>Score QA</h2>
+    <table>
+      <thead><tr><th>Score</th><th>Action</th><th>Niveau</th></tr></thead>
+      <tbody>
+        <tr><td>≥ 80/100 ✅</td><td>Approuvé → <span class="badge simplifier">@simplifier</span></td><td><span class="badge level-1">1</span></td></tr>
+        <tr><td>70 – 79 🔄</td><td>Rejeté → retour agent d'origine</td><td><span class="badge level-2">2</span></td></tr>
+        <tr><td>&lt; 70 🔄</td><td>Rejeté → retour <span class="badge architecte">@architecte</span></td><td><span class="badge level-2">2</span></td></tr>
+        <tr><td>3ᵉ échec ⛔</td><td>Décision utilisateur requise</td><td><span class="badge level-3">3</span></td></tr>
+      </tbody>
+    </table>
+
+    <h2>Chemins clés</h2>
+    <pre data-lang="paths"><code>Template        : C:\Users\caste\Desktop\Espace_Opti
+Agents natifs   : .claude\agents\ (8 fichiers .md)
+Mémoire agents  : .claude\agent-memory\<agent>\
+Vault Obsidian  : C:\Users\caste\Documents\Obsidian Vault
+Dashboard       : http://localhost:3131
+Pinecone index  : obsidian-memory (dim=384, cosine, AWS us-east-1)</code></pre>
+
+    <h2>Commandes PowerShell fréquentes</h2>
+    <pre data-lang="powershell"><code># Nouveau projet
+.\new-project.ps1 "NomProjet"
+
+# Lancement
+.\full.ps1        # mode complet
+.\lite.ps1        # mode rapide
+
+# Mémoire
+python sync_memory.py
+
+# Dashboard
+python dashboard.py
+
+# Git
+git worktree prune     # nettoyer les worktrees résiduels
+git log --oneline -10  # historique
+git tag v1.0.0         # tag livraison</code></pre>
+
+    <h2>9 Patterns OWASP scannés par @securite</h2>
+    <ol>
+      <li><strong>SQL_INJECTION</strong> — concat dans <code>execute()</code> / <code>query()</code></li>
+      <li><strong>SHELL_INJECTION</strong> — <code>os.system()</code>, <code>subprocess shell=True</code></li>
+      <li><strong>XSS</strong> — <code>innerHTML=</code>, <code>dangerouslySetInnerHTML</code> sans sanitize</li>
+      <li><strong>EVAL_DANGEREUX</strong> — <code>eval(</code>, <code>exec(</code>, <code>new Function(</code></li>
+      <li><strong>SECRET_HARDCODE</strong> — <code>sk-</code>, <code>pcsk_</code>, <code>AKIA</code>, <code>ghp_</code>, <code>xox</code></li>
+      <li><strong>PATH_TRAVERSAL</strong> — concat chemin sans <code>Path.resolve()</code></li>
+      <li><strong>DESERIALISATION</strong> — <code>pickle.loads(</code>, <code>yaml.load(</code> sans SafeLoader</li>
+      <li><strong>REDIRECT_OUVERTE</strong> — <code>redirect(req.query.X)</code></li>
+      <li><strong>CRYPTO_FAIBLE</strong> — <code>md5(</code>, <code>sha1(</code> pour passwords</li>
+    </ol>
+    <div class="notice tip"><strong>Bypass</strong> : ajouter <code># security-ok: raison</code> sur la ligne concernée.</div>
+
+    <h2>Stack mémoire</h2>
+    <table>
+      <thead><tr><th>Couche</th><th>Outil</th><th>Type</th><th>Coût</th></tr></thead>
+      <tbody>
+        <tr><td>Structurelle</td><td>Graphify</td><td>AST + topologie</td><td>Gratuit</td></tr>
+        <tr><td>Documentaire</td><td>Obsidian</td><td>Notes + ADR</td><td>Gratuit</td></tr>
+        <tr><td>Sémantique</td><td>Pinecone</td><td>Vecteurs (384D)</td><td>Gratuit (tier)</td></tr>
+        <tr><td>Embeddings</td><td>all-MiniLM-L6-v2</td><td>Local</td><td>Gratuit</td></tr>
+      </tbody>
+    </table>
+  </main>
+</div>
+</body>
+</html>

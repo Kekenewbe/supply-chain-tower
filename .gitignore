@@ -1,0 +1,67 @@
+﻿# Environnement et cles API
+.env
+.env.local
+*.key
+
+# Memoire des agents (specifique a ton PC)
+.claude/agent-memory/
+.claude/settings.local.json
+
+# Cache Python
+__pycache__/
+*.pyc
+*.pyo
+
+# Pytest + coverage
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Cache Node
+node_modules/
+
+# Playwright
+playwright-report/
+test-results/
+playwright/.cache/
+
+# Graphify build cache
+graphify-out/cache/
+
+# Graphify visualization HTML (artefact local non portable, #184)
+graphify-out/visualization.html
+
+# Logs
+*.log
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Backups locaux (*.bak, *.bak.*, *.bak_*)
+*.bak*
+
+# IDE
+.vscode/
+.idea/
+
+# Inbox temporaire
+inbox.md
+
+# Runtime files auto-generes (non versionnes)
+.claude/agent-log.txt
+.claude/inbox_ready
+.claude/inbox_injected_hash
+.claude/memory_state.json
+graphify-out/GRAPH_REPORT.md
+.last_sync
+
+# Memory vault Obsidian — plugins/cache locaux (config partagee, plugins par utilisateur)
+Memory/.obsidian/plugins/
+Memory/.obsidian/workspace-mobile.json
+Memory/.obsidian/cache
+Memory/.obsidian/graph.json
+Memory/.obsidian/canvas.json
+
+# UI state Obsidian volatile (#168 session 5)
+Memory/.obsidian/workspace.json

@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tutoriel — Espace_Opti</title>
+<link rel="stylesheet" href="shared.css">
+</head>
+<body>
+<button class="mobile-toggle" onclick="document.querySelector('.sidebar').classList.toggle('open')">☰</button>
+<div class="layout">
+  <aside class="sidebar">
+    <div class="sidebar-brand"><div class="sidebar-logo">EO</div><div class="sidebar-title">Espace_Opti</div></div>
+    <div class="sidebar-sub">Documentation v1.0</div>
+    <div class="sidebar-divider"></div>
+    <nav class="sidebar-nav">
+      <a href="index.html"><span class="icon">🏠</span>Accueil</a>
+      <a href="stack.html"><span class="icon">🔧</span>Stack</a>
+      <a href="organisation.html"><span class="icon">🗂</span>Organisation</a>
+      <a href="pipeline.html"><span class="icon">🔄</span>Pipeline</a>
+      <a href="decisions.html"><span class="icon">🧠</span>Décisions</a>
+      <a href="tutoriel.html" class="active"><span class="icon">📖</span>Tutoriel</a>
+      <a href="tips.html"><span class="icon">⚡</span>Tips &amp; Limites</a>
+      <a href="reference.html"><span class="icon">📋</span>Référence rapide</a>
+      <a href="bestpractices.html"><span class="icon">🏆</span>Best Practices</a>
+    </nav>
+    <div class="sidebar-footer">Claude Code v2.1.104<br>Claude Max — 10 agents natifs</div>
+  </aside>
+  <main class="main">
+    <div class="breadcrumb"><a href="index.html">Accueil</a> / Tutoriel</div>
+    <h1>Guide d'utilisation</h1>
+    <p class="page-subtitle">Du premier lancement à la livraison d'un projet complet.</p>
+
+    <h2>Étape 1 — Prérequis</h2>
+    <div class="card">
+      <ul class="checklist">
+        <li>Windows 10 ou 11</li>
+        <li>Claude Max (abonnement Anthropic)</li>
+        <li>Python 3.14+</li>
+        <li>Git for Windows</li>
+        <li>Antigravity IDE (fork VS Code)</li>
+        <li>Obsidian avec plugin Local REST API activé</li>
+      </ul>
+    </div>
+
+    <h2>Étape 2 — Lancer l'environnement</h2>
+    <pre data-lang="powershell"><code># Mode complet (Graphify + pipeline complet)
+cd "C:\Users\caste\Desktop\Espace_Opti"
+.\full.ps1
+
+# Mode rapide (session courte)
+.\lite.ps1</code></pre>
+    <div class="notice tip"><strong>💡 TIP</strong> — <code>full.ps1</code> affiche l'URL du dashboard au démarrage et vérifie tous les composants.</div>
+    <div class="notice warn"><strong>⚠️ WARN</strong> — Obsidian doit être ouvert avant de lancer le script pour que le MCP obsidian fonctionne.</div>
+
+    <h2>Étape 3 — Créer un nouveau projet</h2>
+    <pre data-lang="powershell"><code># Dériver un projet depuis le template
+.\new-project.ps1 "MonProjet"
+
+# Naviguer et lancer
+cd "C:\Users\caste\Desktop\MonProjet"
+.\full.ps1</code></pre>
+    <div class="notice tip"><strong>💡 TIP</strong> — Nom valide : alphanumérique + tirets uniquement. Exemples : <code>SaaS-RH</code>, <code>MailFlow</code>, <code>WebApp-Client</code>.</div>
+    <div class="notice warn"><strong>⚠️ WARN</strong> — Ne jamais modifier les fichiers dans <code>Espace_Opti/</code> directement. C'est le template maître.</div>
+
+    <h2>Étape 4 — Orchestrer un projet complet</h2>
+    <p>Dans Antigravity (Claude Code), la commande la plus puissante :</p>
+    <pre data-lang="claude-code"><code>/run-project Je veux créer une app de gestion de factures pour PME</code></pre>
+    <p>Ou invoquer directement le manager :</p>
+    <pre data-lang="claude-code"><code>@manager Je veux créer une application SaaS de gestion RH</code></pre>
+    <div class="notice tip"><strong>💡 TIP</strong> — Donne une description précise — le manager posera 8 questions de toute façon, mais une bonne description donne le contexte initial.</div>
+    <div class="notice warn"><strong>⚠️ WARN</strong> — Attends toujours la question "Valides-tu ce PRD ?" avant de continuer. Ne force pas le processus.</div>
+
+    <h2>Étape 5 — Invoquer les agents directement</h2>
+    <pre data-lang="claude-code"><code>@architecte   → Décompose le PRD en modules + contrats
+@frontend     → Implémente les modules UI owner:frontend
+@backend      → Implémente les modules API owner:backend
+@qa-review    → Audite le dernier module DONE
+@simplifier   → Nettoie le code après approbation QA
+@playwright   → Lance les tests E2E sur le PRD
+@manager      → Orchestre tout de A à Z</code></pre>
+    <div class="notice tip"><strong>💡 TIP</strong> — <span class="badge frontend">@frontend</span> et <span class="badge backend">@backend</span> tournent en isolation <code>git worktree</code>. Tu peux les lancer simultanément dans deux sessions Antigravity.</div>
+    <div class="notice warn"><strong>⚠️ WARN</strong> — <span class="badge securite">@securite</span> s'active automatiquement via hook PreToolUse. Ne jamais l'invoquer manuellement.</div>
+
+    <h2>Étape 6 — Slash commands</h2>
+    <table>
+      <thead><tr><th>Commande</th><th>Usage</th></tr></thead>
+      <tbody>
+        <tr><td><code>/run-project [idée]</code></td><td>Orchestration complète via <span class="badge manager">@manager</span></td></tr>
+        <tr><td><code>/start-prd [idée]</code></td><td>PRD interactif (8 questions)</td></tr>
+        <tr><td><code>/new-module [nom]</code></td><td>Développer un module spécifique</td></tr>
+        <tr><td><code>/deliver</code></td><td>Pipeline de livraison complet</td></tr>
+        <tr><td><code>/dashboard</code></td><td>Lance le monitoring web</td></tr>
+        <tr><td><code>/start-feature [desc]</code></td><td>Workflow feature avec contexte mémoire</td></tr>
+      </tbody>
+    </table>
+
+    <h2>Étape 7 — Dashboard web</h2>
+    <pre data-lang="powershell"><code># Depuis Espace_Opti (ou n'importe quel projet dérivé)
+python dashboard.py
+# → Ouvre automatiquement http://localhost:3131</code></pre>
+    <p>Le dashboard permet :</p>
+    <ul>
+      <li>Voir tous les projets avec leur progression (barre)</li>
+      <li>Kanban drag-and-drop des modules (TODO / IN_PROGRESS / DONE / APPROVED)</li>
+      <li>Éditer <code>PRD.md</code>, <code>modules.json</code>, <code>CLAUDE.md</code> dans le navigateur</li>
+      <li>Voir les logs des agents en temps réel via WebSocket</li>
+      <li>Lancer <code>full.ps1</code>, <code>lite.ps1</code>, <code>sync_memory.py</code> depuis l'interface</li>
+    </ul>
+
+    <h2>Étape 8 — Synchroniser la mémoire Obsidian → Pinecone</h2>
+    <pre data-lang="powershell"><code>python sync_memory.py
+# → Vectorise les notes Obsidian dans Pinecone
+# → Rapporte : X files, Y chunks, Z vectors total</code></pre>
+    <div class="notice tip"><strong>💡 TIP</strong> — Lance après chaque session importante de documentation ou de création d'ADR.</div>
+    <div class="notice warn"><strong>⚠️ WARN</strong> — Obsidian doit être ouvert et le plugin Local REST API activé.</div>
+
+    <h2>Étape 9 — Livraison du projet</h2>
+    <pre data-lang="claude-code"><code>/deliver</code></pre>
+    <p>Résultat attendu :</p>
+    <div class="notice fix"><strong>✅ Output</strong> :<br>
+    <code>DEPLOYMENT.md</code> généré &nbsp;·&nbsp; Note Obsidian ADR créée &nbsp;·&nbsp; <code>git tag v1.0.0</code> créé<br>
+    Puis : <strong>🛑 "Valides-tu le git push ?"</strong> ← tu réponds "valide"</div>
+
+    <h2>Exemple complet — Gestion de factures PME</h2>
+    <details>
+      <summary>Voir l'exemple complet de A à Z (cliquer pour développer)</summary>
+      <h4>1. Lancement</h4>
+      <pre data-lang="powershell"><code>.\new-project.ps1 "FacturePME"
+cd C:\Users\caste\Desktop\FacturePME
+.\full.ps1</code></pre>
+
+      <h4>2. Orchestration</h4>
+      <pre data-lang="claude-code"><code>/run-project Application de gestion de factures pour PME :
+clients, produits, factures, export PDF, relance auto</code></pre>
+
+      <h4>3. PRD (@manager pose 8 questions)</h4>
+      <p>→ Génération <code>PRD.md</code> · <strong>🛑 validation utilisateur</strong></p>
+
+      <h4>4. Architecture (@architecte)</h4>
+      <pre data-lang="json"><code>{
+  "modules": [
+    { "id": "auth-backend",     "owner": "backend",  "status": "TODO" },
+    { "id": "clients-backend",  "owner": "backend",  "status": "TODO" },
+    { "id": "factures-backend", "owner": "backend",  "status": "TODO" },
+    { "id": "clients-frontend", "owner": "frontend", "status": "TODO" },
+    { "id": "factures-frontend","owner": "frontend", "status": "TODO" },
+    { "id": "pdf-export",       "owner": "backend",  "status": "TODO" }
+  ]
+}</code></pre>
+
+      <h4>5. Développement parallèle</h4>
+      <p><span class="badge frontend">@frontend</span> et <span class="badge backend">@backend</span> travaillent en worktrees isolés. <span class="badge securite">@securite</span> scanne chaque écriture.</p>
+
+      <h4>6. Validation QA → Simplification → Tests E2E → Livraison</h4>
+      <p>Tag <code>v1.0.0</code> créé, ADR dans Obsidian, <code>sync_memory.py</code> lancé. <strong>🛑 validation git push</strong>.</p>
+    </details>
+  </main>
+</div>
+</body>
+</html>

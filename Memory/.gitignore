@@ -1,0 +1,8 @@
+# Memory/.gitignore
+# Vault Obsidian — config plugins locale (installée par utilisateur)
+
+.obsidian/plugins/
+.obsidian/workspace-mobile.json
+.obsidian/cache
+.obsidian/graph.json
+.obsidian/canvas.json

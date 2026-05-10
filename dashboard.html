@@ -1,0 +1,2588 @@
+<!DOCTYPE html>
+<html lang="fr" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Espace_Opti Dashboard</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/marked/9.1.6/marked.min.js"></script>
+<style>
+:root {
+  --bg: #0d1117;
+  --surface: #161b22;
+  --surface-2: #1c2128;
+  --border: #30363d;
+  --text: #c9d1d9;
+  --text-muted: #8b949e;
+  --accent: #58a6ff;
+  --success: #3fb950;
+  --warning: #d29922;
+  --danger: #f85149;
+  --purple: #bc8cff;
+  --pink: #ff7b72;
+  --cyan: #79c0ff;
+  --yellow: #d29922;
+  --green: #3fb950;
+  --red: #f85149;
+  --blue: #58a6ff;
+}
+
+[data-theme="light"] {
+  --bg: #ffffff;
+  --surface: #f8f9fa;
+  --surface-2: #f0f0f0;
+  --border: #e4e4e7;
+  --text: #18181b;
+  --text-muted: #52525b;
+  --accent: #2563eb;
+  --success: #16a34a;
+  --warning: #d97706;
+  --danger: #dc2626;
+  --purple: #7c3aed;
+  --pink: #db2777;
+  --cyan: #0891b2;
+  --yellow: #ca8a04;
+  --green: #16a34a;
+  --red: #dc2626;
+  --blue: #2563eb;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { height: 100%; background: var(--bg); color: var(--text); font-family: 'Inter', -apple-system, sans-serif; font-size: 14px; }
+button, input, textarea, select { font-family: inherit; color: inherit; }
+code, pre, .mono { font-family: 'JetBrains Mono', monospace; }
+::-webkit-scrollbar { width: 10px; height: 10px; }
+::-webkit-scrollbar-track { background: var(--bg); }
+::-webkit-scrollbar-thumb { background: var(--border); border-radius: 5px; }
+::-webkit-scrollbar-thumb:hover { background: var(--text-muted); }
+
+.app {
+  display: grid;
+  grid-template-rows: 56px 1fr;
+  height: 100vh;
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 20px;
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+}
+.brand { font-weight: 700; font-size: 16px; display: flex; align-items: center; gap: 10px; }
+.brand-dot { width: 10px; height: 10px; border-radius: 50%; background: var(--accent); box-shadow: 0 0 12px var(--accent); }
+.header-actions { display: flex; gap: 10px; align-items: center; }
+.mcp-status { display: flex; gap: 10px; font-size: 12px; color: var(--text-muted); }
+.mcp-status span { display: inline-flex; align-items: center; gap: 4px; }
+.btn {
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  color: var(--text);
+  padding: 8px 14px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 500;
+  transition: all 0.15s;
+}
+.btn:hover { background: var(--border); border-color: var(--accent); }
+.btn-primary { background: var(--accent); color: var(--bg); border-color: var(--accent); }
+.btn-primary:hover { background: #4090e6; }
+.btn-sm { padding: 5px 10px; font-size: 12px; }
+.btn-icon {
+  background: transparent;
+  border: 1px solid var(--border);
+  color: var(--text);
+  padding: 7px 10px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 16px;
+  position: relative;
+}
+.btn-icon:hover { background: var(--surface-2); }
+.notif-badge {
+  position: absolute;
+  top: -4px;
+  right: -4px;
+  background: var(--danger);
+  color: white;
+  border-radius: 10px;
+  font-size: 10px;
+  padding: 1px 5px;
+  font-weight: 700;
+}
+
+.body {
+  display: grid;
+  grid-template-columns: 280px 1fr;
+  overflow: hidden;
+}
+
+.sidebar {
+  background: var(--surface);
+  border-right: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+.sidebar-header { padding: 14px; border-bottom: 1px solid var(--border); }
+.search-input {
+  width: 100%;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 8px 12px;
+  color: var(--text);
+  font-size: 13px;
+  outline: none;
+}
+.search-input:focus { border-color: var(--accent); }
+.project-list { flex: 1; overflow-y: auto; padding: 8px; }
+.project-card {
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 12px;
+  margin-bottom: 8px;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+.project-card:hover { border-color: var(--accent); }
+.project-card.active { border-color: var(--accent); background: #1f2937; }
+[data-theme="light"] .project-card.active { background: #dbeafe; }
+.project-card.template-card {
+  background: linear-gradient(135deg, var(--surface-2), var(--surface));
+  border-color: var(--warning);
+  border-left-width: 3px;
+}
+.project-name { font-weight: 600; display: flex; align-items: center; gap: 8px; margin-bottom: 6px; }
+.template-badge { font-size: 9px; background: var(--warning); color: var(--bg); padding: 1px 5px; border-radius: 3px; font-weight: 700; text-transform: uppercase; }
+.status-dot { width: 8px; height: 8px; border-radius: 50%; }
+.status-New { background: var(--text-muted); }
+.status-Starting { background: var(--accent); }
+.status-InProgress { background: var(--warning); }
+.status-Done { background: var(--success); }
+.progress-bar {
+  width: 100%;
+  height: 4px;
+  background: var(--border);
+  border-radius: 2px;
+  overflow: hidden;
+  margin: 6px 0;
+}
+.progress-fill { height: 100%; background: var(--success); transition: width 0.3s; }
+.project-meta { display: flex; justify-content: space-between; font-size: 11px; color: var(--text-muted); }
+.status-badge { padding: 2px 6px; border-radius: 4px; font-size: 10px; font-weight: 600; }
+
+.main {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+.tabs {
+  display: flex;
+  gap: 2px;
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+  padding: 0 14px;
+  overflow-x: auto;
+  white-space: nowrap;
+}
+.tab {
+  padding: 14px 18px;
+  cursor: pointer;
+  border-bottom: 2px solid transparent;
+  color: var(--text-muted);
+  font-weight: 500;
+  transition: all 0.15s;
+}
+.tab:hover { color: var(--text); }
+.tab.active { color: var(--accent); border-bottom-color: var(--accent); }
+
+.global-progress {
+  padding: 10px 20px;
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  font-size: 12px;
+  color: var(--text-muted);
+}
+.global-progress-bar {
+  flex: 1;
+  height: 8px;
+  background: var(--border);
+  border-radius: 4px;
+  overflow: hidden;
+}
+.global-progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--accent), var(--success));
+  transition: width 0.4s;
+}
+
+.tab-content { flex: 1; overflow: auto; padding: 20px; }
+.empty-state { text-align: center; color: var(--text-muted); padding: 60px 20px; }
+
+.kanban-view-toggle { display: flex; gap: 6px; margin-bottom: 14px; }
+.kanban-view-toggle .btn { font-size: 12px; }
+.kanban-view-toggle .btn.active { background: var(--accent); color: var(--bg); border-color: var(--accent); }
+
+.kanban { display: grid; gap: 14px; height: calc(100% - 48px); }
+.kanban.view-status { grid-template-columns: repeat(4, 1fr); }
+.kanban.view-wave { grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); }
+.kanban-col {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+.kanban-col.drag-over { border-color: var(--accent); background: var(--surface-2); }
+.kanban-header {
+  padding: 12px;
+  border-bottom: 1px solid var(--border);
+  font-weight: 600;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+.kanban-count { background: var(--surface-2); padding: 2px 8px; border-radius: 10px; font-size: 11px; }
+.kanban-body { flex: 1; overflow-y: auto; padding: 10px; }
+.module-card {
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 10px;
+  margin-bottom: 8px;
+  cursor: grab;
+  transition: all 0.15s;
+  position: relative;
+}
+.module-card:hover { border-color: var(--accent); }
+.module-card.dragging { opacity: 0.5; }
+.module-id { font-weight: 600; font-size: 13px; margin-bottom: 6px; }
+.owner-badge { display: inline-block; padding: 2px 6px; border-radius: 3px; font-size: 10px; font-weight: 600; text-transform: uppercase; }
+.owner-frontend { background: rgba(255, 123, 114, 0.2); color: var(--pink); }
+.owner-backend { background: rgba(63, 185, 80, 0.2); color: var(--green); }
+.module-deps { font-size: 10px; color: var(--text-muted); margin-top: 6px; }
+.module-details { display: none; padding: 8px; margin-top: 8px; background: var(--bg); border-radius: 4px; font-size: 11px; }
+.module-card.expanded .module-details { display: block; }
+.module-details pre { white-space: pre-wrap; word-break: break-word; }
+.qa-score-badge {
+  display: inline-block;
+  padding: 2px 6px;
+  border-radius: 3px;
+  font-size: 10px;
+  font-weight: 700;
+  margin-left: 6px;
+}
+.qa-score-approved { background: rgba(63, 185, 80, 0.2); color: var(--success); }
+.qa-score-rejected { background: rgba(248, 81, 73, 0.2); color: var(--danger); cursor: help; }
+.status-badge-card {
+  font-size: 9px;
+  font-weight: 700;
+  padding: 1px 5px;
+  border-radius: 3px;
+  margin-left: 6px;
+  text-transform: uppercase;
+}
+.badge-TODO { background: var(--border); color: var(--text-muted); }
+.badge-IN_PROGRESS { background: var(--warning); color: var(--bg); }
+.badge-DONE { background: var(--accent); color: var(--bg); }
+.badge-APPROVED { background: var(--success); color: var(--bg); }
+
+.prd-view {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 24px;
+  max-width: 1100px;
+  margin: 0 auto;
+}
+.prd-view h1, .prd-view h2, .prd-view h3 { margin: 16px 0 8px; }
+.prd-view p, .prd-view ul, .prd-view ol { margin-bottom: 12px; }
+.prd-view code { background: var(--surface-2); padding: 2px 6px; border-radius: 3px; }
+.prd-view pre { background: var(--surface-2); padding: 12px; border-radius: 6px; overflow-x: auto; }
+.prd-toolbar { display: flex; gap: 10px; margin-bottom: 14px; align-items: center; flex-wrap: wrap; }
+.prd-meta { color: var(--text-muted); font-size: 12px; }
+.prd-status-indicator { font-size: 12px; padding: 4px 10px; border-radius: 4px; }
+.prd-status-ok { background: rgba(63, 185, 80, 0.2); color: var(--success); }
+.prd-status-missing { background: rgba(210, 153, 34, 0.2); color: var(--warning); }
+.prd-section-divider { margin-top: 24px; padding-top: 16px; border-top: 1px solid var(--border); }
+.editor {
+  width: 100%;
+  min-height: 400px;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 14px;
+  color: var(--text);
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 13px;
+  resize: vertical;
+  outline: none;
+}
+.editor:focus { border-color: var(--accent); }
+
+.files-layout { display: grid; grid-template-columns: 280px 1fr; gap: 14px; height: 100%; }
+.file-tree {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 10px;
+  overflow-y: auto;
+}
+.file-item {
+  padding: 5px 8px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 12px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.file-item:hover { background: var(--surface-2); }
+.file-item.active { background: var(--surface-2); color: var(--accent); }
+.file-item.important-claude { color: var(--purple); }
+.file-item.important-modules { color: var(--yellow); }
+.file-item.important-prd { color: var(--blue); }
+.file-item.important-architecture { color: var(--success); }
+.file-item.is-dir { color: var(--text-muted); font-weight: 500; }
+.file-size { font-size: 10px; color: var(--text-muted); }
+.file-viewer {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+.file-viewer-header {
+  padding: 10px 14px;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.file-viewer-body { flex: 1; overflow: auto; }
+
+.agents-layout { display: grid; grid-template-columns: 320px 1fr; gap: 14px; height: 100%; }
+.agent-list {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 12px;
+  overflow-y: auto;
+}
+.agent-card {
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-left: 3px solid var(--border);
+  border-radius: 6px;
+  padding: 10px;
+  margin-bottom: 8px;
+}
+.agent-card.idle { opacity: 0.7; }
+.agent-card.active { border-left-color: var(--success); }
+.agent-name { font-weight: 600; display: flex; justify-content: space-between; }
+.agent-meta { font-size: 11px; color: var(--text-muted); margin-top: 4px; }
+.agent-manager { border-left-color: #f0883e; }
+.agent-architecte { border-left-color: var(--purple); }
+.agent-frontend { border-left-color: var(--pink); }
+.agent-backend { border-left-color: var(--green); }
+.agent-securite { border-left-color: var(--red); }
+.agent-qa-review { border-left-color: var(--yellow); }
+.agent-simplifier { border-left-color: var(--cyan); }
+.agent-playwright { border-left-color: var(--blue); }
+
+.log-panel {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+.log-header {
+  padding: 10px 14px;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.ws-indicator { font-size: 12px; display: flex; align-items: center; gap: 6px; }
+.log-body {
+  flex: 1;
+  overflow-y: auto;
+  padding: 10px 14px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 12px;
+  line-height: 1.7;
+}
+.log-line { padding: 2px 0; }
+.log-time { color: var(--text-muted); margin-right: 8px; }
+.log-agent-architecte { color: var(--purple); }
+.log-agent-frontend { color: var(--pink); }
+.log-agent-backend { color: var(--green); }
+.log-agent-securite { color: var(--red); }
+.log-agent-qa-review { color: var(--yellow); }
+.log-agent-simplifier { color: var(--cyan); }
+.log-agent-playwright { color: var(--blue); }
+
+.actions-bar {
+  display: flex;
+  gap: 8px;
+  padding: 12px 20px;
+  background: var(--surface);
+  border-top: 1px solid var(--border);
+  flex-wrap: wrap;
+}
+
+.terminal-overlay {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 40%;
+  background: var(--surface);
+  border-top: 1px solid var(--border);
+  transform: translateY(100%);
+  transition: transform 0.3s ease;
+  display: flex;
+  flex-direction: column;
+  z-index: 100;
+}
+.terminal-overlay.open { transform: translateY(0); }
+.terminal-header {
+  padding: 10px 14px;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-weight: 600;
+}
+.terminal-body {
+  flex: 1;
+  overflow-y: auto;
+  padding: 12px 16px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 13px;
+  line-height: 1.5;
+  white-space: pre-wrap;
+}
+.term-line-add { color: var(--success); }
+.term-line-err { color: var(--danger); }
+.term-line-warn { color: var(--warning); }
+
+.spinner {
+  display: inline-block;
+  width: 14px;
+  height: 14px;
+  border: 2px solid var(--border);
+  border-top-color: var(--accent);
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
+.modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.7);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  z-index: 200;
+}
+.modal-backdrop.open { display: flex; }
+.modal {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 24px;
+  width: 480px;
+  max-height: 85vh;
+  overflow-y: auto;
+}
+.modal h2 { margin-bottom: 14px; }
+.modal-input {
+  width: 100%;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 10px 12px;
+  color: var(--text);
+  font-size: 14px;
+  margin-bottom: 8px;
+  outline: none;
+}
+.modal-input:focus { border-color: var(--accent); }
+.modal-error { color: var(--danger); font-size: 12px; min-height: 18px; }
+.modal-warning { color: var(--warning); font-size: 12px; padding: 8px; background: rgba(210, 153, 34, 0.1); border-radius: 4px; margin-bottom: 10px; }
+.modal-actions { display: flex; gap: 10px; justify-content: flex-end; margin-top: 14px; }
+
+.toast-container {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  z-index: 300;
+}
+.toast {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-left: 4px solid var(--accent);
+  border-radius: 6px;
+  padding: 12px 16px;
+  min-width: 240px;
+  animation: slideIn 0.25s ease;
+  font-size: 13px;
+}
+.toast.success { border-left-color: var(--success); }
+.toast.error { border-left-color: var(--danger); }
+.toast.info { border-left-color: var(--accent); }
+.toast.warning { border-left-color: var(--warning); }
+.toast.level3 { border-left-color: var(--danger); background: rgba(248, 81, 73, 0.1); }
+@keyframes slideIn { from { transform: translateX(120%); } to { transform: translateX(0); } }
+
+/* P2.4 Notifications panel */
+.notif-panel {
+  position: fixed;
+  top: 60px;
+  right: 20px;
+  width: 340px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 16px;
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.4);
+  display: none;
+  z-index: 250;
+  max-height: 70vh;
+  overflow-y: auto;
+}
+.notif-panel.open { display: block; }
+.notif-panel h3 { margin-bottom: 12px; font-size: 14px; }
+.notif-toggle {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 0;
+  border-bottom: 1px solid var(--border);
+  font-size: 13px;
+}
+.notif-toggle:last-child { border-bottom: none; }
+.switch {
+  position: relative;
+  width: 36px;
+  height: 20px;
+  background: var(--border);
+  border-radius: 10px;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.switch.on { background: var(--success); }
+.switch::after {
+  content: '';
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 16px;
+  height: 16px;
+  background: white;
+  border-radius: 50%;
+  transition: transform 0.2s;
+}
+.switch.on::after { transform: translateX(16px); }
+.notif-history { margin-top: 14px; padding-top: 12px; border-top: 1px solid var(--border); }
+.notif-history-item {
+  padding: 6px 0;
+  font-size: 11px;
+  border-bottom: 1px dashed var(--border);
+}
+
+/* P3.8 — level3 banner */
+.level3-banner {
+  display: none;
+  padding: 14px 20px;
+  background: var(--danger);
+  color: white;
+  font-weight: 600;
+  border-bottom: 2px solid #8b0000;
+}
+.level3-banner.open { display: flex; justify-content: space-between; align-items: center; gap: 20px; flex-wrap: wrap; }
+.level3-banner-actions { display: flex; gap: 8px; }
+.level3-banner .btn { background: white; color: var(--danger); border-color: white; }
+
+/* P2.5/P2.6/P2.7 command & PRD & UI tabs */
+.tab-pane { display: flex; flex-direction: column; gap: 14px; max-width: 1100px; margin: 0 auto; }
+.pane-section {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 16px;
+}
+.pane-section h3 { margin-bottom: 10px; font-size: 14px; }
+.form-row { display: flex; gap: 10px; margin-bottom: 10px; flex-wrap: wrap; }
+.form-row > * { flex: 1; min-width: 160px; }
+.form-label { font-size: 12px; color: var(--text-muted); display: block; margin-bottom: 4px; }
+.form-input {
+  width: 100%;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 8px 12px;
+  color: var(--text);
+  font-size: 13px;
+  outline: none;
+}
+.form-input:focus { border-color: var(--accent); }
+.color-picker { width: 48px; height: 32px; padding: 2px; border: 1px solid var(--border); border-radius: 4px; cursor: pointer; }
+.screenshots-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); gap: 8px; margin-top: 10px; }
+.screenshot-thumb {
+  width: 100%;
+  aspect-ratio: 1;
+  background: var(--surface-2);
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 11px;
+  color: var(--text-muted);
+  border: 1px solid var(--border);
+}
+
+/* Ecosystem Status widget */
+.eco-strip {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 7px 20px;
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  color: var(--text-muted);
+  flex-wrap: wrap;
+}
+.eco-strip-primary {
+  display: flex;
+  align-items: center;
+  gap: 0;
+  flex-wrap: wrap;
+}
+.eco-stat {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 0 10px;
+  border-right: 1px solid var(--border);
+  white-space: nowrap;
+}
+.eco-stat:first-child { padding-left: 0; }
+.eco-stat:last-child { border-right: none; }
+.eco-label { color: var(--text-muted); font-size: 10px; text-transform: uppercase; letter-spacing: 0.06em; }
+.eco-value { color: var(--text); font-weight: 500; }
+.eco-value.loading { color: var(--border); }
+.eco-strip-secondary {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.eco-commits {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+.eco-commit-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: 3px;
+  padding: 2px 6px;
+  font-size: 10px;
+  white-space: nowrap;
+}
+.eco-commit-repo { color: var(--text-muted); }
+.eco-commit-hash { color: var(--accent); }
+.eco-dot {
+  width: 6px; height: 6px; border-radius: 50%;
+  background: var(--success);
+  box-shadow: 0 0 6px var(--success);
+  flex-shrink: 0;
+}
+.eco-dot.loading { background: var(--border); box-shadow: none; animation: pulse 1.5s ease-in-out infinite; }
+.eco-refetch {
+  background: transparent;
+  border: none;
+  color: var(--text-muted);
+  cursor: pointer;
+  font-size: 13px;
+  padding: 2px 4px;
+  border-radius: 3px;
+  line-height: 1;
+  transition: color 0.15s, transform 0.15s;
+  flex-shrink: 0;
+}
+.eco-refetch:hover { color: var(--accent); }
+.eco-refetch.spinning { animation: spin 0.6s linear infinite; }
+.eco-ts { color: var(--border); font-size: 10px; flex-shrink: 0; }
+@keyframes pulse { 0%,100% { opacity: 0.4; } 50% { opacity: 1; } }
+
+/* P3.5 Projets tab */
+.projects-tab-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.projects-tab-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 16px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+}
+.projects-tab-path {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 12px;
+  color: var(--text-muted);
+  cursor: pointer;
+}
+.projects-tab-path:hover { color: var(--accent); }
+</style>
+</head>
+<body>
+<div class="app">
+  <header class="header">
+    <div class="brand"><div class="brand-dot"></div>Espace_Opti Dashboard</div>
+    <div class="header-actions">
+      <div class="mcp-status" id="mcpStatus">
+        <span id="mcpObsidian">⚪ Obsidian</span>
+        <span id="mcpPinecone">⚪ Pinecone</span>
+      </div>
+      <button class="btn-icon" onclick="toggleTheme()" id="themeBtn" title="Bascule thème">🌙</button>
+      <button class="btn-icon" onclick="toggleNotifs()" title="Notifications">
+        🔔
+        <span class="notif-badge" id="notifBadge" style="display:none;">0</span>
+      </button>
+      <button class="btn" onclick="openBackupModal()" title="Backup Espace_Opti sur GitHub privé">🛡️ Backup</button>
+      <button class="btn" onclick="openRulesModal()" title="Afficher les règles du manager (délégation + autonomie)">📜 Règles</button>
+      <button class="btn btn-primary" onclick="openNewProjectModal()">+ Nouveau Projet</button>
+    </div>
+  </header>
+  <div class="body">
+    <aside class="sidebar">
+      <div class="sidebar-header">
+        <input type="text" class="search-input" placeholder="Rechercher un projet…" id="searchInput" oninput="filterProjects(this.value)">
+      </div>
+      <div class="project-list" id="projectList">
+        <div class="empty-state">Chargement…</div>
+      </div>
+    </aside>
+    <main class="main">
+      <div class="level3-banner" id="level3Banner"></div>
+      <!-- Ecosystem Status widget -->
+      <div class="eco-strip" id="ecoStrip" aria-label="Statut de l'ecosysteme Espace_Opti">
+        <div class="eco-strip-primary">
+          <div class="eco-stat">
+            <div class="eco-dot loading" id="ecoDot" aria-hidden="true"></div>
+          </div>
+          <div class="eco-stat">
+            <span class="eco-label">Agents</span>
+            <span class="eco-value loading" id="ecoAgents" aria-label="Nombre d'agents">—</span>
+          </div>
+          <div class="eco-stat">
+            <span class="eco-label">Hooks</span>
+            <span class="eco-value loading" id="ecoHooks" aria-label="Nombre de hooks">—</span>
+          </div>
+          <div class="eco-stat">
+            <span class="eco-label">MCP</span>
+            <span class="eco-value loading" id="ecoMCP" aria-label="Nombre de MCP">—</span>
+          </div>
+          <div class="eco-stat">
+            <span class="eco-label">Projets</span>
+            <span class="eco-value loading" id="ecoProjects" aria-label="Nombre de projets">—</span>
+          </div>
+          <div class="eco-stat">
+            <span class="eco-label">Balance</span>
+            <span class="eco-value loading" id="ecoBalance" aria-label="Ratio de balance">—</span>
+          </div>
+          <div class="eco-stat">
+            <span class="eco-label">Backlog</span>
+            <span class="eco-value loading" id="ecoBacklog" aria-label="Elements backlog ouverts">—</span>
+          </div>
+        </div>
+        <div class="eco-strip-secondary">
+          <div class="eco-commits" id="ecoCommits" aria-label="Derniers commits par repo"></div>
+          <span class="eco-ts" id="ecoTs" title="Derniere mise a jour"></span>
+          <button class="eco-refetch" id="ecoRefetchBtn" onclick="fetchEcosystemStatus()" title="Rafraichir le statut ecosysteme" aria-label="Rafraichir le statut ecosysteme">&#x21BB;</button>
+        </div>
+      </div>
+      <div class="tabs">
+        <div class="tab active" data-tab="modules" onclick="switchTab('modules')">📊 Modules</div>
+        <div class="tab" data-tab="prd" onclick="switchTab('prd')">📋 PRD</div>
+        <div class="tab" data-tab="ui" onclick="switchTab('ui')">🎨 UI/UX</div>
+        <div class="tab" data-tab="commands" onclick="switchTab('commands')">📨 Commandes</div>
+        <div class="tab" data-tab="files" onclick="switchTab('files')">📁 Fichiers</div>
+        <div class="tab" data-tab="agents" onclick="switchTab('agents')">🤖 Agents</div>
+        <div class="tab" data-tab="projects" onclick="switchTab('projects')">📁 Projets</div>
+      </div>
+      <div class="global-progress" id="globalProgress" style="display:none;" title="Barre de progression globale">
+        <span id="globalProgressLabel">0/0 modules</span>
+        <div class="global-progress-bar"><div class="global-progress-fill" id="globalProgressFill" style="width:0%"></div></div>
+        <span id="globalProgressEta">Vague — · ETA —</span>
+      </div>
+      <div class="tab-content" id="tabContent">
+        <div class="empty-state">Sélectionnez un projet pour commencer</div>
+      </div>
+      <div class="actions-bar" id="actionsBar" style="display:none;">
+        <button class="btn" onclick="runCommand('full')">▶ Full</button>
+        <button class="btn" onclick="runCommand('lite')">⚡ Lite</button>
+        <button class="btn" onclick="runCommand('sync')">🧠 Sync</button>
+        <button class="btn" onclick="runCommand('graphify')">🕸 Graph</button>
+        <button class="btn" onclick="runCommand('git-status')">📊 Git</button>
+        <button class="btn" onclick="runCommand('git-log')">📝 Log</button>
+        <button class="btn" onclick="openGithubPushModal()">☁️ GitHub</button>
+      </div>
+    </main>
+  </div>
+</div>
+
+<div class="terminal-overlay" id="terminal">
+  <div class="terminal-header">
+    <span id="termTitle">Terminal</span>
+    <button class="btn btn-sm" onclick="closeTerminal()">✕</button>
+  </div>
+  <div class="terminal-body" id="termBody"></div>
+</div>
+
+<div class="modal-backdrop" id="newProjectModal">
+  <div class="modal">
+    <h2>Nouveau Projet</h2>
+    <input type="text" class="modal-input" id="newProjectInput" placeholder="nom-du-projet" oninput="validateProjectName()">
+    <div class="modal-error" id="newProjectError"></div>
+    <div class="modal-actions">
+      <button class="btn" onclick="closeNewProjectModal()">Annuler</button>
+      <button class="btn btn-primary" id="createProjectBtn" onclick="createProject()">Créer le projet</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal-backdrop" id="githubModal">
+  <div class="modal">
+    <h2>☁️ Configuration GitHub</h2>
+    <p style="margin-bottom:10px; font-size:13px; color: var(--text-muted);" id="githubModalDesc">
+      URL du dépôt (ex : <code>https://github.com/user/repo.git</code>)
+    </p>
+    <input type="text" class="modal-input" id="githubModalInput" placeholder="https://github.com/…/….git">
+    <div class="modal-actions">
+      <button class="btn" onclick="closeGithubModal()">Annuler</button>
+      <button class="btn btn-primary" id="githubModalConfirm">Enregistrer</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal-backdrop" id="backupModal">
+  <div class="modal">
+    <h2>🛡️ Backup Espace_Opti</h2>
+    <div class="modal-warning">
+      ⚠️ Utilisez un dépôt <strong>PRIVÉ</strong>. Ce backup contient votre template et vos mémoires d'agents.
+    </div>
+    <p style="margin-bottom:10px; font-size:13px; color: var(--text-muted);">Remote actuel : <span id="backupRemote">—</span></p>
+    <input type="text" class="modal-input" id="backupInput" placeholder="https://github.com/user/espace-opti-private.git">
+    <div class="modal-actions">
+      <button class="btn" onclick="closeBackupModal()">Annuler</button>
+      <button class="btn" onclick="backupSetup()">Configurer remote</button>
+      <button class="btn btn-primary" onclick="backupPush()">Push</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal-backdrop" id="rulesModal" onclick="if(event.target===this)closeRulesModal()">
+  <div class="modal" style="max-width:700px; width:90%;">
+    <h2>📜 Règles du manager</h2>
+    <div style="overflow-y:auto; max-height:70vh; margin-top:12px;">
+      <h3 style="font-size:13px; font-weight:600; color:var(--accent); margin-bottom:6px; text-transform:uppercase; letter-spacing:.05em;">Règles dures</h3>
+      <pre id="rulesHardContent" style="white-space:pre-wrap; font-size:12px; line-height:1.6; color:var(--text-muted); font-family:inherit; margin:0 0 18px; padding:12px; background:var(--bg); border-radius:6px; border:1px solid var(--border);"></pre>
+      <h3 style="font-size:13px; font-weight:600; color:var(--accent); margin-bottom:6px; text-transform:uppercase; letter-spacing:.05em;">Règles de délégation</h3>
+      <pre id="rulesDelegationContent" style="white-space:pre-wrap; font-size:12px; line-height:1.6; color:var(--text-muted); font-family:inherit; margin:0; padding:12px; background:var(--bg); border-radius:6px; border:1px solid var(--border);"></pre>
+    </div>
+    <div class="modal-actions" style="margin-top:14px;">
+      <button class="btn btn-primary" onclick="closeRulesModal()">Fermer</button>
+    </div>
+  </div>
+</div>
+
+<div class="notif-panel" id="notifPanel">
+  <h3>Notifications</h3>
+  <div class="notif-toggle">
+    <span>🛑 NIVEAU 3</span>
+    <div class="switch on" onclick="toggleNotifPref('level3', this)"></div>
+  </div>
+  <div class="notif-toggle">
+    <span>⚡ NIVEAU 2</span>
+    <div class="switch on" onclick="toggleNotifPref('level2', this)"></div>
+  </div>
+  <div class="notif-toggle">
+    <span>✅ Module approuvé</span>
+    <div class="switch on" onclick="toggleNotifPref('approved', this)"></div>
+  </div>
+  <div class="notif-toggle">
+    <span>❌ Module rejeté</span>
+    <div class="switch on" onclick="toggleNotifPref('rejected', this)"></div>
+  </div>
+  <div class="notif-history">
+    <h3 style="font-size:12px; color: var(--text-muted);">Historique</h3>
+    <div id="notifHistory"><div style="font-size:11px; color: var(--text-muted);">Aucune notification</div></div>
+  </div>
+</div>
+
+<div class="toast-container" id="toastContainer"></div>
+
+<script>
+const API = '';
+let state = {
+  projects: [],
+  currentProject: null,
+  currentTab: 'modules',
+  currentFile: null,
+  ws: null,
+  wsReconnectTimer: null,
+  logLines: [],
+  prdEditing: false,
+  modulesSnapshot: null,
+  theme: 'dark',
+  kanbanView: 'status',   // 'status' or 'wave'
+  agentActivity: {},
+  reviews: {},
+  level3: null,
+  notifHistory: [],
+  moduleDoneTimes: [],    // timestamps pour ETA
+  filesLoaded: false,     // lazy: fichiers chargés ?
+  agentLogLoaded: false,  // lazy: log chargé ?
+  // BUG 2 - cache projets + debouncing
+  projectsCache: {},      // { name: { data, timestamp } }
+  projectAbort: null,     // AbortController en cours
+  uiDirectivesCache: {},  // { name: { data, timestamp } } pour BUG 6
+  inFlightProjectFetches: {}, // BUG deconnexion - dedup GET /api/project/{name} simultanes
+};
+
+const CACHE_TTL_MS = 30000;  // 30s TTL pour projectsCache (BUG 2)
+const CACHE_REFRESH_MS = 15000;  // re-fetch en arriere-plan si age > 15s
+
+function perfLog(label, ms) {
+  try { console.log(`[DASHBOARD PERF] ${label}: ${ms.toFixed(1)}ms`); } catch {}
+}
+
+// BUG deconnexion - helper anti-bouton-fige : disable/spinner pendant asyncFn, restaure toujours dans finally
+async function withBusy(btn, originalLabel, asyncFn) {
+  if (btn) {
+    btn.disabled = true;
+    btn.innerHTML = '<span class="spinner"></span> Envoye';
+  }
+  try {
+    return await asyncFn();
+  } finally {
+    if (btn) {
+      btn.disabled = false;
+      btn.innerHTML = originalLabel;
+    }
+  }
+}
+
+// BUG deconnexion - invalide le cache projet pour forcer un refresh apres POST
+function invalidateProjectCache(name) {
+  if (name && state.projectsCache) {
+    delete state.projectsCache[name];
+  }
+}
+
+// BUG deconnexion - dedup des GET /api/project/{name} simultanes (polling + preload)
+async function fetchProjectData(name) {
+  if (state.inFlightProjectFetches[name]) {
+    return state.inFlightProjectFetches[name];
+  }
+  const promise = fetch(API + '/api/project/' + encodeURIComponent(name))
+    .then(async (r) => {
+      if (!r.ok) throw new Error('HTTP ' + r.status);
+      return r.json();
+    })
+    .finally(() => { delete state.inFlightProjectFetches[name]; });
+  state.inFlightProjectFetches[name] = promise;
+  return promise;
+}
+
+function cacheGet(name) {
+  const entry = state.projectsCache[name];
+  if (!entry) return null;
+  const age = Date.now() - entry.timestamp;
+  if (age > CACHE_TTL_MS) return null;
+  return { data: entry.data, age, fresh: age < CACHE_REFRESH_MS };
+}
+
+function cacheSet(name, data) {
+  state.projectsCache[name] = { data, timestamp: Date.now() };
+}
+
+const notifPrefs = {
+  level3: true,
+  level2: true,
+  approved: true,
+  rejected: true,
+};
+
+const AGENTS = [
+  { name: 'manager', model: 'opus', color: 'orange' },
+  { name: 'architecte', model: 'opus', color: 'purple' },
+  { name: 'frontend', model: 'sonnet', color: 'pink' },
+  { name: 'backend', model: 'sonnet', color: 'green' },
+  { name: 'securite', model: 'haiku', color: 'red' },
+  { name: 'qa-review', model: 'opus', color: 'yellow' },
+  { name: 'simplifier', model: 'sonnet', color: 'cyan' },
+  { name: 'playwright', model: 'sonnet', color: 'blue' },
+];
+
+function relativeTime(iso) {
+  const d = new Date(iso);
+  const s = Math.floor((Date.now() - d.getTime()) / 1000);
+  if (s < 60) return `il y a ${s}s`;
+  if (s < 3600) return `il y a ${Math.floor(s/60)}m`;
+  if (s < 86400) return `il y a ${Math.floor(s/3600)}h`;
+  return `il y a ${Math.floor(s/86400)}j`;
+}
+
+function toggleTheme() {
+  state.theme = state.theme === 'dark' ? 'light' : 'dark';
+  document.documentElement.setAttribute('data-theme', state.theme);
+  document.getElementById('themeBtn').textContent = state.theme === 'dark' ? '🌙' : '☀️';
+  try { localStorage.setItem('espace_opti_theme', state.theme); } catch {}
+}
+
+function loadTheme() {
+  try {
+    const t = localStorage.getItem('espace_opti_theme');
+    if (t === 'light') { state.theme = 'light'; document.documentElement.setAttribute('data-theme', 'light'); document.getElementById('themeBtn').textContent = '☀️'; }
+  } catch {}
+}
+
+async function fetchProjects() {
+  const t0 = performance.now();
+  try {
+    const res = await fetch(API + '/api/projects');
+    state.projects = await res.json();
+    renderProjectList();
+    perfLog('GET /api/projects', performance.now() - t0);
+    preloadProjectsData();
+  } catch (e) {
+    showToast('Erreur chargement projets: ' + e.message, 'error');
+  }
+}
+
+// BUG 2 - preload en parallele les donnees des 3 projets en arriere-plan
+// BUG deconnexion - utilise fetchProjectData pour dedup avec le polling
+async function preloadProjectsData() {
+  const t0 = performance.now();
+  const targets = state.projects.slice(0, 3);
+  await Promise.all(targets.map(async (p) => {
+    if (cacheGet(p.name)) return;
+    try {
+      const data = await fetchProjectData(p.name);
+      cacheSet(p.name, data);
+    } catch {}
+  }));
+  perfLog(`preload ${targets.length} projets`, performance.now() - t0);
+}
+
+function renderProjectSkeleton() {
+  // BUG 2 - skeleton loader affiche immediatement au clic projet
+  const tabContent = document.getElementById('tabContent');
+  if (!tabContent) return;
+  tabContent.innerHTML = `
+    <div class="tab-pane" style="max-width:1100px;margin:0 auto;">
+      <div class="pane-section skeleton-loader" style="opacity:0.6;">
+        <div style="display:flex;gap:8px;align-items:center;">
+          <span class="spinner"></span>
+          <span>Chargement du projet...</span>
+        </div>
+        <div style="margin-top:12px;height:12px;background:var(--bg-dark-elevated, #1E1E1C);border-radius:4px;animation:pulse 1.5s infinite;"></div>
+        <div style="margin-top:8px;height:12px;width:70%;background:var(--bg-dark-elevated, #1E1E1C);border-radius:4px;animation:pulse 1.5s infinite;"></div>
+        <div style="margin-top:8px;height:12px;width:50%;background:var(--bg-dark-elevated, #1E1E1C);border-radius:4px;animation:pulse 1.5s infinite;"></div>
+      </div>
+    </div>`;
+}
+
+function renderProjectList(filter = '') {
+  const list = document.getElementById('projectList');
+  const filtered = filter
+    ? state.projects.filter(p => p.name.toLowerCase().includes(filter.toLowerCase()))
+    : state.projects;
+  if (filtered.length === 0) {
+    list.innerHTML = '<div class="empty-state">Aucun projet</div>';
+    return;
+  }
+  list.innerHTML = filtered.map(p => {
+    const pct = p.module_count ? Math.round(((p.done_count + p.approved_count) / p.module_count) * 100) : 0;
+    const isActive = state.currentProject && state.currentProject.name === p.name;
+    const badgeText = { New: '⚪ Nouveau', Starting: '🔵 Démarrage', InProgress: '🟡 En cours', Done: '🟢 Terminé' }[p.status] || p.status;
+    const templateClass = p.is_template ? 'template-card' : '';
+    const templateBadge = p.is_template ? '<span class="template-badge">🏭 Template</span>' : '';
+    return `
+      <div class="project-card ${isActive ? 'active' : ''} ${templateClass}" onclick="selectProject('${p.name}')">
+        <div class="project-name">
+          <div class="status-dot status-${p.status}"></div>
+          ${p.name}
+          ${templateBadge}
+        </div>
+        <div class="progress-bar"><div class="progress-fill" style="width:${pct}%;"></div></div>
+        <div class="project-meta">
+          <span class="status-badge">${badgeText}</span>
+          <span>${relativeTime(p.last_modified)}</span>
+        </div>
+      </div>
+    `;
+  }).join('');
+}
+
+function filterProjects(q) { renderProjectList(q); }
+
+async function selectProject(name) {
+  console.time(`[DASHBOARD PERF] selectProject ${name}`);
+  // BUG 2 - debouncing : annule la requete precedente si un autre projet cliquable
+  if (state.projectAbort) {
+    try { state.projectAbort.abort(); } catch {}
+  }
+  const abort = new AbortController();
+  state.projectAbort = abort;
+
+  const applyProject = (data, source) => {
+    state.currentProject = data;
+    state.currentProject.files = [];
+    state.currentProject.agent_log = '';
+    state.currentProject.graph_report = '';
+    state.filesLoaded = false;
+    state.agentLogLoaded = false;
+    state.agentsListLoaded = false;
+    state.modulesSnapshot = { modules: state.currentProject.modules };
+    state.reviews = state.currentProject.reviews || {};
+    document.getElementById('actionsBar').style.display = 'flex';
+    document.getElementById('globalProgress').style.display = 'flex';
+    updateGlobalProgress();
+    renderProjectList(document.getElementById('searchInput').value);
+    renderTab();
+    try {
+      const badge = document.getElementById('cacheBadge');
+      if (badge) {
+        badge.textContent = source === 'cache' ? 'Cache hit' : 'Fresh';
+        badge.className = 'cache-badge ' + (source === 'cache' ? 'hit' : 'fresh');
+      }
+    } catch {}
+  };
+
+  // BUG 2 - UI optimiste : afficher skeleton + highlight active AVANT la reponse API
+  const placeholderProject = state.projects.find(p => p.name === name);
+  if (placeholderProject) {
+    state.currentProject = { name, path: placeholderProject.path, modules: [] };
+    renderProjectList(document.getElementById('searchInput').value);
+    renderProjectSkeleton();
+  }
+
+  // BUG 2 - cache hit : affichage immediat, refresh en arriere-plan si age > 15s
+  const cached = cacheGet(name);
+  if (cached) {
+    applyProject(cached.data, 'cache');
+    connectWebSocket(name);
+    perfLog(`selectProject ${name} (cache age=${cached.age}ms)`, 0);
+    console.timeEnd(`[DASHBOARD PERF] selectProject ${name}`);
+    if (!cached.fresh) {
+      fetch(API + '/api/project/' + encodeURIComponent(name))
+        .then(r => r.ok ? r.json() : null)
+        .then(d => { if (d) { cacheSet(name, d); if (state.currentProject && state.currentProject.name === name) applyProject(d, 'refresh'); } })
+        .catch(() => {});
+    }
+    return;
+  }
+
+  const t0 = performance.now();
+  try {
+    const res = await fetch(API + '/api/project/' + encodeURIComponent(name), {
+      signal: abort.signal,
+    });
+    if (!res.ok) throw new Error('Projet introuvable');
+    const serverMs = res.headers.get('X-Response-Time');
+    const data = await res.json();
+    cacheSet(name, data);
+    applyProject(data, 'network');
+    connectWebSocket(name);
+    const clientMs = performance.now() - t0;
+    perfLog(`selectProject ${name} client=${clientMs.toFixed(0)}ms server=${serverMs}ms`, clientMs);
+  } catch (e) {
+    if (e.name === 'AbortError') {
+      perfLog(`selectProject ${name} ABORTED`, performance.now() - t0);
+      return;
+    }
+    showToast('Erreur: ' + e.message, 'error');
+  } finally {
+    console.timeEnd(`[DASHBOARD PERF] selectProject ${name}`);
+  }
+}
+
+function updateGlobalProgress() {
+  if (!state.currentProject) return;
+  const modules = (state.modulesSnapshot && state.modulesSnapshot.modules) || [];
+  const approved = modules.filter(m => m.status === 'APPROVED').length;
+  const total = modules.length;
+  const pct = total ? Math.round(approved / total * 100) : 0;
+  document.getElementById('globalProgressLabel').textContent = `${approved}/${total} modules APPROVED`;
+  document.getElementById('globalProgressFill').style.width = pct + '%';
+  // ETA calculation
+  const done = modules.filter(m => m.status === 'DONE' || m.status === 'APPROVED').length;
+  const remaining = total - approved;
+  let etaText = 'ETA —';
+  if (state.moduleDoneTimes.length >= 3 && remaining > 0) {
+    const avgMs = state.moduleDoneTimes.slice(-5).reduce((a, b) => a + b, 0) / state.moduleDoneTimes.slice(-5).length;
+    const totalMs = avgMs * remaining;
+    const hours = Math.round(totalMs / 3600000 * 10) / 10;
+    etaText = `ETA ~${hours}h`;
+  }
+  // Compute wave
+  const waves = computeWaves(modules);
+  const currentWave = waves.findIndex(w => w.some(m => m.status !== 'APPROVED')) + 1 || waves.length;
+  document.getElementById('globalProgressEta').textContent = `Vague ${currentWave} · ${etaText}`;
+}
+
+function computeWaves(modules) {
+  const waves = [];
+  const assigned = new Set();
+  let safety = 20;
+  while (assigned.size < modules.length && safety-- > 0) {
+    const wave = [];
+    for (const m of modules) {
+      if (assigned.has(m.id)) continue;
+      const deps = m.depends_on || [];
+      if (deps.every(d => assigned.has(d))) {
+        wave.push(m);
+      }
+    }
+    if (wave.length === 0) break;
+    for (const m of wave) assigned.add(m.id);
+    waves.push(wave);
+  }
+  return waves;
+}
+
+function switchTab(tab) {
+  state.currentTab = tab;
+  document.querySelectorAll('.tab').forEach(t => t.classList.toggle('active', t.dataset.tab === tab));
+  renderTab();
+}
+
+function renderTab() {
+  const c = document.getElementById('tabContent');
+  if (!state.currentProject && state.currentTab !== 'projects') {
+    c.innerHTML = '<div class="empty-state">Sélectionnez un projet</div>';
+    return;
+  }
+  if (state.currentTab === 'modules') renderKanban(c);
+  else if (state.currentTab === 'prd') renderPRD(c);
+  else if (state.currentTab === 'ui') renderUI(c);
+  else if (state.currentTab === 'commands') renderCommands(c);
+  else if (state.currentTab === 'files') renderFiles(c);
+  else if (state.currentTab === 'agents') renderAgents(c);
+  else if (state.currentTab === 'projects') renderProjectsTab(c);
+}
+
+function renderKanban(container) {
+  const modules = (state.modulesSnapshot && state.modulesSnapshot.modules) || state.currentProject.modules || [];
+
+  // P2.1 : sauvegarder les positions de scroll
+  const scrollPositions = {};
+  document.querySelectorAll('.kanban-body').forEach(col => {
+    scrollPositions[col.dataset.col] = col.scrollTop;
+  });
+
+  const toolbar = `
+    <div class="kanban-view-toggle">
+      <button class="btn btn-sm ${state.kanbanView === 'status' ? 'active' : ''}" onclick="setKanbanView('status')">📊 Par statut</button>
+      <button class="btn btn-sm ${state.kanbanView === 'wave' ? 'active' : ''}" onclick="setKanbanView('wave')">🌊 Par vague</button>
+    </div>
+  `;
+
+  if (state.kanbanView === 'wave') {
+    const waves = computeWaves(modules);
+    container.innerHTML = toolbar + `
+      <div class="kanban view-wave">
+        ${waves.map((wave, i) => `
+          <div class="kanban-col" data-col="wave-${i}">
+            <div class="kanban-header">
+              <span>🌊 Vague ${i + 1}</span>
+              <span class="kanban-count">${wave.length}</span>
+            </div>
+            <div class="kanban-body" data-col="wave-${i}">
+              ${wave.map(m => renderModuleCard(m)).join('')}
+            </div>
+          </div>
+        `).join('')}
+      </div>
+    `;
+  } else {
+    const cols = ['TODO', 'IN_PROGRESS', 'DONE', 'APPROVED'];
+    const byStatus = Object.fromEntries(cols.map(c => [c, []]));
+    for (const m of modules) {
+      const s = m.status || 'TODO';
+      (byStatus[s] || byStatus['TODO']).push(m);
+    }
+    container.innerHTML = toolbar + `
+      <div class="kanban view-status">
+        ${cols.map(col => `
+          <div class="kanban-col" data-col="${col}"
+               ondragover="event.preventDefault(); this.classList.add('drag-over');"
+               ondragleave="this.classList.remove('drag-over');"
+               ondrop="handleDrop(event, '${col}')">
+            <div class="kanban-header">
+              <span>${col}</span>
+              <span class="kanban-count">${byStatus[col].length}</span>
+            </div>
+            <div class="kanban-body" data-col="${col}">
+              ${byStatus[col].map(m => renderModuleCard(m)).join('')}
+            </div>
+          </div>
+        `).join('')}
+      </div>
+    `;
+  }
+
+  // P2.1 : restaurer les positions de scroll
+  document.querySelectorAll('.kanban-body').forEach(col => {
+    if (scrollPositions[col.dataset.col]) {
+      col.scrollTop = scrollPositions[col.dataset.col];
+    }
+  });
+}
+
+function renderModuleCard(m) {
+  // P3.2 — QA score badge
+  const review = state.reviews[m.id];
+  let qaBadge = '';
+  if (review && review.score != null) {
+    if (review.status === 'APPROUVÉ' || review.status === 'APPROVED') {
+      qaBadge = `<span class="qa-score-badge qa-score-approved">✅ ${review.score}/100</span>`;
+    } else {
+      const blockers = (review.blockers || []).join('\n') || 'Module rejeté';
+      qaBadge = `<span class="qa-score-badge qa-score-rejected" title="${escapeHtml(blockers)}">❌ ${review.score}/100</span>`;
+    }
+  }
+  const statusBadge = state.kanbanView === 'wave'
+    ? `<span class="status-badge-card badge-${m.status || 'TODO'}">${m.status || 'TODO'}</span>`
+    : '';
+  return `
+    <div class="module-card" draggable="true"
+         ondragstart="handleDragStart(event, '${m.id}')"
+         ondragend="this.classList.remove('dragging');"
+         onclick="this.classList.toggle('expanded')">
+      <div class="module-id">${m.id}${qaBadge}${statusBadge}</div>
+      <span class="owner-badge owner-${m.owner}">${m.owner}</span>
+      ${m.depends_on && m.depends_on.length ? `<div class="module-deps">⇠ ${m.depends_on.join(', ')}</div>` : ''}
+      <div class="module-details">
+        <pre>${escapeHtml(JSON.stringify({ interface: m.interface, files_owned: m.files_owned }, null, 2))}</pre>
+      </div>
+    </div>
+  `;
+}
+
+function setKanbanView(view) {
+  state.kanbanView = view;
+  renderTab();
+}
+
+function handleDragStart(e, moduleId) {
+  e.dataTransfer.setData('moduleId', moduleId);
+  e.target.classList.add('dragging');
+}
+
+async function handleDrop(e, targetCol) {
+  e.preventDefault();
+  e.currentTarget.classList.remove('drag-over');
+  const moduleId = e.dataTransfer.getData('moduleId');
+  if (!moduleId) return;
+  const modules = state.currentProject.modules;
+  const mod = modules.find(m => m.id === moduleId);
+  if (!mod || mod.status === targetCol) return;
+  mod.status = targetCol;
+  const raw = state.currentProject.modules_raw;
+  let data;
+  try { data = JSON.parse(raw); } catch { data = { modules: modules }; }
+  data.modules = modules;
+  const newRaw = JSON.stringify(data, null, 2);
+  try {
+    const res = await fetch(API + '/api/project/' + encodeURIComponent(state.currentProject.name) + '/file', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ path: 'modules.json', content: newRaw }),
+    });
+    if (!res.ok) throw new Error('Save failed');
+    state.currentProject.modules_raw = newRaw;
+    state.modulesSnapshot = { modules };
+    showToast(`${moduleId} → ${targetCol}`, 'success');
+    if (targetCol === 'APPROVED') {
+      pushNotif('approved', `✅ ${moduleId} approuvé`);
+    }
+    updateGlobalProgress();
+    renderTab();
+  } catch (err) {
+    showToast('Erreur sauvegarde: ' + err.message, 'error');
+  }
+}
+
+function renderPRD(container) {
+  const content = state.currentProject.prd || '';
+  const hasPRD = !!content.trim();
+  const words = content.split(/\s+/).filter(Boolean).length;
+  const sections = (content.match(/^#{1,6}\s/gm) || []).length;
+  const statusIndicator = hasPRD
+    ? '<span class="prd-status-indicator prd-status-ok">✅ PRD existant</span>'
+    : '<span class="prd-status-indicator prd-status-missing">⚠️ Aucun PRD</span>';
+
+  if (state.prdEditing) {
+    container.innerHTML = `
+      <div class="tab-pane">
+        <div class="prd-view">
+          <div class="prd-toolbar">
+            ${statusIndicator}
+            <button class="btn btn-primary" onclick="savePRD()">💾 Sauvegarder</button>
+            <button class="btn" onclick="state.prdEditing=false; renderTab();">👁 Prévisualiser</button>
+          </div>
+          <textarea class="editor" id="prdEditor" style="min-height:500px;">${escapeHtml(content)}</textarea>
+        </div>
+      </div>
+    `;
+    return;
+  }
+
+  container.innerHTML = `
+    <div class="tab-pane">
+      <div class="prd-view">
+        <div class="prd-toolbar">
+          ${statusIndicator}
+          <button class="btn" onclick="state.prdEditing=true; renderTab();">✏ Éditer</button>
+          <button class="btn" onclick="sendPRDToManager()">📨 Envoyer à @manager</button>
+          <button class="btn" onclick="syncPRDObsidian()">🧠 Sync Obsidian</button>
+          <button class="btn" onclick="runCommand('sync')">📌 Sync Pinecone</button>
+          <span class="prd-meta">${words} mots · ${sections} sections</span>
+        </div>
+        <div id="prdBody">${content ? marked.parse(content) : '<div class="empty-state">Aucun PRD — utilise "Éditer" pour créer le PRD</div>'}</div>
+        <div class="prd-section-divider">
+          <h3>💡 Proposer une évolution</h3>
+          <textarea class="editor" id="prdEvolutionEditor" placeholder="Décris l'évolution proposée…" style="min-height:120px;"></textarea>
+          <div style="margin-top:10px;">
+            <button class="btn btn-primary" onclick="submitPRDEvolution()">📨 Envoyer à @manager (prd-evolution)</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+async function savePRD() {
+  const content = document.getElementById('prdEditor').value;
+  const path = state.currentProject.is_template ? 'PRD_WORKSPACE.md' : 'PRD.md';
+  try {
+    const res = await fetch(API + '/api/project/' + encodeURIComponent(state.currentProject.name) + '/file', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ path, content }),
+    });
+    if (!res.ok) throw new Error('Save failed');
+    state.currentProject.prd = content;
+    state.prdEditing = false;
+    showToast('PRD sauvegardé', 'success');
+    renderTab();
+  } catch (e) {
+    showToast('Erreur: ' + e.message, 'error');
+  }
+}
+
+async function sendPRDToManager() {
+  if (!state.currentProject) return;
+  const btn = document.querySelector('button.btn[onclick="sendPRDToManager()"]');
+  const originalLabel = '📨 Envoyer à @manager';
+  try {
+    await withBusy(btn, originalLabel, async () => {
+      const projectName = state.currentProject && state.currentProject.name;
+      const res = await fetch(API + '/api/project/' + encodeURIComponent(projectName) + '/inbox', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ content: '@manager voici le PRD, analyse et lance l\'architecture' }),
+      });
+      if (!res.ok) throw new Error('Save failed');
+      showToast('PRD envoyé à @manager via inbox/current.md', 'success');
+      invalidateProjectCache(projectName);
+    });
+  } catch (e) {
+    showToast('Erreur: ' + e.message, 'error');
+  }
+}
+
+async function syncPRDObsidian() {
+  if (!state.currentProject) return;
+  try {
+    const res = await fetch(API + '/api/project/' + encodeURIComponent(state.currentProject.name) + '/obsidian-note', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        folder: 'specs',
+        title: 'PRD-' + state.currentProject.name,
+        content: state.currentProject.prd || '',
+      }),
+    });
+    const data = await res.json();
+    if (!res.ok || !data.success) throw new Error(data.detail || 'Échec');
+    showToast('PRD synchronisé avec Obsidian', 'success');
+  } catch (e) {
+    showToast('Erreur Obsidian: ' + e.message, 'error');
+  }
+}
+
+async function submitPRDEvolution() {
+  const idea = document.getElementById('prdEvolutionEditor').value;
+  if (!idea.trim()) { showToast('Saisis une idée', 'warning'); return; }
+  const btn = document.querySelector('button.btn-primary[onclick="submitPRDEvolution()"]');
+  const originalLabel = '📨 Envoyer à @manager (prd-evolution)';
+  try {
+    await withBusy(btn, originalLabel, async () => {
+      const projectName = state.currentProject && state.currentProject.name;
+      const res = await fetch(API + '/api/project/' + encodeURIComponent(projectName) + '/prd-evolution', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ idea }),
+      });
+      if (!res.ok) throw new Error('Save failed');
+      showToast('Évolution envoyée à @manager', 'success');
+      document.getElementById('prdEvolutionEditor').value = '';
+      invalidateProjectCache(projectName);
+    });
+  } catch (e) {
+    showToast('Erreur: ' + e.message, 'error');
+  }
+}
+
+function renderUI(container) {
+  const uiContent = state.currentProject.ui_rules || '';
+  container.innerHTML = `
+    <div class="tab-pane">
+      <div class="pane-section">
+        <h3>A — Règles textuelles</h3>
+        <textarea class="editor" id="uiRulesText" style="min-height:120px;" placeholder="Pas de coins arrondis, tons sombres…">${escapeHtml(extractUISection(uiContent, 'Règles textuelles'))}</textarea>
+      </div>
+      <div class="pane-section">
+        <h3>B — URL de référence</h3>
+        <div class="form-row">
+          <input type="url" class="form-input" id="uiRefUrl" placeholder="https://…">
+          <input type="text" class="form-input" id="uiRefDesc" placeholder="Description">
+        </div>
+      </div>
+      <div class="pane-section">
+        <h3>C — Code CSS/HTML de référence</h3>
+        <textarea class="editor mono" id="uiCodeSample" style="min-height:120px;"></textarea>
+      </div>
+      <div class="pane-section">
+        <h3>D — Palette & Typographie</h3>
+        <div class="form-row">
+          <div><label class="form-label">Primary</label><input type="color" class="color-picker" id="uiColorPrimary" value="#58a6ff"></div>
+          <div><label class="form-label">Secondary</label><input type="color" class="color-picker" id="uiColorSecondary" value="#8b949e"></div>
+          <div><label class="form-label">Accent</label><input type="color" class="color-picker" id="uiColorAccent" value="#3fb950"></div>
+          <div><label class="form-label">Background</label><input type="color" class="color-picker" id="uiColorBg" value="#0d1117"></div>
+          <div><label class="form-label">Text</label><input type="color" class="color-picker" id="uiColorText" value="#c9d1d9"></div>
+        </div>
+        <div class="form-row">
+          <div><label class="form-label">Police principale</label><input type="text" class="form-input" id="uiFontMain" placeholder="Inter"></div>
+          <div><label class="form-label">Police code</label><input type="text" class="form-input" id="uiFontCode" placeholder="JetBrains Mono"></div>
+        </div>
+      </div>
+      <div class="pane-section">
+        <h3>E — Screenshots de référence</h3>
+        <input type="file" accept="image/*" id="uiScreenshotInput" onchange="uploadUIScreenshot(event)">
+        <div class="screenshots-grid" id="uiScreenshotsGrid"></div>
+      </div>
+      <div class="pane-section">
+        <h3>Actions</h3>
+        <div style="display:flex; gap:10px; flex-wrap:wrap;">
+          <button class="btn btn-primary" onclick="saveUIRules()">💾 Sauvegarder UI_PROJECT.md</button>
+          <button class="btn" onclick="sendUIToFrontend()">📨 Envoyer à @frontend</button>
+          <button class="btn" onclick="syncUIObsidian()">🧠 Sync Obsidian</button>
+          <button class="btn" onclick="runCommand('sync')">📌 Sync Pinecone</button>
+        </div>
+      </div>
+    </div>
+  `;
+  loadUIRules();
+}
+
+function extractUISection(content, title) {
+  if (!content) return '';
+  const re = new RegExp(`## ${title}\\s+([\\s\\S]*?)(?=\\n## |$)`, 'i');
+  const m = content.match(re);
+  return m ? m[1].trim() : '';
+}
+
+async function loadUIRules() {
+  if (!state.currentProject) return;
+  try {
+    const res = await fetch(API + '/api/project/' + encodeURIComponent(state.currentProject.name) + '/ui-rules');
+    const data = await res.json();
+    const grid = document.getElementById('uiScreenshotsGrid');
+    if (grid && data.screenshots) {
+      grid.innerHTML = data.screenshots.length
+        ? data.screenshots.map(s => `<div class="screenshot-thumb">${escapeHtml(s)}</div>`).join('')
+        : '<div style="font-size:11px; color: var(--text-muted);">Aucun screenshot</div>';
+    }
+  } catch {}
+  renderUIDirectives();
+}
+
+// BUG 6 - auto-remplissage des champs A/B/C depuis UI_DIRECTIVES.md
+async function renderUIDirectives() {
+  if (!state.currentProject) return;
+  const name = state.currentProject.name;
+  const t0 = performance.now();
+  try {
+    const res = await fetch(API + '/api/project/' + encodeURIComponent(name) + '/ui-directives');
+    if (!res.ok) return;
+    const data = await res.json();
+    state.uiDirectivesCache[name] = { data, timestamp: Date.now() };
+
+    const rulesEl = document.getElementById('uiRulesText');
+    if (rulesEl && !rulesEl.value.trim() && data.a) {
+      rulesEl.value = data.a;
+      rulesEl.placeholder = 'Auto-rempli depuis UI_DIRECTIVES.md - modifiable';
+    }
+
+    const urlEl = document.getElementById('uiRefUrl');
+    const descEl = document.getElementById('uiRefDesc');
+    if (urlEl && descEl && Array.isArray(data.b) && data.b.length > 0 && !urlEl.value) {
+      urlEl.value = data.b[0].url || '';
+      descEl.value = data.b[0].label || '';
+      if (data.b.length > 1) {
+        descEl.title = 'Autres refs: ' + data.b.slice(1).map(r => r.url).join(', ');
+      }
+    }
+
+    const cssEl = document.getElementById('uiCodeSample');
+    if (cssEl && data.c && !cssEl.value.trim()) {
+      cssEl.value = data.c;
+    }
+
+    if (!data.source) {
+      showToast('UI_DIRECTIVES.md absent - creer depuis template', 'warning');
+    }
+    perfLog(`GET /ui-directives ${name}`, performance.now() - t0);
+  } catch (e) {
+    console.warn('[ui-directives]', e);
+  }
+}
+
+async function uploadUIScreenshot(event) {
+  const file = event.target.files[0];
+  if (!file) return;
+  const form = new FormData();
+  form.append('file', file);
+  try {
+    const res = await fetch(API + '/api/project/' + encodeURIComponent(state.currentProject.name) + '/ui-screenshot', {
+      method: 'POST',
+      body: form,
+    });
+    if (!res.ok) throw new Error('Upload failed');
+    showToast('Screenshot uploadé', 'success');
+    loadUIRules();
+  } catch (e) {
+    showToast('Erreur: ' + e.message, 'error');
+  }
+}
+
+async function saveUIRules() {
+  const payload = {
+    rules: document.getElementById('uiRulesText').value,
+    reference_url: document.getElementById('uiRefUrl').value,
+    reference_description: document.getElementById('uiRefDesc').value,
+    code_sample: document.getElementById('uiCodeSample').value,
+    palette: {
+      primary: document.getElementById('uiColorPrimary').value,
+      secondary: document.getElementById('uiColorSecondary').value,
+      accent: document.getElementById('uiColorAccent').value,
+      background: document.getElementById('uiColorBg').value,
+      text: document.getElementById('uiColorText').value,
+    },
+    typography: {
+      main: document.getElementById('uiFontMain').value,
+      code: document.getElementById('uiFontCode').value,
+    },
+  };
+  try {
+    const res = await fetch(API + '/api/project/' + encodeURIComponent(state.currentProject.name) + '/ui-rules', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload),
+    });
+    if (!res.ok) throw new Error('Save failed');
+    showToast('UI_PROJECT.md sauvegardé', 'success');
+  } catch (e) {
+    showToast('Erreur: ' + e.message, 'error');
+  }
+}
+
+async function sendUIToFrontend() {
+  const btn = document.querySelector('button.btn[onclick="sendUIToFrontend()"]');
+  const originalLabel = '📨 Envoyer à @frontend';
+  try {
+    await withBusy(btn, originalLabel, async () => {
+      const projectName = state.currentProject && state.currentProject.name;
+      const res = await fetch(API + '/api/project/' + encodeURIComponent(projectName) + '/inbox', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ content: '@frontend applique les règles UI/UX définies dans UI_PROJECT.md' }),
+      });
+      if (!res.ok) throw new Error('Save failed');
+      showToast('Règles envoyées à @frontend', 'success');
+      invalidateProjectCache(projectName);
+    });
+  } catch (e) {
+    showToast('Erreur: ' + e.message, 'error');
+  }
+}
+
+async function syncUIObsidian() {
+  const content = document.getElementById('uiRulesText').value || '';
+  try {
+    const res = await fetch(API + '/api/project/' + encodeURIComponent(state.currentProject.name) + '/obsidian-note', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        folder: 'specs',
+        title: 'ui-ux-' + state.currentProject.name,
+        content: '# UI/UX — ' + state.currentProject.name + '\n\n' + content,
+      }),
+    });
+    const data = await res.json();
+    if (!res.ok || !data.success) throw new Error('Échec');
+    showToast('UI synchronisé avec Obsidian', 'success');
+  } catch (e) {
+    showToast('Erreur: ' + e.message, 'error');
+  }
+}
+
+function renderCommands(container) {
+  container.innerHTML = `
+    <div class="tab-pane">
+      <div class="pane-section">
+        <h3>📨 Commandes — Inbox universel</h3>
+        <textarea class="editor" id="commandTextarea" style="min-height:300px;" placeholder="Écris ta commande ou ton message…"></textarea>
+        <div class="form-row" style="margin-top:12px;">
+          <div>
+            <label class="form-label">Destination</label>
+            <select class="form-input" id="commandDest" onchange="updateCommandDest()">
+              <option value="inbox">📨 Claude Code (inbox/current.md)</option>
+              <option value="file">📝 Fichier</option>
+              <option value="obsidian">🧠 Obsidian</option>
+            </select>
+          </div>
+          <div id="commandFileRow" style="display:none;">
+            <label class="form-label">Chemin fichier</label>
+            <input type="text" class="form-input" id="commandFilePath" placeholder="notes.md">
+          </div>
+          <div id="commandObsidianRow" style="display:none;">
+            <label class="form-label">Dossier Obsidian</label>
+            <select class="form-input" id="commandObsidianFolder">
+              <option value="decisions">decisions</option>
+              <option value="specs">specs</option>
+              <option value="journal">journal</option>
+            </select>
+          </div>
+        </div>
+        <div id="commandObsidianTitleRow" style="display:none; margin-top:8px;">
+          <label class="form-label">Titre de la note</label>
+          <input type="text" class="form-input" id="commandObsidianTitle" placeholder="ma-note">
+        </div>
+        <div style="margin-top:12px;">
+          <button class="btn btn-primary" onclick="sendCommand()">Envoyer</button>
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+function updateCommandDest() {
+  const dest = document.getElementById('commandDest').value;
+  document.getElementById('commandFileRow').style.display = dest === 'file' ? 'block' : 'none';
+  document.getElementById('commandObsidianRow').style.display = dest === 'obsidian' ? 'block' : 'none';
+  document.getElementById('commandObsidianTitleRow').style.display = dest === 'obsidian' ? 'block' : 'none';
+}
+
+async function sendCommand() {
+  const content = document.getElementById('commandTextarea').value;
+  if (!content.trim()) { showToast('Commande vide', 'warning'); return; }
+  const dest = document.getElementById('commandDest').value;
+  // Early-return pour dest=file si chemin manquant : AVANT withBusy pour ne pas disable le bouton
+  let filePath = null;
+  if (dest === 'file') {
+    filePath = document.getElementById('commandFilePath').value;
+    if (!filePath) { showToast('Chemin requis', 'warning'); return; }
+  }
+  const btn = document.querySelector('button.btn-primary[onclick="sendCommand()"]');
+  const originalLabel = 'Envoyer';
+  console.time('[DASHBOARD PERF] sendCommand');
+  const t0 = performance.now();
+  // BUG 3 - UI optimistic : toast "Envoye" immediat AVANT la reponse serveur
+  if (dest === 'inbox') showToast('Envoye vers inbox/current.md (optimistic)', 'success');
+  try {
+    await withBusy(btn, originalLabel, async () => {
+      const projectName = state.currentProject && state.currentProject.name;
+      if (dest === 'inbox') {
+        const res = await fetch(API + '/api/project/' + encodeURIComponent(projectName) + '/inbox', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ content }),
+        });
+        if (!res.ok) throw new Error('Échec');
+        const serverMs = res.headers.get('X-Response-Time');
+        perfLog(`POST /inbox client=${(performance.now()-t0).toFixed(0)}ms server=${serverMs}ms`, performance.now() - t0);
+        invalidateProjectCache(projectName);
+      } else if (dest === 'file') {
+        const res = await fetch(API + '/api/project/' + encodeURIComponent(projectName) + '/file', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ path: filePath, content }),
+        });
+        if (!res.ok) throw new Error('Échec');
+        showToast('Fichier écrit : ' + filePath, 'success');
+        invalidateProjectCache(projectName);
+      } else if (dest === 'obsidian') {
+        const folder = document.getElementById('commandObsidianFolder').value;
+        const title = document.getElementById('commandObsidianTitle').value || 'note';
+        const res = await fetch(API + '/api/project/' + encodeURIComponent(projectName) + '/obsidian-note', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ folder, title, content }),
+        });
+        const data = await res.json();
+        if (!res.ok || !data.success) throw new Error(data.detail || 'Échec');
+        showToast('Note Obsidian créée', 'success');
+        invalidateProjectCache(projectName);
+      }
+      document.getElementById('commandTextarea').value = '';
+    });
+  } catch (e) {
+    showToast('Erreur: ' + e.message, 'error');
+  }
+}
+
+async function renderFiles(container) {
+  if (!state.filesLoaded) {
+    container.innerHTML = '<div class="empty-state"><span class="spinner"></span> Chargement des fichiers…</div>';
+    try {
+      const res = await fetch(API + '/api/project/' + encodeURIComponent(state.currentProject.name) + '/files-list');
+      const data = await res.json();
+      state.currentProject.files = data.files || [];
+      state.filesLoaded = true;
+    } catch (e) {
+      container.innerHTML = '<div class="empty-state">Erreur chargement fichiers: ' + escapeHtml(e.message) + '</div>';
+      return;
+    }
+  }
+  const files = state.currentProject.files || [];
+  const tree = files.map(f => {
+    let cls = '';
+    if (f.is_dir) cls = 'is-dir';
+    else if (f.path === 'CLAUDE.md') cls = 'important-claude';
+    else if (f.path === 'modules.json') cls = 'important-modules';
+    else if (f.path === 'PRD.md') cls = 'important-prd';
+    else if (f.path === 'ARCHITECTURE.md') cls = 'important-architecture';
+    const active = state.currentFile === f.path ? 'active' : '';
+    const sizeStr = f.is_dir ? '' : formatSize(f.size);
+    return `<div class="file-item ${cls} ${active}" onclick="${f.is_dir ? '' : `loadFile('${f.path.replace(/'/g, "\\'")}')`}">
+      <span>${f.is_dir ? '📁' : '📄'} ${f.path}</span>
+      <span class="file-size">${sizeStr}</span>
+    </div>`;
+  }).join('');
+  container.innerHTML = `
+    <div class="files-layout">
+      <div class="file-tree">${tree || '<div class="empty-state">Aucun fichier</div>'}</div>
+      <div class="file-viewer">
+        <div class="file-viewer-header">
+          <span id="fileViewerTitle">${state.currentFile || 'Sélectionnez un fichier'}</span>
+          ${state.currentFile ? '<button class="btn btn-sm" onclick="saveCurrentFile()">💾 Sauvegarder</button>' : ''}
+        </div>
+        <div class="file-viewer-body">
+          ${state.currentFile
+            ? `<textarea class="editor" id="fileEditor">${escapeHtml(state.currentFileContent || '')}</textarea>`
+            : '<div class="empty-state">Cliquez sur un fichier</div>'}
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+function formatSize(b) {
+  if (b < 1024) return b + 'B';
+  if (b < 1024 * 1024) return (b / 1024).toFixed(1) + 'KB';
+  return (b / (1024 * 1024)).toFixed(1) + 'MB';
+}
+
+async function loadFile(path) {
+  try {
+    const res = await fetch(API + '/api/project/' + encodeURIComponent(state.currentProject.name) + '/file?path=' + encodeURIComponent(path));
+    if (!res.ok) throw new Error('Load failed');
+    const data = await res.json();
+    state.currentFile = path;
+    state.currentFileContent = data.content;
+    renderTab();
+  } catch (e) {
+    showToast('Erreur: ' + e.message, 'error');
+  }
+}
+
+async function saveCurrentFile() {
+  const content = document.getElementById('fileEditor').value;
+  try {
+    const res = await fetch(API + '/api/project/' + encodeURIComponent(state.currentProject.name) + '/file', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ path: state.currentFile, content }),
+    });
+    if (!res.ok) throw new Error('Save failed');
+    state.currentFileContent = content;
+    showToast('Fichier sauvegardé', 'success');
+  } catch (e) {
+    showToast('Erreur: ' + e.message, 'error');
+  }
+}
+
+async function renderAgents(container) {
+  if (!state.agentLogLoaded) {
+    container.innerHTML = '<div class="empty-state"><span class="spinner"></span> Chargement du loader agents…</div>';
+    try {
+      const res = await fetch(API + '/api/project/' + encodeURIComponent(state.currentProject.name) + '/log');
+      const data = await res.json();
+      state.currentProject.agent_log = data.agent_log || '';
+      state.currentProject.graph_report = data.graph_report || '';
+      state.agentLogLoaded = true;
+    } catch {}
+  }
+  // BUG 4 fix : recuperer la liste dynamique depuis .claude/agents/
+  if (!state.agentsListLoaded) {
+    try {
+      const r = await fetch(API + '/api/project/' + encodeURIComponent(state.currentProject.name) + '/agents');
+      const d = await r.json();
+      state.agentsList = (d.agents && d.agents.length) ? d.agents : AGENTS;
+      state.agentsListLoaded = true;
+    } catch {
+      state.agentsList = AGENTS;
+    }
+  }
+  const modules = (state.modulesSnapshot && state.modulesSnapshot.modules) || [];
+  const counts = { TODO: 0, IN_PROGRESS: 0, DONE: 0, APPROVED: 0 };
+  modules.forEach(m => { counts[m.status || 'TODO'] = (counts[m.status || 'TODO'] || 0) + 1; });
+
+  const agentsToRender = state.agentsList || AGENTS;
+  container.innerHTML = `
+    <div class="agents-layout">
+      <div class="agent-list">
+        <h3 style="margin-bottom:12px;">Agents (${agentsToRender.length})</h3>
+        ${agentsToRender.map(a => {
+          const act = state.agentActivity[a.name] || {};
+          const active = act && act.status === 'active';
+          const since = act && act.since_minutes != null ? ` depuis ${act.since_minutes}m` : '';
+          const model = a.model || '';
+          const memory = a.memory ? ` · mem:${a.memory}` : '';
+          const isolation = a.isolation ? ` · ${a.isolation}` : '';
+          return `
+            <div class="agent-card agent-${a.name} ${active ? 'active' : 'idle'}" title="${escapeHtml(a.description || '')}">
+              <div class="agent-name">
+                <span>${escapeHtml(a.name)}</span>
+                <span style="font-size:10px; color: var(--text-muted);">${escapeHtml(model)}</span>
+              </div>
+              <div class="agent-meta">${active ? '🟢 actif' + since : '⚪ inactif'}${memory}${isolation}</div>
+            </div>
+          `;
+        }).join('')}
+        <h3 style="margin:16px 0 8px;">Modules</h3>
+        <div style="font-size:12px; color: var(--text-muted);">
+          TODO: ${counts.TODO} · IN_PROGRESS: ${counts.IN_PROGRESS} · DONE: ${counts.DONE} · APPROVED: ${counts.APPROVED}
+        </div>
+      </div>
+      <div class="log-panel">
+        <div class="log-header">
+          <span>Live log</span>
+          <span class="ws-indicator" id="wsIndicator">🟡 Connexion…</span>
+        </div>
+        <div class="log-body" id="logBody"></div>
+      </div>
+    </div>
+  `;
+  renderLogBody();
+}
+
+function renderProjectsTab(container) {
+  const list = state.projects.slice().sort((a, b) => new Date(b.last_modified) - new Date(a.last_modified));
+  container.innerHTML = `
+    <div class="tab-pane">
+      <div class="pane-section">
+        <h3>📁 Projets</h3>
+        <div class="projects-tab-list">
+          ${list.map(p => `
+            <div class="projects-tab-item">
+              <div style="flex:1;">
+                <div style="font-weight:600;">
+                  ${p.is_template ? '🏭' : '📁'} ${p.name}
+                  ${p.is_template ? '<span class="template-badge">Template</span>' : ''}
+                  <span class="status-badge" style="margin-left:6px;">${p.status}</span>
+                </div>
+                <div class="projects-tab-path" onclick="copyPath('${p.path.replace(/\\/g, '\\\\')}')" title="Cliquez pour copier">${escapeHtml(p.path)}</div>
+              </div>
+              <button class="btn btn-sm" onclick="openProjectExplorer('${p.name}')">📂 Ouvrir</button>
+            </div>
+          `).join('')}
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+async function copyPath(path) {
+  try {
+    await navigator.clipboard.writeText(path);
+    showToast('Chemin copié : ' + path, 'success');
+  } catch {
+    showToast('Impossible de copier', 'error');
+  }
+}
+
+async function openProjectExplorer(name) {
+  try {
+    const res = await fetch(API + '/api/project/' + encodeURIComponent(name) + '/open', { method: 'POST' });
+    if (!res.ok) throw new Error('Échec');
+    showToast('Explorateur ouvert', 'success');
+  } catch (e) {
+    showToast('Erreur: ' + e.message, 'error');
+  }
+}
+
+function renderLogBody() {
+  const body = document.getElementById('logBody');
+  if (!body) return;
+  body.innerHTML = state.logLines.slice(-200).map(l => {
+    const agent = AGENTS.find(a => l.line.includes(a.name));
+    const cls = agent ? `log-agent-${agent.name}` : '';
+    const time = new Date(l.timestamp).toLocaleTimeString();
+    return `<div class="log-line"><span class="log-time">[${time}]</span><span class="${cls}">${escapeHtml(l.line)}</span></div>`;
+  }).join('');
+  body.scrollTop = body.scrollHeight;
+}
+
+function connectWebSocket(name) {
+  if (state.ws) { try { state.ws.close(); } catch {} }
+  if (state.wsReconnectTimer) clearTimeout(state.wsReconnectTimer);
+  const proto = location.protocol === 'https:' ? 'wss:' : 'ws:';
+  const url = `${proto}//${location.host}/ws/${encodeURIComponent(name)}`;
+  try {
+    const ws = new WebSocket(url);
+    state.ws = ws;
+    ws.onopen = () => setWsIndicator('🟢 Connecté');
+    ws.onclose = () => {
+      setWsIndicator('🔴 Déconnecté');
+      state.wsReconnectTimer = setTimeout(() => {
+        if (state.currentProject && state.currentProject.name === name) {
+          setWsIndicator('🟡 Reconnexion…');
+          connectWebSocket(name);
+        }
+      }, 3000);
+    };
+    ws.onerror = () => setWsIndicator('🔴 Erreur');
+    ws.onmessage = (e) => {
+      try { handleWsMessage(JSON.parse(e.data)); } catch {}
+    };
+  } catch (e) {
+    setWsIndicator('🔴 Erreur');
+  }
+}
+
+function setWsIndicator(text) {
+  const el = document.getElementById('wsIndicator');
+  if (el) el.textContent = text;
+}
+
+function handleWsMessage(data) {
+  if (data.type === 'log') {
+    state.logLines.push(data);
+    if (state.logLines.length > 400) state.logLines.shift();
+    // Détecter les types de notification depuis le log
+    detectNotifFromLog(data.line);
+    if (state.currentTab === 'agents') renderLogBody();
+  } else if (data.type === 'modules' && data.data) {
+    state.modulesSnapshot = data.data;
+    state.currentProject.modules_raw = JSON.stringify(data.data, null, 2);
+    updateGlobalProgress();
+    // P2.1 : ne re-render que si l'onglet modules est actif
+    if (state.currentTab === 'modules') renderTab();
+  } else if (data.type === 'heartbeat') {
+    // noop
+  } else if (data.type === 'level3_validation') {
+    showLevel3Banner(data.situation || 'Validation requise');
+    pushNotif('level3', '🛑 ' + (data.situation || 'Validation requise'));
+  } else if (data.type === 'prd-evolution-proposal') {
+    showToast('📋 Proposition PRD reçue', 'info');
+  }
+}
+
+function detectNotifFromLog(line) {
+  if (/NIVEAU 3|level3|🛑/i.test(line)) pushNotif('level3', line);
+  else if (/NIVEAU 2|level2|⚡/i.test(line)) pushNotif('level2', line);
+  else if (/APPROVED|approuvé|✅/i.test(line)) pushNotif('approved', line);
+  else if (/REJECTED|rejeté|❌/i.test(line)) pushNotif('rejected', line);
+}
+
+function showLevel3Banner(situation) {
+  state.level3 = situation;
+  const banner = document.getElementById('level3Banner');
+  banner.classList.add('open');
+  banner.innerHTML = `
+    <span>🛑 [MANAGER] Décision requise : ${escapeHtml(situation)}</span>
+    <div class="level3-banner-actions">
+      <button class="btn" onclick="validateLevel3('valide')">✅ Valider</button>
+      <button class="btn" onclick="validateLevel3('rejette')">❌ Rejeter</button>
+      <button class="btn" onclick="validateLevel3('modifie')">💬 Modifier</button>
+    </div>
+  `;
+}
+
+async function validateLevel3(decision) {
+  // 3 boutons, labels distincts - on cible le bouton exact via son onclick
+  const labelMap = { valide: '✅ Valider', rejette: '❌ Rejeter', modifie: '💬 Modifier' };
+  const btn = document.querySelector(`button.btn[onclick="validateLevel3('${decision}')"]`);
+  const originalLabel = labelMap[decision] || decision;
+  try {
+    await withBusy(btn, originalLabel, async () => {
+      const projectName = state.currentProject && state.currentProject.name;
+      const res = await fetch(API + '/api/project/' + encodeURIComponent(projectName) + '/inbox', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ content: `@manager Décision utilisateur : ${decision}` }),
+      });
+      if (!res.ok) throw new Error('Échec');
+      document.getElementById('level3Banner').classList.remove('open');
+      state.level3 = null;
+      showToast('Décision envoyée : ' + decision, 'success');
+      invalidateProjectCache(projectName);
+    });
+  } catch (e) {
+    showToast('Erreur: ' + e.message, 'error');
+  }
+}
+
+async function runCommand(cmd) {
+  if (!state.currentProject) return;
+  openTerminal(cmd);
+  document.getElementById('termBody').innerHTML = '<span class="spinner"></span> Exécution…';
+  try {
+    const res = await fetch(API + '/api/project/' + encodeURIComponent(state.currentProject.name) + '/command', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ command: cmd }),
+    });
+    const data = await res.json();
+    const output = (data.output || '') + (data.error ? '\n' + data.error : '');
+    const html = output.split('\n').map(line => {
+      if (line.startsWith('+')) return `<div class="term-line-add">${escapeHtml(line)}</div>`;
+      if (/error|BLOCKED/i.test(line)) return `<div class="term-line-err">${escapeHtml(line)}</div>`;
+      if (/warning/i.test(line)) return `<div class="term-line-warn">${escapeHtml(line)}</div>`;
+      return `<div>${escapeHtml(line)}</div>`;
+    }).join('');
+    document.getElementById('termBody').innerHTML = html || '(aucune sortie)';
+    showToast(data.success ? 'Commande OK' : 'Commande échouée', data.success ? 'success' : 'error');
+  } catch (e) {
+    document.getElementById('termBody').innerHTML = `<div class="term-line-err">${escapeHtml(e.message)}</div>`;
+    showToast('Erreur: ' + e.message, 'error');
+  }
+}
+
+function openTerminal(title) {
+  document.getElementById('termTitle').textContent = 'Terminal — ' + title;
+  document.getElementById('terminal').classList.add('open');
+}
+function closeTerminal() {
+  document.getElementById('terminal').classList.remove('open');
+}
+
+function openNewProjectModal() {
+  document.getElementById('newProjectModal').classList.add('open');
+  document.getElementById('newProjectInput').value = '';
+  document.getElementById('newProjectError').textContent = '';
+  document.getElementById('newProjectInput').focus();
+}
+function closeNewProjectModal() {
+  document.getElementById('newProjectModal').classList.remove('open');
+}
+function validateProjectName() {
+  const v = document.getElementById('newProjectInput').value;
+  const err = document.getElementById('newProjectError');
+  const btn = document.getElementById('createProjectBtn');
+  if (!v) { err.textContent = ''; btn.disabled = true; return false; }
+  if (!/^[A-Za-z0-9][A-Za-z0-9-]*$/.test(v)) {
+    err.textContent = 'Nom invalide (alphanum + tirets, commence par lettre/chiffre)';
+    btn.disabled = true;
+    return false;
+  }
+  err.textContent = '';
+  btn.disabled = false;
+  return true;
+}
+
+async function createProject() {
+  const name = document.getElementById('newProjectInput').value;
+  if (!validateProjectName()) return;
+  const btn = document.getElementById('createProjectBtn');
+  btn.disabled = true;
+  btn.innerHTML = '<span class="spinner"></span> Création…';
+  try {
+    const res = await fetch(API + '/api/projects/new', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ name }),
+    });
+    const data = await res.json();
+    if (!data.success) throw new Error(data.error || 'Échec');
+    showToast('Projet créé !', 'success');
+    closeNewProjectModal();
+    await fetchProjects();
+    selectProject(name);
+  } catch (e) {
+    showToast('Erreur: ' + e.message, 'error');
+  } finally {
+    btn.disabled = false;
+    btn.textContent = 'Créer le projet';
+  }
+}
+
+// P3.6 — GitHub push pour un projet
+async function openGithubPushModal() {
+  if (!state.currentProject) return;
+  try {
+    const statusRes = await fetch(API + '/api/project/' + encodeURIComponent(state.currentProject.name) + '/github-status');
+    const status = await statusRes.json();
+    const modal = document.getElementById('githubModal');
+    const input = document.getElementById('githubModalInput');
+    const confirm = document.getElementById('githubModalConfirm');
+    const desc = document.getElementById('githubModalDesc');
+    if (status.remote) {
+      desc.innerHTML = `Remote configuré : <code>${escapeHtml(status.remote)}</code><br>Cliquez sur Push pour envoyer.`;
+      input.style.display = 'none';
+      confirm.textContent = 'Push';
+      confirm.onclick = async () => {
+        confirm.disabled = true;
+        confirm.innerHTML = '<span class="spinner"></span> Push…';
+        try {
+          const r = await fetch(API + '/api/project/' + encodeURIComponent(state.currentProject.name) + '/github-push', { method: 'POST' });
+          const d = await r.json();
+          if (d.success) showToast('Push réussi', 'success');
+          else showToast('Push échoué : ' + (d.error || ''), 'error');
+        } catch (e) { showToast('Erreur: ' + e.message, 'error'); }
+        closeGithubModal();
+      };
+    } else {
+      desc.innerHTML = 'Configurer l\'URL du dépôt GitHub :';
+      input.style.display = 'block';
+      input.value = '';
+      confirm.textContent = 'Enregistrer et push';
+      confirm.onclick = async () => {
+        const url = input.value.trim();
+        if (!url) return;
+        confirm.disabled = true;
+        try {
+          const r1 = await fetch(API + '/api/project/' + encodeURIComponent(state.currentProject.name) + '/github-setup', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ repo_url: url }),
+          });
+          const d1 = await r1.json();
+          if (!d1.success) throw new Error(d1.error);
+          const r2 = await fetch(API + '/api/project/' + encodeURIComponent(state.currentProject.name) + '/github-push', { method: 'POST' });
+          const d2 = await r2.json();
+          if (d2.success) showToast('Setup + push OK', 'success');
+          else showToast('Push échoué : ' + (d2.error || ''), 'error');
+        } catch (e) { showToast('Erreur: ' + e.message, 'error'); }
+        closeGithubModal();
+      };
+    }
+    modal.classList.add('open');
+  } catch (e) {
+    showToast('Erreur: ' + e.message, 'error');
+  }
+}
+
+function closeGithubModal() {
+  document.getElementById('githubModal').classList.remove('open');
+  const confirm = document.getElementById('githubModalConfirm');
+  confirm.disabled = false;
+  confirm.textContent = 'Enregistrer';
+}
+
+// P3.7 — Backup Espace_Opti
+async function openBackupModal() {
+  try {
+    const res = await fetch(API + '/api/template/github-status');
+    const data = await res.json();
+    document.getElementById('backupRemote').textContent = data.remote || '(non configuré)';
+    document.getElementById('backupInput').value = data.remote || '';
+    document.getElementById('backupModal').classList.add('open');
+  } catch (e) {
+    showToast('Erreur: ' + e.message, 'error');
+  }
+}
+
+function closeBackupModal() {
+  document.getElementById('backupModal').classList.remove('open');
+}
+
+async function backupSetup() {
+  const url = document.getElementById('backupInput').value.trim();
+  if (!url) { showToast('URL requise', 'warning'); return; }
+  try {
+    const res = await fetch(API + '/api/template/github-setup', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ repo_url: url }),
+    });
+    const data = await res.json();
+    if (!data.success) throw new Error(data.error);
+    showToast('Remote configuré', 'success');
+    document.getElementById('backupRemote').textContent = url;
+  } catch (e) {
+    showToast('Erreur: ' + e.message, 'error');
+  }
+}
+
+async function backupPush() {
+  try {
+    const res = await fetch(API + '/api/template/github-push', { method: 'POST' });
+    const data = await res.json();
+    if (data.success) showToast('Backup push OK', 'success');
+    else showToast('Push échoué : ' + (data.error || ''), 'error');
+  } catch (e) {
+    showToast('Erreur: ' + e.message, 'error');
+  }
+  closeBackupModal();
+}
+
+// Rules modal
+async function openRulesModal() {
+  try {
+    const r = await fetch(API + '/api/rules');
+    if (!r.ok) { showToast('Impossible de charger les règles', 'error'); return; }
+    const data = await r.json();
+    document.getElementById('rulesHardContent').textContent = data.regles_dures || '(vide)';
+    document.getElementById('rulesDelegationContent').textContent = data.delegation || '(vide)';
+    document.getElementById('rulesModal').classList.add('open');
+  } catch (e) {
+    showToast('Erreur: ' + e.message, 'error');
+  }
+}
+
+function closeRulesModal() {
+  document.getElementById('rulesModal').classList.remove('open');
+}
+
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape') {
+    closeNewProjectModal();
+    closeGithubModal();
+    closeBackupModal();
+    closeRulesModal();
+    document.getElementById('notifPanel').classList.remove('open');
+  }
+});
+
+function showToast(msg, type = 'info') {
+  const c = document.getElementById('toastContainer');
+  const t = document.createElement('div');
+  t.className = 'toast ' + type;
+  t.textContent = msg;
+  c.appendChild(t);
+  const duration = type === 'level3' ? 10000 : (type === 'error' ? 5000 : 3000);
+  setTimeout(() => t.remove(), duration);
+}
+
+function escapeHtml(s) {
+  return String(s || '')
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
+}
+
+// P2.4 Notifications
+function toggleNotifs() {
+  document.getElementById('notifPanel').classList.toggle('open');
+}
+
+function toggleNotifPref(key, el) {
+  notifPrefs[key] = !notifPrefs[key];
+  el.classList.toggle('on', notifPrefs[key]);
+}
+
+function pushNotif(type, msg) {
+  if (!notifPrefs[type]) return;
+  state.notifHistory.unshift({ type, msg, ts: new Date().toISOString() });
+  state.notifHistory = state.notifHistory.slice(0, 50);
+  updateNotifBadge();
+  renderNotifHistory();
+  const toastType = type === 'level3' ? 'level3' : (type === 'level2' ? 'warning' : (type === 'approved' ? 'success' : 'error'));
+  showToast(msg, toastType);
+}
+
+function updateNotifBadge() {
+  const badge = document.getElementById('notifBadge');
+  if (state.notifHistory.length > 0) {
+    badge.textContent = state.notifHistory.length;
+    badge.style.display = 'inline-block';
+  } else {
+    badge.style.display = 'none';
+  }
+}
+
+function renderNotifHistory() {
+  const el = document.getElementById('notifHistory');
+  if (!el) return;
+  if (!state.notifHistory.length) {
+    el.innerHTML = '<div style="font-size:11px; color: var(--text-muted);">Aucune notification</div>';
+    return;
+  }
+  el.innerHTML = state.notifHistory.slice(0, 20).map(n => `
+    <div class="notif-history-item">
+      <strong>${n.type.toUpperCase()}</strong> · ${escapeHtml(n.msg.substring(0, 80))}
+      <div style="color: var(--text-muted); font-size:10px;">${new Date(n.ts).toLocaleTimeString()}</div>
+    </div>
+  `).join('');
+}
+
+// P3.4 — MCP status
+async function refreshMCPStatus() {
+  try {
+    const res = await fetch(API + '/api/mcp/status');
+    const data = await res.json();
+    document.getElementById('mcpObsidian').textContent = (data.obsidian ? '🟢' : '🔴') + ' Obsidian';
+    document.getElementById('mcpPinecone').textContent = (data.pinecone ? '🟢' : '🔴') + ' Pinecone';
+    document.getElementById('mcpObsidian').title = data.obsidian ? 'Obsidian MCP en ligne' : 'Obsidian MCP hors ligne';
+    document.getElementById('mcpPinecone').title = data.pinecone ? 'Pinecone MCP en ligne' : 'Pinecone MCP hors ligne';
+  } catch {}
+}
+
+// P2.2 — Agent activity polling
+async function refreshAgentActivity() {
+  if (!state.currentProject) return;
+  try {
+    const res = await fetch(API + '/api/project/' + encodeURIComponent(state.currentProject.name) + '/agents/activity');
+    state.agentActivity = await res.json();
+    if (state.currentTab === 'agents') renderTab();
+  } catch {}
+}
+
+// BUG 4 - invalide la liste agents quand on change de projet
+function invalidateAgentsList() {
+  state.agentsListLoaded = false;
+  state.agentsList = null;
+}
+
+// Ecosystem Status widget
+async function fetchEcosystemStatus() {
+  const btn = document.getElementById('ecoRefetchBtn');
+  const dot = document.getElementById('ecoDot');
+  if (btn) btn.classList.add('spinning');
+  try {
+    const res = await fetch(API + '/api/ecosystem-status');
+    if (!res.ok) throw new Error('HTTP ' + res.status);
+    const d = await res.json();
+
+    const set = (id, val) => {
+      const el = document.getElementById(id);
+      if (!el) return;
+      el.textContent = (val != null) ? String(val) : '\u2014';
+      el.classList.remove('loading');
+    };
+
+    set('ecoAgents',   d.agents_count    != null ? d.agents_count    : null);
+    set('ecoHooks',    d.hooks_count     != null ? d.hooks_count     : null);
+    set('ecoMCP',      d.mcp_count       != null ? d.mcp_count       : null);
+    set('ecoProjects', Array.isArray(d.projects) ? d.projects.length : null);
+    set('ecoBalance',  d.balance_ratio   != null ? Math.round(d.balance_ratio * 100) + '%' : null);
+    set('ecoBacklog',  d.backlog_open_count != null ? d.backlog_open_count : null);
+
+    if (dot) dot.classList.remove('loading');
+
+    const commitsEl = document.getElementById('ecoCommits');
+    if (commitsEl && d.last_commit_per_repo && typeof d.last_commit_per_repo === 'object') {
+      commitsEl.textContent = '';
+      Object.entries(d.last_commit_per_repo).slice(0, 3).forEach(([repo, hash]) => {
+        const chip = document.createElement('span');
+        chip.className = 'eco-commit-chip';
+        chip.title = repo + ': ' + String(hash);
+
+        const repoSpan = document.createElement('span');
+        repoSpan.className = 'eco-commit-repo';
+        repoSpan.textContent = repo;
+
+        const hashSpan = document.createElement('span');
+        hashSpan.className = 'eco-commit-hash';
+        hashSpan.textContent = String(hash).substring(0, 7);
+
+        chip.appendChild(repoSpan);
+        chip.appendChild(hashSpan);
+        commitsEl.appendChild(chip);
+      });
+    }
+
+    const tsEl = document.getElementById('ecoTs');
+    if (tsEl && d.generated_at) {
+      try {
+        const dt = new Date(d.generated_at);
+        tsEl.textContent = dt.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+        tsEl.title = 'Genere le ' + dt.toLocaleString();
+      } catch { tsEl.textContent = ''; }
+    }
+  } catch {
+    // Endpoint absent ou erreur reseau : afficher — partout, pas de crash UI
+    ['ecoAgents', 'ecoHooks', 'ecoMCP', 'ecoProjects', 'ecoBalance', 'ecoBacklog'].forEach(id => {
+      const el = document.getElementById(id);
+      if (el) { el.textContent = '\u2014'; el.classList.add('loading'); }
+    });
+    if (dot) dot.classList.add('loading');
+  } finally {
+    if (btn) btn.classList.remove('spinning');
+  }
+}
+
+loadTheme();
+fetchProjects();
+refreshMCPStatus();
+fetchEcosystemStatus();
+setInterval(fetchProjects, 30000);
+setInterval(refreshMCPStatus, 30000);
+setInterval(refreshAgentActivity, 15000);
+setInterval(fetchEcosystemStatus, 60000);
+</script>
+</body>
+</html>

@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Organisation — Espace_Opti</title>
+<link rel="stylesheet" href="shared.css">
+</head>
+<body>
+<button class="mobile-toggle" onclick="document.querySelector('.sidebar').classList.toggle('open')">☰</button>
+<div class="layout">
+  <aside class="sidebar">
+    <div class="sidebar-brand"><div class="sidebar-logo">EO</div><div class="sidebar-title">Espace_Opti</div></div>
+    <div class="sidebar-sub">Documentation v1.0</div>
+    <div class="sidebar-divider"></div>
+    <nav class="sidebar-nav">
+      <a href="index.html"><span class="icon">🏠</span>Accueil</a>
+      <a href="stack.html"><span class="icon">🔧</span>Stack</a>
+      <a href="organisation.html" class="active"><span class="icon">🗂</span>Organisation</a>
+      <a href="pipeline.html"><span class="icon">🔄</span>Pipeline</a>
+      <a href="decisions.html"><span class="icon">🧠</span>Décisions</a>
+      <a href="tutoriel.html"><span class="icon">📖</span>Tutoriel</a>
+      <a href="tips.html"><span class="icon">⚡</span>Tips &amp; Limites</a>
+      <a href="reference.html"><span class="icon">📋</span>Référence rapide</a>
+      <a href="bestpractices.html"><span class="icon">🏆</span>Best Practices</a>
+    </nav>
+    <div class="sidebar-footer">Claude Code v2.1.104<br>Claude Max — 10 agents natifs</div>
+  </aside>
+  <main class="main">
+    <div class="breadcrumb"><a href="index.html">Accueil</a> / Organisation</div>
+    <h1>Organisation de l'Espace de Travail</h1>
+    <p class="page-subtitle">Structure fichiers, organigramme des agents et flux mémoire.</p>
+
+    <h2>Arborescence — Template maître</h2>
+    <div class="tree"><span class="folder">Espace_Opti/</span> <span class="comment">← Template maître — ne jamais modifier</span>
+├── <span class="folder">.claude/</span>
+│   ├── <span class="folder">agents/</span> <span class="comment">← 9 vrais sous-agents natifs</span>
+│   │   ├── <span class="agent-manager">manager.md</span>        <span class="comment">[opus, orange]</span>
+│   │   ├── <span class="agent-architecte">architecte.md</span>     <span class="comment">[opus, purple]</span>
+│   │   ├── <span class="agent-frontend">frontend.md</span>       <span class="comment">[sonnet, pink, worktree]</span>
+│   │   ├── <span class="agent-backend">backend.md</span>        <span class="comment">[sonnet, green, worktree]</span>
+│   │   ├── <span class="agent-securite">securite.md</span>       <span class="comment">[haiku, red, hook auto]</span>
+│   │   ├── <span class="agent-qa-review">qa-review.md</span>      <span class="comment">[opus, yellow]</span>
+│   │   ├── <span class="agent-simplifier">simplifier.md</span>     <span class="comment">[sonnet, cyan]</span>
+│   │   ├── <span class="agent-playwright">playwright.md</span>     <span class="comment">[sonnet, blue]</span>
+│   │   └── estimateur.md      <span class="comment">[haiku, gray, auto >70%]</span>
+│   ├── <span class="folder">hooks/</span> <span class="comment">← 3 hooks Python</span>
+│   │   ├── security_prefilter.py  <span class="comment">OWASP 9 regex</span>
+│   │   ├── stop_check.py          <span class="comment">Hook de fin de session + rappel sync</span>
+│   │   └── inbox_inject.py        <span class="comment">Injection inbox au UserPrompt</span>
+│   ├── <span class="folder">commands/</span> <span class="comment">← 7 slash commands</span>
+│   │   ├── run-project.md
+│   │   ├── start-prd.md
+│   │   ├── new-module.md
+│   │   ├── deliver.md
+│   │   ├── dashboard.md
+│   │   ├── start-feature.md
+│   │   └── loop.md                <span class="comment">Tâches récurrentes (max 72h)</span>
+│   ├── <span class="folder">skills/</span> <span class="comment">← Skills natifs</span>
+│   │   ├── prd-generator.md
+│   │   ├── architecture-decomposer.md
+│   │   └── parallel-coordinator.md
+│   ├── <span class="folder">agent-memory/</span> <span class="comment">← Mémoire persistante par agent</span>
+│   │   ├── manager/
+│   │   ├── architecte/
+│   │   ├── ... <span class="comment">(6 autres agents)</span>
+│   │   ├── estimateur/
+│   │   └── <span class="folder">workspace/</span>
+│   │       └── MEMORY_WORKSPACE.md  <span class="comment">← Mémoire template</span>
+│   └── settings.json        <span class="comment">← Hooks + permissions (12 allow, 4 deny)</span>
+├── dashboard.py             <span class="comment">← FastAPI server</span>
+├── dashboard.html           <span class="comment">← UI web (7 onglets)</span>
+├── sync_memory.py           <span class="comment">← Obsidian → Pinecone</span>
+├── full.ps1                 <span class="comment">← Lance l'environnement complet</span>
+├── lite.ps1                 <span class="comment">← Mode rapide</span>
+├── new-project.ps1          <span class="comment">← Dérive un nouveau projet</span>
+├── write-inbox.ps1          <span class="comment">← Écriture inbox.md UTF-8 sans BOM</span>
+├── CLAUDE.md                <span class="comment">← Instructions permanentes</span>
+├── PRD_WORKSPACE.md         <span class="comment">← PRD du template</span>
+├── UI_GLOBAL.md             <span class="comment">← Règles UI/UX globales</span>
+├── .env                     <span class="comment">← Clés API (PINECONE, OBSIDIAN)</span>
+└── <span class="folder">_workspace/</span>
+    ├── <span class="folder">agents_archive/</span>    <span class="comment">← Anciens fichiers (archivés)</span>
+    ├── <span class="folder">sops/</span>              <span class="comment">← SOP-001 à SOP-004</span>
+    └── prd-template.md
+</div>
+
+    <h2>Arborescence — Projet dérivé</h2>
+    <div class="tree"><span class="folder">NomProjet/</span> <span class="comment">← Copie dérivée — modifiable</span>
+├── <span class="folder">.claude/</span>              <span class="comment">(même structure, agent-memory/ vide)</span>
+├── PRD.md                   <span class="comment">← Généré par @manager + /start-prd</span>
+├── modules.json             <span class="comment">← Généré par @architecte</span>
+├── ARCHITECTURE.md          <span class="comment">← Généré par @architecte</span>
+├── REVIEW_REPORT.md         <span class="comment">← Généré par @qa-review</span>
+├── DEPLOYMENT.md            <span class="comment">← Généré à la livraison</span>
+└── <span class="folder">src/</span>                  <span class="comment">← Code source (@frontend + @backend)</span>
+</div>
+
+    <h2>Organigramme des agents</h2>
+    <div class="svg-container">
+      <svg viewBox="0 0 960 460" xmlns="http://www.w3.org/2000/svg">
+        <!-- Manager at top -->
+        <rect x="380" y="20" width="200" height="60" rx="10" fill="#fff7ed" stroke="#ea580c" stroke-width="2"/>
+        <text x="480" y="46" font-family="Inter" font-size="15" font-weight="700" fill="#ea580c" text-anchor="middle">@manager</text>
+        <text x="480" y="66" font-family="Inter" font-size="11" fill="#78350f" text-anchor="middle">opus · Chef d'orchestre</text>
+
+        <!-- Lines to 8 children -->
+        <line x1="480" y1="80" x2="480" y2="120" stroke="#a1a1aa" stroke-width="1.5"/>
+        <line x1="60" y1="120" x2="900" y2="120" stroke="#a1a1aa" stroke-width="1.5"/>
+        <line x1="60" y1="120" x2="60" y2="160" stroke="#a1a1aa" stroke-width="1.5"/>
+        <line x1="180" y1="120" x2="180" y2="160" stroke="#a1a1aa" stroke-width="1.5"/>
+        <line x1="300" y1="120" x2="300" y2="160" stroke="#a1a1aa" stroke-width="1.5"/>
+        <line x1="420" y1="120" x2="420" y2="160" stroke="#a1a1aa" stroke-width="1.5"/>
+        <line x1="540" y1="120" x2="540" y2="160" stroke="#a1a1aa" stroke-width="1.5"/>
+        <line x1="660" y1="120" x2="660" y2="160" stroke="#a1a1aa" stroke-width="1.5"/>
+        <line x1="780" y1="120" x2="780" y2="160" stroke="#a1a1aa" stroke-width="1.5"/>
+        <line x1="900" y1="120" x2="900" y2="160" stroke="#a1a1aa" stroke-width="1.5"/>
+
+        <!-- architecte -->
+        <rect x="0" y="160" width="120" height="60" rx="8" fill="#f5f3ff" stroke="#7c3aed" stroke-width="2"/>
+        <text x="60" y="184" font-family="Inter" font-size="12" font-weight="700" fill="#7c3aed" text-anchor="middle">@architecte</text>
+        <text x="60" y="202" font-family="Inter" font-size="10" fill="#52525b" text-anchor="middle">opus</text>
+
+        <!-- frontend -->
+        <rect x="120" y="250" width="120" height="60" rx="8" fill="#fdf2f8" stroke="#db2777" stroke-width="2"/>
+        <text x="180" y="274" font-family="Inter" font-size="12" font-weight="700" fill="#db2777" text-anchor="middle">@frontend</text>
+        <text x="180" y="292" font-family="Inter" font-size="10" fill="#52525b" text-anchor="middle">sonnet [worktree]</text>
+        <line x1="180" y1="220" x2="180" y2="250" stroke="#a1a1aa" stroke-width="1.5" stroke-dasharray="2,2"/>
+
+        <!-- backend -->
+        <rect x="240" y="160" width="120" height="60" rx="8" fill="#f0fdf4" stroke="#16a34a" stroke-width="2"/>
+        <text x="300" y="184" font-family="Inter" font-size="12" font-weight="700" fill="#16a34a" text-anchor="middle">@backend</text>
+        <text x="300" y="202" font-family="Inter" font-size="10" fill="#52525b" text-anchor="middle">sonnet [worktree]</text>
+
+        <!-- securite -->
+        <rect x="360" y="250" width="120" height="60" rx="8" fill="#fef2f2" stroke="#dc2626" stroke-width="2"/>
+        <text x="420" y="274" font-family="Inter" font-size="12" font-weight="700" fill="#dc2626" text-anchor="middle">@securite</text>
+        <text x="420" y="292" font-family="Inter" font-size="10" fill="#52525b" text-anchor="middle">haiku · Hook</text>
+        <line x1="420" y1="220" x2="420" y2="250" stroke="#a1a1aa" stroke-width="1.5" stroke-dasharray="2,2"/>
+
+        <!-- qa-review -->
+        <rect x="480" y="160" width="120" height="60" rx="8" fill="#fefce8" stroke="#ca8a04" stroke-width="2"/>
+        <text x="540" y="184" font-family="Inter" font-size="12" font-weight="700" fill="#ca8a04" text-anchor="middle">@qa-review</text>
+        <text x="540" y="202" font-family="Inter" font-size="10" fill="#52525b" text-anchor="middle">opus · Audit ≥80</text>
+
+        <!-- simplifier -->
+        <rect x="600" y="250" width="120" height="60" rx="8" fill="#ecfeff" stroke="#0891b2" stroke-width="2"/>
+        <text x="660" y="274" font-family="Inter" font-size="12" font-weight="700" fill="#0891b2" text-anchor="middle">@simplifier</text>
+        <text x="660" y="292" font-family="Inter" font-size="10" fill="#52525b" text-anchor="middle">sonnet · Anti-bloat</text>
+        <line x1="660" y1="220" x2="660" y2="250" stroke="#a1a1aa" stroke-width="1.5" stroke-dasharray="2,2"/>
+
+        <!-- playwright -->
+        <rect x="720" y="160" width="120" height="60" rx="8" fill="#eff6ff" stroke="#2563eb" stroke-width="2"/>
+        <text x="780" y="184" font-family="Inter" font-size="12" font-weight="700" fill="#2563eb" text-anchor="middle">@playwright</text>
+        <text x="780" y="202" font-family="Inter" font-size="10" fill="#52525b" text-anchor="middle">sonnet · E2E</text>
+
+        <!-- estimateur -->
+        <rect x="840" y="160" width="120" height="60" rx="8" fill="#f4f4f5" stroke="#71717a" stroke-width="2"/>
+        <text x="900" y="184" font-family="Inter" font-size="12" font-weight="700" fill="#71717a" text-anchor="middle">@estimateur</text>
+        <text x="900" y="202" font-family="Inter" font-size="10" fill="#52525b" text-anchor="middle">haiku · Tokens</text>
+
+        <!-- optimiseur -->
+        <rect x="840" y="250" width="120" height="60" rx="8" fill="#f0fdfa" stroke="#14b8a6" stroke-width="2"/>
+        <text x="900" y="274" font-family="Inter" font-size="12" font-weight="700" fill="#14b8a6" text-anchor="middle">@optimiseur</text>
+        <text x="900" y="292" font-family="Inter" font-size="10" fill="#52525b" text-anchor="middle">sonnet · Prompts</text>
+        <line x1="900" y1="220" x2="900" y2="250" stroke="#a1a1aa" stroke-width="1.5" stroke-dasharray="2,2"/>
+      </svg>
+    </div>
+
+    <h2>Flux mémoire</h2>
+    <div class="svg-container">
+      <svg viewBox="0 0 720 360" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <marker id="arr" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto">
+            <path d="M0,0 L0,6 L9,3 z" fill="#52525b"/>
+          </marker>
+        </defs>
+        <!-- Codebase -->
+        <rect x="40" y="40" width="180" height="60" rx="8" fill="#f8f9fa" stroke="#a1a1aa" stroke-width="1.5"/>
+        <text x="130" y="66" font-family="Inter" font-size="14" font-weight="600" fill="#18181b" text-anchor="middle">Codebase (src/)</text>
+        <text x="130" y="86" font-family="Inter" font-size="11" fill="#52525b" text-anchor="middle">fichiers .py, .ts, .md</text>
+
+        <!-- Graphify -->
+        <rect x="280" y="40" width="180" height="60" rx="8" fill="#f5f3ff" stroke="#7c3aed" stroke-width="2"/>
+        <text x="370" y="66" font-family="Inter" font-size="14" font-weight="700" fill="#7c3aed" text-anchor="middle">Graphify</text>
+        <text x="370" y="86" font-family="Inter" font-size="11" fill="#52525b" text-anchor="middle">graphify-out/ (AST)</text>
+
+        <!-- Obsidian -->
+        <rect x="40" y="150" width="180" height="60" rx="8" fill="#eff6ff" stroke="#2563eb" stroke-width="2"/>
+        <text x="130" y="176" font-family="Inter" font-size="14" font-weight="700" fill="#2563eb" text-anchor="middle">Obsidian Vault</text>
+        <text x="130" y="196" font-family="Inter" font-size="11" fill="#52525b" text-anchor="middle">decisions/ specs/ journal/</text>
+
+        <!-- sync -->
+        <rect x="280" y="150" width="180" height="60" rx="8" fill="#fff7ed" stroke="#ea580c" stroke-width="2"/>
+        <text x="370" y="176" font-family="Inter" font-size="14" font-weight="700" fill="#ea580c" text-anchor="middle">sync_memory.py</text>
+        <text x="370" y="196" font-family="Inter" font-size="11" fill="#52525b" text-anchor="middle">all-MiniLM-L6-v2</text>
+
+        <!-- Pinecone -->
+        <rect x="520" y="150" width="180" height="60" rx="8" fill="#f0fdf4" stroke="#16a34a" stroke-width="2"/>
+        <text x="610" y="176" font-family="Inter" font-size="14" font-weight="700" fill="#16a34a" text-anchor="middle">Pinecone</text>
+        <text x="610" y="196" font-family="Inter" font-size="11" fill="#52525b" text-anchor="middle">obsidian-memory (384D)</text>
+
+        <!-- Agents -->
+        <rect x="280" y="270" width="180" height="60" rx="8" fill="#fefce8" stroke="#ca8a04" stroke-width="2"/>
+        <text x="370" y="296" font-family="Inter" font-size="14" font-weight="700" fill="#ca8a04" text-anchor="middle">Agents (démarrage)</text>
+        <text x="370" y="316" font-family="Inter" font-size="11" fill="#52525b" text-anchor="middle">consultent la mémoire</text>
+
+        <!-- Arrows -->
+        <line x1="220" y1="70" x2="280" y2="70" stroke="#52525b" stroke-width="1.5" marker-end="url(#arr)"/>
+        <line x1="220" y1="180" x2="280" y2="180" stroke="#52525b" stroke-width="1.5" marker-end="url(#arr)"/>
+        <line x1="460" y1="180" x2="520" y2="180" stroke="#52525b" stroke-width="1.5" marker-end="url(#arr)"/>
+        <line x1="610" y1="210" x2="440" y2="270" stroke="#52525b" stroke-width="1.5" marker-end="url(#arr)"/>
+        <line x1="370" y1="100" x2="370" y2="270" stroke="#52525b" stroke-width="1.5" stroke-dasharray="3,3" marker-end="url(#arr)"/>
+      </svg>
+    </div>
+    <div class="notice tip"><strong>💡 Note</strong> — Graphify lit le code en temps réel. Obsidian est vectorisé dans Pinecone via <code>sync_memory.py</code>. La mémoire d'activité des agents est gérée par <code>claude-mem</code> (plugin officiel, dashboard sur <code>localhost:37777</code>). Les agents consultent ces sources au démarrage.</div>
+  </main>
+</div>
+</body>
+</html>

@@ -1,0 +1,2418 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Espace_Opti — Guide complet</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap"
+    rel="stylesheet">
+  <style>
+    :root {
+      --bg: #0d1117;
+      --surface: #161b22;
+      --surface-2: #1c2128;
+      --border: #30363d;
+      --text: #c9d1d9;
+      --text-muted: #8b949e;
+      --accent: #58a6ff;
+      --accent-dim: #1f6feb;
+      --success: #3fb950;
+      --warning: #d29922;
+      --danger: #f85149;
+      --purple: #bc8cff;
+      --pink: #ff7b72;
+      --cyan: #79c0ff;
+      --lilac: #d2a8ff;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0
+    }
+
+    html {
+      scroll-behavior: smooth;
+      scroll-padding-top: 24px
+    }
+
+    body {
+      font-family: 'Inter', -apple-system, system-ui, Segoe UI, Roboto, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+      font-size: 15px;
+      display: grid;
+      grid-template-columns: 288px 1fr;
+      min-height: 100vh;
+    }
+
+    ::selection {
+      background: var(--accent-dim);
+      color: #fff
+    }
+
+    /* ── Sidebar ───────────────────────────────────── */
+    .sidebar {
+      position: sticky;
+      top: 0;
+      height: 100vh;
+      overflow-y: auto;
+      background: var(--surface);
+      border-right: 1px solid var(--border);
+      padding: 28px 20px;
+    }
+
+    .sidebar::-webkit-scrollbar {
+      width: 8px
+    }
+
+    .sidebar::-webkit-scrollbar-thumb {
+      background: var(--border);
+      border-radius: 4px
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 4px;
+    }
+
+    .brand .dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--accent), var(--success));
+      box-shadow: 0 0 12px var(--accent);
+    }
+
+    .brand h1 {
+      font-size: 17px;
+      color: var(--accent);
+      font-weight: 700;
+      letter-spacing: -0.02em
+    }
+
+    .sidebar .subtitle {
+      font-size: 11px;
+      color: var(--text-muted);
+      margin-bottom: 24px;
+      padding-left: 20px
+    }
+
+    .sidebar nav ul {
+      list-style: none
+    }
+
+    .sidebar nav>ul>li {
+      margin-bottom: 6px
+    }
+
+    .sidebar nav a {
+      color: var(--text);
+      text-decoration: none;
+      display: block;
+      padding: 7px 12px;
+      border-radius: 6px;
+      font-size: 13px;
+      transition: all .15s;
+      border-left: 2px solid transparent;
+    }
+
+    .sidebar nav a:hover {
+      background: var(--surface-2);
+      color: var(--accent)
+    }
+
+    .sidebar nav a.active {
+      background: var(--surface-2);
+      color: var(--accent);
+      border-left-color: var(--accent)
+    }
+
+    .sidebar nav .num {
+      color: var(--text-muted);
+      margin-right: 8px;
+      font-variant-numeric: tabular-nums;
+      font-size: 11px
+    }
+
+    /* ── Main content ───────────────────────────────── */
+    .content {
+      max-width: 1140px;
+      padding: 48px 56px 120px
+    }
+
+    h2 {
+      font-size: 30px;
+      color: var(--accent);
+      margin: 56px 0 18px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid var(--border);
+      letter-spacing: -0.02em;
+      font-weight: 700;
+      scroll-margin-top: 20px;
+    }
+
+    h2 .num {
+      color: var(--text-muted);
+      font-weight: 400;
+      margin-right: 14px;
+      font-size: 22px
+    }
+
+    h2:first-of-type {
+      margin-top: 0
+    }
+
+    h3 {
+      font-size: 21px;
+      color: var(--text);
+      margin: 36px 0 12px;
+      font-weight: 600;
+      letter-spacing: -0.01em;
+    }
+
+    h4 {
+      font-size: 16px;
+      color: var(--purple);
+      margin: 22px 0 8px;
+      font-weight: 600
+    }
+
+    p {
+      margin-bottom: 12px
+    }
+
+    a {
+      color: var(--accent);
+      text-decoration: none
+    }
+
+    a:hover {
+      text-decoration: underline
+    }
+
+    strong {
+      color: var(--text);
+      font-weight: 600
+    }
+
+    ul,
+    ol {
+      margin: 10px 0 12px 22px
+    }
+
+    li {
+      margin-bottom: 4px
+    }
+
+    /* ── Hero ──────────────────────────────────────── */
+    .hero {
+      background: radial-gradient(ellipse at top left, rgba(88, 166, 255, .15), transparent 60%),
+        radial-gradient(ellipse at bottom right, rgba(63, 185, 80, .1), transparent 60%),
+        var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 40px 44px;
+      margin-bottom: 36px;
+    }
+
+    .hero .eyebrow {
+      color: var(--success);
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: .12em;
+      font-weight: 600;
+      margin-bottom: 10px;
+    }
+
+    .hero h1 {
+      font-size: 42px;
+      background: linear-gradient(135deg, var(--accent), var(--purple));
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      letter-spacing: -0.03em;
+      font-weight: 700;
+      margin-bottom: 12px;
+      line-height: 1.1;
+    }
+
+    .hero .lede {
+      color: var(--text-muted);
+      font-size: 16px;
+      max-width: 680px
+    }
+
+    .hero .meta {
+      display: flex;
+      gap: 20px;
+      margin-top: 24px;
+      flex-wrap: wrap;
+      font-size: 12px;
+      color: var(--text-muted);
+    }
+
+    .hero .meta b {
+      color: var(--accent);
+      font-weight: 600
+    }
+
+    /* ── Code blocks ───────────────────────────────── */
+    code.inline {
+      background: var(--surface-2);
+      padding: 2px 7px;
+      border-radius: 5px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: .88em;
+      color: var(--pink);
+      border: 1px solid var(--border);
+    }
+
+    pre {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 18px 20px;
+      overflow-x: auto;
+      margin: 12px 0 16px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 13px;
+      line-height: 1.55;
+      position: relative;
+    }
+
+    pre::before {
+      content: attr(data-lang);
+      position: absolute;
+      top: 8px;
+      right: 14px;
+      font-size: 10px;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: .1em;
+      font-weight: 600;
+    }
+
+    pre code {
+      color: var(--text);
+      white-space: pre
+    }
+
+    .tok-kw {
+      color: var(--pink)
+    }
+
+    .tok-str {
+      color: var(--success)
+    }
+
+    .tok-com {
+      color: var(--text-muted);
+      font-style: italic
+    }
+
+    .tok-num {
+      color: var(--warning)
+    }
+
+    .tok-var {
+      color: var(--cyan)
+    }
+
+    .tok-key {
+      color: var(--accent)
+    }
+
+    /* ── Card grid ─────────────────────────────────── */
+    .card-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+      gap: 16px;
+      margin: 18px 0;
+    }
+
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 20px 22px;
+      border-left: 3px solid var(--accent);
+      transition: transform .15s, border-color .15s;
+    }
+
+    .card:hover {
+      transform: translateY(-2px);
+      border-color: var(--accent)
+    }
+
+    .card h4 {
+      color: var(--accent);
+      margin-top: 0;
+      margin-bottom: 10px;
+      font-size: 16px
+    }
+
+    .card .meta {
+      font-size: 11px;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: .08em;
+      margin-bottom: 8px;
+    }
+
+    .card p {
+      font-size: 13.5px;
+      margin-bottom: 8px
+    }
+
+    .card ul {
+      margin: 8px 0 8px 18px
+    }
+
+    .card ul li {
+      font-size: 13px;
+      margin-bottom: 3px
+    }
+
+    .card .tag {
+      display: inline-block;
+      background: var(--surface-2);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      padding: 2px 7px;
+      font-size: 11px;
+      color: var(--text-muted);
+      margin: 2px 4px 2px 0;
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    /* Agent-type borders */
+    .card.architect {
+      border-left-color: var(--purple)
+    }
+
+    .card.architect h4 {
+      color: var(--purple)
+    }
+
+    .card.frontend {
+      border-left-color: var(--pink)
+    }
+
+    .card.frontend h4 {
+      color: var(--pink)
+    }
+
+    .card.backend {
+      border-left-color: var(--success)
+    }
+
+    .card.backend h4 {
+      color: var(--success)
+    }
+
+    .card.security {
+      border-left-color: var(--danger)
+    }
+
+    .card.security h4 {
+      color: var(--danger)
+    }
+
+    .card.qa {
+      border-left-color: var(--warning)
+    }
+
+    .card.qa h4 {
+      color: var(--warning)
+    }
+
+    .card.simplifier {
+      border-left-color: var(--cyan)
+    }
+
+    .card.simplifier h4 {
+      color: var(--cyan)
+    }
+
+    .card.playwright {
+      border-left-color: var(--lilac)
+    }
+
+    .card.playwright h4 {
+      color: var(--lilac)
+    }
+
+    /* ── Collapsibles ──────────────────────────────── */
+    details {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 14px 20px;
+      margin: 12px 0;
+      transition: border-color .15s;
+    }
+
+    details[open] {
+      border-color: var(--accent)
+    }
+
+    details summary {
+      cursor: pointer;
+      color: var(--accent);
+      font-weight: 600;
+      font-size: 14px;
+      list-style: none;
+      user-select: none;
+    }
+
+    details summary::-webkit-details-marker {
+      display: none
+    }
+
+    details summary::before {
+      content: '▶';
+      display: inline-block;
+      margin-right: 10px;
+      transition: transform .2s;
+      font-size: 9px;
+      color: var(--text-muted);
+    }
+
+    details[open] summary::before {
+      transform: rotate(90deg)
+    }
+
+    details>*:not(summary) {
+      margin-top: 14px
+    }
+
+    /* ── Tables ────────────────────────────────────── */
+    .table-wrap {
+      overflow-x: auto;
+      margin: 16px 0;
+      border: 1px solid var(--border);
+      border-radius: 10px
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 13px;
+      background: var(--surface);
+    }
+
+    th,
+    td {
+      text-align: left;
+      padding: 11px 14px;
+      border-bottom: 1px solid var(--border);
+      vertical-align: top;
+    }
+
+    th {
+      color: var(--accent);
+      font-weight: 600;
+      background: var(--surface-2);
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: .06em
+    }
+
+    tr:last-child td {
+      border-bottom: none
+    }
+
+    tr:hover td {
+      background: var(--surface-2)
+    }
+
+    td code.inline {
+      font-size: .85em
+    }
+
+    /* ── Callouts ──────────────────────────────────── */
+    .callout {
+      border-radius: 10px;
+      padding: 14px 18px 14px 42px;
+      margin: 16px 0;
+      border: 1px solid var(--border);
+      border-left: 4px solid;
+      background: var(--surface);
+      position: relative;
+    }
+
+    .callout::before {
+      position: absolute;
+      left: 14px;
+      top: 14px;
+      font-size: 16px;
+    }
+
+    .callout.info {
+      border-left-color: var(--accent)
+    }
+
+    .callout.info::before {
+      content: 'ℹ';
+      color: var(--accent)
+    }
+
+    .callout.warn {
+      border-left-color: var(--warning)
+    }
+
+    .callout.warn::before {
+      content: '⚠';
+      color: var(--warning)
+    }
+
+    .callout.danger {
+      border-left-color: var(--danger)
+    }
+
+    .callout.danger::before {
+      content: '⛔';
+      color: var(--danger)
+    }
+
+    .callout.tip {
+      border-left-color: var(--success)
+    }
+
+    .callout.tip::before {
+      content: '💡';
+      color: var(--success)
+    }
+
+    .callout .label {
+      font-weight: 700;
+      display: block;
+      margin-bottom: 4px;
+      font-size: 13px
+    }
+
+    .callout.info .label {
+      color: var(--accent)
+    }
+
+    .callout.warn .label {
+      color: var(--warning)
+    }
+
+    .callout.danger .label {
+      color: var(--danger)
+    }
+
+    .callout.tip .label {
+      color: var(--success)
+    }
+
+    /* ── Directory tree ────────────────────────────── */
+    .tree {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 20px 26px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12.5px;
+      line-height: 1.75;
+      overflow-x: auto;
+      white-space: pre;
+    }
+
+    .tree .d {
+      color: var(--accent);
+      font-weight: 600
+    }
+
+    .tree .f {
+      color: var(--text)
+    }
+
+    .tree .c {
+      color: var(--text-muted);
+      font-style: italic
+    }
+
+    .tree .s {
+      color: var(--border)
+    }
+
+    /* ── Flow (SOP flowcharts) ─────────────────────── */
+    .flow {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0;
+      margin: 22px 0;
+      padding: 24px 16px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+    }
+
+    .flow .step {
+      background: var(--surface-2);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 12px 20px;
+      min-width: 260px;
+      text-align: center;
+      font-size: 13px;
+      font-weight: 500;
+    }
+
+    .flow .step.start {
+      border-color: var(--success);
+      color: var(--success)
+    }
+
+    .flow .step.accent {
+      border-color: var(--accent);
+      color: var(--accent)
+    }
+
+    .flow .step.warn {
+      border-color: var(--warning);
+      color: var(--warning)
+    }
+
+    .flow .step.final {
+      border-color: var(--success);
+      color: var(--success);
+      background: rgba(63, 185, 80, .08)
+    }
+
+    .flow .step.val {
+      border-color: var(--danger);
+      color: var(--danger)
+    }
+
+    .flow .arrow {
+      width: 2px;
+      height: 22px;
+      background: var(--border);
+      position: relative;
+    }
+
+    .flow .arrow::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: -4px;
+      width: 0;
+      height: 0;
+      border-left: 5px solid transparent;
+      border-right: 5px solid transparent;
+      border-top: 6px solid var(--border);
+    }
+
+    .flow .parallel {
+      display: flex;
+      gap: 28px;
+      justify-content: center;
+      align-items: stretch;
+    }
+
+    .flow .parallel .lane {
+      display: flex;
+      flex-direction: column;
+      align-items: center
+    }
+
+    .flow .note {
+      font-size: 11px;
+      color: var(--text-muted);
+      margin: 4px 0;
+      font-style: italic;
+    }
+
+    /* ── Filter bar ────────────────────────────────── */
+    .filter-bar {
+      display: flex;
+      gap: 8px;
+      margin: 18px 0 12px;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+
+    .filter-bar input {
+      flex: 1;
+      min-width: 220px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      color: var(--text);
+      padding: 11px 16px;
+      border-radius: 8px;
+      font-family: inherit;
+      font-size: 14px;
+      outline: none;
+      transition: border-color .15s;
+    }
+
+    .filter-bar input:focus {
+      border-color: var(--accent)
+    }
+
+    .filter-bar input::placeholder {
+      color: var(--text-muted)
+    }
+
+    .filter-bar button {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      color: var(--text);
+      padding: 10px 14px;
+      border-radius: 8px;
+      font-family: inherit;
+      font-size: 12px;
+      cursor: pointer;
+      transition: all .15s;
+      font-weight: 500;
+    }
+
+    .filter-bar button.active {
+      background: var(--accent-dim);
+      border-color: var(--accent);
+      color: #fff
+    }
+
+    .filter-bar button:hover:not(.active) {
+      border-color: var(--accent);
+      color: var(--accent)
+    }
+
+    #cheatCount {
+      font-size: 12px;
+      color: var(--text-muted);
+      margin-left: auto
+    }
+
+    /* ── Lifecycle tree ────────────────────────────── */
+    .lifecycle {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 28px 32px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 13px;
+      overflow-x: auto;
+      white-space: pre;
+      line-height: 1.85;
+    }
+
+    .lifecycle .root {
+      color: var(--accent);
+      font-weight: 700;
+      font-size: 15px
+    }
+
+    .lifecycle .cmd {
+      color: var(--cyan)
+    }
+
+    .lifecycle .sop {
+      color: var(--purple);
+      font-weight: 600
+    }
+
+    .lifecycle .agent {
+      color: var(--warning)
+    }
+
+    .lifecycle .milestone {
+      color: var(--pink)
+    }
+
+    .lifecycle .val {
+      color: var(--danger);
+      font-weight: 600
+    }
+
+    .lifecycle .final {
+      color: var(--success);
+      font-weight: 700
+    }
+
+    .lifecycle .branch {
+      color: var(--border)
+    }
+
+    /* ── Decision tree for LITE/FULL ───────────────── */
+    .decision {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 26px;
+      margin: 18px 0;
+    }
+
+    .decision .q {
+      text-align: center;
+      background: var(--surface-2);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 12px 18px;
+      margin-bottom: 18px;
+      color: var(--accent);
+      font-weight: 600;
+    }
+
+    .decision .branches {
+      display: flex;
+      gap: 18px;
+      justify-content: center;
+      flex-wrap: wrap
+    }
+
+    .decision .branch {
+      flex: 1;
+      min-width: 260px;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 18px;
+      background: var(--bg);
+    }
+
+    .decision .branch.lite {
+      border-color: var(--warning)
+    }
+
+    .decision .branch.full {
+      border-color: var(--success)
+    }
+
+    .decision .branch h5 {
+      margin-bottom: 10px;
+      font-size: 15px
+    }
+
+    .decision .branch.lite h5 {
+      color: var(--warning)
+    }
+
+    .decision .branch.full h5 {
+      color: var(--success)
+    }
+
+    .decision .branch ul {
+      margin: 8px 0 12px 20px
+    }
+
+    .decision .branch ul li {
+      font-size: 13px
+    }
+
+    /* ── Badges ────────────────────────────────────── */
+    .badge {
+      display: inline-block;
+      padding: 2px 8px;
+      border-radius: 4px;
+      font-size: 11px;
+      font-weight: 600;
+      margin-right: 4px;
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    .badge.auto {
+      background: rgba(88, 166, 255, .15);
+      color: var(--accent);
+      border: 1px solid rgba(88, 166, 255, .3)
+    }
+
+    .badge.manual {
+      background: rgba(210, 153, 34, .15);
+      color: var(--warning);
+      border: 1px solid rgba(210, 153, 34, .3)
+    }
+
+    .badge.hook {
+      background: rgba(248, 81, 73, .15);
+      color: var(--danger);
+      border: 1px solid rgba(248, 81, 73, .3)
+    }
+
+    .badge.token {
+      background: rgba(188, 140, 255, .15);
+      color: var(--purple);
+      border: 1px solid rgba(188, 140, 255, .3)
+    }
+
+    /* ── Print ─────────────────────────────────────── */
+    @media print {
+      .sidebar {
+        display: none
+      }
+
+      body {
+        grid-template-columns: 1fr;
+        background: #fff;
+        color: #000
+      }
+
+      .content {
+        padding: 0;
+        max-width: none
+      }
+
+      .card,
+      .callout,
+      pre,
+      .tree,
+      .flow,
+      .lifecycle,
+      .decision {
+        break-inside: avoid
+      }
+
+      a {
+        color: #000;
+        text-decoration: underline
+      }
+    }
+
+    /* ── Mobile ────────────────────────────────────── */
+    @media (max-width:900px) {
+      body {
+        grid-template-columns: 1fr
+      }
+
+      .sidebar {
+        position: static;
+        height: auto;
+        border-right: none;
+        border-bottom: 1px solid var(--border)
+      }
+
+      .content {
+        padding: 32px 24px 80px
+      }
+
+      .hero {
+        padding: 28px 24px
+      }
+
+      .hero h1 {
+        font-size: 32px
+      }
+
+      h2 {
+        font-size: 24px
+      }
+
+      .flow .parallel {
+        flex-direction: column;
+        gap: 0
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- ═══════════════ SIDEBAR ═══════════════ -->
+  <aside class="sidebar">
+    <div class="brand"><span class="dot"></span>
+      <h1>Espace_Opti</h1>
+    </div>
+    <div class="subtitle">Guide complet · v1.0</div>
+    <nav>
+      <ul>
+        <li><a href="#s1"><span class="num">01</span>Présentation</a></li>
+        <li><a href="#s2"><span class="num">02</span>Outils &amp; mécanismes</a></li>
+        <li><a href="#s3"><span class="num">03</span>Les agents</a></li>
+        <li><a href="#s4"><span class="num">04</span>Les SOPs</a></li>
+        <li><a href="#s5"><span class="num">05</span>Tutoriel (MailFlow)</a></li>
+        <li><a href="#s6"><span class="num">06</span>Cheat sheet</a></li>
+        <li><a href="#s7"><span class="num">07</span>Cycle de vie projet</a></li>
+        <li><a href="#s8"><span class="num">08</span>Tips &amp; maintenance</a></li>
+      </ul>
+    </nav>
+  </aside>
+
+  <!-- ═══════════════ CONTENT ═══════════════ -->
+  <main class="content">
+
+    <div class="hero">
+      <div class="eyebrow">AI SOFTWARE FACTORY</div>
+      <h1>Espace_Opti</h1>
+      <p class="lede">Un atelier de développement où l'humain supervise, valide et capitalise — pendant qu'une équipe
+        d'agents IA spécialisés construit, teste et livre le code. Un template unique, dupliqué pour chaque projet, avec
+        mémoire structurelle, documentaire et sémantique.</p>
+      <div class="meta">
+        <span><b>7</b> agents spécialisés</span>
+        <span><b>4</b> SOPs opérationnelles</span>
+        <span><b>3</b> couches de mémoire</span>
+        <span><b>2</b> modes de travail</span>
+      </div>
+    </div>
+
+    <!-- ═══════════════ SECTION 1 ═══════════════ -->
+    <h2 id="s1"><span class="num">01</span>Présentation de l'espace de travail</h2>
+
+    <h3>1.1 Introduction</h3>
+    <p><strong>Espace_Opti</strong> est un espace de travail Claude Code conçu pour une vision précise :
+      <strong>l'humain n'écrit presque plus de code — il pilote une usine logicielle</strong>. Il formule des idées,
+      valide des plans, et capitalise des décisions. Les agents IA font le reste : ils décomposent le produit, écrivent
+      le code, auditent leur propre travail, testent en bout de chaîne et documentent.</p>
+
+    <p>L'architecture repose sur un principe simple : <strong>Template + Copy</strong>.</p>
+
+    <div class="card-grid">
+      <div class="card">
+        <h4>🧬 Le template</h4>
+        <p><code class="inline">Espace_Opti/</code> est le <strong>master template</strong>. Il n'est jamais modifié
+          directement. Il contient la configuration MCP, les hooks, les scripts, les définitions d'agents, les SOPs, les
+          skills et les slash commands.</p>
+      </div>
+      <div class="card">
+        <h4>📦 Les projets</h4>
+        <p>Chaque nouveau projet est une <strong>copie dérivée</strong> du template via <code
+            class="inline">.\new-project.ps1 "NomDuProjet"</code>. Le projet hérite instantanément de toute l'équipe
+          virtuelle, mais vit sa vie dans un dossier isolé avec son propre git, sa propre mémoire Pinecone, son propre
+          graphe AST.</p>
+      </div>
+      <div class="card">
+        <h4>🧠 La mémoire</h4>
+        <p>Trois couches travaillent en concert : <strong>Graphify</strong> (topologie du code),
+          <strong>Obsidian</strong> (décisions documentées), <strong>Pinecone</strong> (recherche sémantique). L'agent
+          retrouve le pourquoi, le où et le quoi sans jamais lire le code brut à l'aveugle.</p>
+      </div>
+      <div class="card">
+        <h4>⚡ Deux modes</h4>
+        <p><strong>LITE</strong> pour les petites modifications rapides (hooks coupés, lancement instantané).
+          <strong>FULL</strong> pour les vraies features avec toute l'équipe. Le mode doit être proportionnel à l'impact
+          de la modification.</p>
+      </div>
+    </div>
+
+    <h3>1.2 Infrastructure — arborescence complète</h3>
+    <p>Voici l'arborescence exacte du template après installation. Chaque fichier a un rôle précis et une place
+      canonique.</p>
+
+    <div class="tree"><span class="d">Espace_Opti/</span>
+      ├── <span class="f">GUIDE.html</span> <span class="c">← Ce fichier (guide complet)</span>
+      ├── <span class="f">WORKSPACE_TUTORIAL.md</span> <span class="c">← Tutoriel détaillé en markdown</span>
+      ├── <span class="f">CLAUDE.md</span> <span class="c">← Instructions permanentes pour Claude</span>
+      ├── <span class="f">full.ps1</span> <span class="c">← Lance le mode équipe complète</span>
+      ├── <span class="f">lite.ps1</span> <span class="c">← Lance le mode rapide (hooks off)</span>
+      ├── <span class="f">new-project.ps1</span> <span class="c">← Dérive un nouveau projet</span>
+      ├── <span class="f">sync_memory.py</span> <span class="c">← Synchronise Obsidian → Pinecone</span>
+      ├── <span class="f">.env</span> <span class="c">← Clés API (jamais commité)</span>
+      ├── <span class="f">.env.template</span> <span class="c">← Template clés API avec placeholders</span>
+      ├── <span class="f">.gitignore</span> <span class="c">← Fichiers ignorés par Git</span>
+      ├── <span class="d">.claude/</span>
+      │ ├── <span class="f">settings.json</span> <span class="c">← MCP servers + hooks Graphify</span>
+      │ ├── <span class="f">settings.local.json</span> <span class="c">← Config locale (non versionnée)</span>
+      │ └── <span class="d">commands/</span>
+      │ └── <span class="f">start-feature.md</span> <span class="c">← Slash command /start-feature</span>
+      ├── <span class="d">_workspace/</span>
+      │ ├── <span class="f">prd-template.md</span> <span class="c">← Template PRD vierge à remplir</span>
+      │ ├── <span class="d">agents/</span>
+      │ │ ├── <span class="f">architecte.md</span> <span class="c">← Agent : découpe le PRD en modules</span>
+      │ │ ├── <span class="f">frontend.md</span> <span class="c">← Agent : UI/UX + composants React</span>
+      │ │ ├── <span class="f">backend.md</span> <span class="c">← Agent : API + base de données</span>
+      │ │ ├── <span class="f">securite.md</span> <span class="c">← Agent : audit sécurité temps réel</span>
+      │ │ ├── <span class="f">qa-review.md</span> <span class="c">← Agent : revue qualité multi-agents</span>
+      │ │ ├── <span class="f">simplifier.md</span> <span class="c">← Agent : anti-bloat + refactoring</span>
+      │ │ └── <span class="f">playwright.md</span> <span class="c">← Agent : tests E2E navigateur</span>
+      │ ├── <span class="d">skills/</span>
+      │ │ ├── <span class="f">prd-generator.md</span> <span class="c">← Skill : générer un PRD structuré</span>
+      │ │ ├── <span class="f">architecture-decomposer.md</span> <span class="c">← Skill : découper en modules</span>
+      │ │ ├── <span class="f">parallel-coordinator.md</span> <span class="c">← Skill : coordonner les agents</span>
+      │ │ ├── <span class="f">security-scanner.md</span> <span class="c">← Skill : scanner 9 vulnérabilités</span>
+      │ │ └── <span class="f">qa-scorer.md</span> <span class="c">← Skill : scorer la qualité (80%+)</span>
+      │ └── <span class="d">sops/</span>
+      │ ├── <span class="f">SOP-001-nouveau-projet.md</span> <span class="c">← Procédure : lancer un projet</span>
+      │ ├── <span class="f">SOP-002-creation-prd.md</span> <span class="c">← Procédure : créer le PRD</span>
+      │ ├── <span class="f">SOP-003-developpement-parallele.md</span> <span class="c">← Procédure : dev parallèle</span>
+      │ └── <span class="f">SOP-004-livraison.md</span> <span class="c">← Procédure : livrer le projet</span>
+      └── <span class="d">graphify-out/</span>
+      ├── <span class="f">graph.json</span> <span class="c">← Graphe AST sérialisé du code</span>
+      ├── <span class="f">GRAPH_REPORT.md</span> <span class="c">← Rapport topologie (god nodes)</span>
+      └── <span class="d">wiki/</span> <span class="c">← Documentation auto-générée</span>
+    </div>
+
+    <!-- ═══════════════ SECTION 2 ═══════════════ -->
+    <h2 id="s2"><span class="num">02</span>Tous les outils et mécanismes</h2>
+
+    <h3>2.1 Couche mémoire — 3 systèmes complémentaires</h3>
+    <p>Chacun résout un problème différent. Ensemble, ils évitent que Claude ne cherche du code à l'aveugle ou ne
+      réinvente des décisions déjà prises.</p>
+
+    <div class="card-grid">
+      <div class="card architect">
+        <div class="meta">MÉMOIRE STRUCTURELLE</div>
+        <h4>🕸️ Graphify</h4>
+        <p>Analyse l'AST de <strong>20 langages</strong> via tree-sitter et construit un graphe de dépendances.
+          Détection de communautés via l'algorithme de <strong>Leiden</strong>, identification automatique des
+          <strong>god nodes</strong> (fonctions les plus connectées).</p>
+        <ul>
+          <li><strong>Sortie :</strong> <code class="inline">graphify-out/GRAPH_REPORT.md</code></li>
+          <li><strong>Activation :</strong> hook PreToolUse automatique sur chaque Glob/Grep</li>
+          <li><strong>Gain :</strong> jusqu'à 71,5× de tokens économisés sur les tâches de navigation</li>
+        </ul>
+        <p><em>« Quelles sont les dépendances de sync_memory.py ? »</em> → Claude lit le report avant de répondre.</p>
+      </div>
+
+      <div class="card backend">
+        <div class="meta">MÉMOIRE DOCUMENTAIRE</div>
+        <h4>📓 Obsidian + Local REST API</h4>
+        <p>Vault de notes Markdown structuré en trois dossiers : <code class="inline">decisions/</code>, <code
+            class="inline">specs/</code>, <code class="inline">journal/</code>. Accessible à Claude via le serveur MCP
+          <code class="inline">obsidian-mcp-server</code> qui parle HTTPS au plugin Local REST API d'Obsidian (port
+          <strong>27124</strong>).</p>
+        <ul>
+          <li><strong>Lecture/écriture :</strong> via les outils <code class="inline">mcp__obsidian__*</code></li>
+          <li><strong>Prérequis :</strong> Obsidian lancé avec plugin Local REST API activé</li>
+          <li><strong>Format :</strong> Markdown ADR (Contexte, Décision, Conséquences)</li>
+        </ul>
+        <p><em>« Crée une note dans decisions/ au format ADR qui documente le choix JWT. »</em></p>
+      </div>
+
+      <div class="card security">
+        <div class="meta">MÉMOIRE SÉMANTIQUE</div>
+        <h4>🔮 Pinecone</h4>
+        <p>Base vectorielle serverless (AWS us-east-1). Index <code class="inline">obsidian-memory</code> en dimension
+          <strong>384</strong>, métrique <strong>cosine</strong>. Embeddings générés <strong>100 % localement</strong>
+          via <code class="inline">sentence-transformers/all-MiniLM-L6-v2</code> — aucune clé OpenAI requise.</p>
+        <ul>
+          <li><strong>Sync :</strong> <code class="inline">python sync_memory.py</code></li>
+          <li><strong>Découpage :</strong> header-based via LangChain <code
+              class="inline">MarkdownHeaderTextSplitter</code></li>
+          <li><strong>Auto-migration :</strong> l'index est recréé automatiquement si la dimension change</li>
+        </ul>
+        <p><em>« Cherche dans Pinecone toutes les décisions sur l'authentification. »</em></p>
+      </div>
+    </div>
+
+    <h3>2.2 Les 8 plugins — l'équipe virtuelle</h3>
+    <p>Chaque plugin installe skills, agents et hooks qui modifient le comportement de Claude. Ils s'utilisent en
+      langage naturel ou via slash commands.</p>
+
+    <div class="card-grid">
+      <div class="card architect">
+        <div class="meta">🧠 ORCHESTRATEUR</div>
+        <h4>superpowers</h4>
+        <p><strong>Rôle :</strong> orchestre la discipline TDD stricte (Red → Green → Refactor → Review).</p>
+        <p><strong>Quand :</strong> feature non triviale qui doit être testée. <strong>Invoc :</strong> <em>« Avec
+            superpowers, implémente X… »</em></p>
+        <p><strong>Produit :</strong> tests d'abord, implémentation minimale, refactor, review interne.</p>
+        <p><strong>Règle cardinale :</strong> tout code écrit avant son test est supprimé. C'est voulu.</p>
+      </div>
+
+      <div class="card frontend">
+        <div class="meta">🎨 DESIGNER</div>
+        <h4>frontend-design</h4>
+        <p><strong>Rôle :</strong> direction esthétique intentionnelle avant tout code UI.</p>
+        <p><strong>Quand :</strong> composants visuels, landings, dashboards. <strong>Invoc :</strong> <em>« Utilise
+            frontend-design pour une page de login brutaliste… »</em></p>
+        <p><strong>Produit :</strong> moodboard verbal (typo, palette, espacement) puis code React/CSS.</p>
+        <p><strong>Empêche :</strong> le CSS générique par défaut des LLMs.</p>
+      </div>
+
+      <div class="card security">
+        <div class="meta">🛡️ AUDITEUR</div>
+        <h4>security-guidance</h4>
+        <p><strong>Rôle :</strong> filet de sécurité automatique sur chaque Edit/Write.</p>
+        <p><strong>Quand :</strong> <span class="badge hook">HOOK AUTO</span> aucune invocation nécessaire.</p>
+        <p><strong>Produit :</strong> blocage + diagnostic si l'un des 9 patterns OWASP est détecté (SQLi, XSS, secrets
+          en dur, eval, pickle…).</p>
+        <p><strong>Bypass :</strong> possible par marqueur <code class="inline">// security-ok: raison</code> sur la
+          ligne concernée.</p>
+      </div>
+
+      <div class="card qa">
+        <div class="meta">👥 QA MULTI-AGENTS</div>
+        <h4>code-review</h4>
+        <p><strong>Rôle :</strong> audit en parallèle par 4-5 sous-agents spécialisés.</p>
+        <p><strong>Quand :</strong> avant commit. <strong>Invoc :</strong> <code class="inline">/code-review</code></p>
+        <p><strong>Produit :</strong> score de confiance pondéré (logique 30 %, types 20 %, tests 25 %, archi 25 %) +
+          liste de blockers.</p>
+        <p><strong>Seuil :</strong> &lt; 80 % = PR bloquée et renvoyée pour corrections.</p>
+      </div>
+
+      <div class="card simplifier">
+        <div class="meta">🧹 ANTI-BLOAT</div>
+        <h4>code-simplifier</h4>
+        <p><strong>Rôle :</strong> élimine la sur-ingénierie introduite par les LLMs.</p>
+        <p><strong>Quand :</strong> après une longue session d'itérations ou avant commit. <strong>Invoc :</strong>
+          <code class="inline">/simplify</code></p>
+        <p><strong>Produit :</strong> wrappers inutiles supprimés, helpers d'une seule utilisation inlinés, try/except
+          vides supprimés, commentaires paraphrasants retirés.</p>
+        <p><strong>Invariant :</strong> ne change jamais le comportement observable — les tests passent avant et après.
+        </p>
+      </div>
+
+      <div class="card playwright">
+        <div class="meta">🎭 E2E</div>
+        <h4>playwright</h4>
+        <p><strong>Rôle :</strong> teste les parcours utilisateurs dans un vrai Chromium headless.</p>
+        <p><strong>Quand :</strong> avant livraison. <strong>Invoc :</strong> <em>« Utilise playwright pour tester le
+            parcours login complet… »</em></p>
+        <p><strong>Produit :</strong> tests E2E, captures d'écran à chaque étape, vérification des redirections et
+          cookies.</p>
+        <p><strong>Règle :</strong> un test en échec = livraison bloquée.</p>
+      </div>
+
+      <div class="card architect">
+        <div class="meta">🏗️ ARCHITECTE</div>
+        <h4>feature-dev</h4>
+        <p><strong>Rôle :</strong> décompose une feature ambiguë en plan d'implémentation ordonné.</p>
+        <p><strong>Quand :</strong> au démarrage d'une feature non triviale. <strong>Invoc :</strong> <em>« Lance
+            feature-dev sur … »</em></p>
+        <p><strong>Produit :</strong> plan structuré, fichiers à créer/modifier, risques identifiés, ordre d'exécution.
+        </p>
+        <p><strong>Complémentaire :</strong> s'utilise avant superpowers, qui prend ensuite le relais pour la phase TDD.
+        </p>
+      </div>
+
+      <div class="card backend">
+        <div class="meta">📦 GIT</div>
+        <h4>commit-commands</h4>
+        <p><strong>Rôle :</strong> commits structurés, conformes à Conventional Commits, avec contexte.</p>
+        <p><strong>Quand :</strong> après validation QA. <strong>Invoc :</strong> <code class="inline">/commit</code>
+        </p>
+        <p><strong>Produit :</strong> message de commit au format <code class="inline">type(scope): description</code>
+          avec corps explicatif si nécessaire.</p>
+        <p><strong>Ne fait jamais :</strong> de commit avec <code class="inline">--no-verify</code> sans permission
+          explicite.</p>
+      </div>
+    </div>
+
+    <h3>2.3 Les serveurs MCP</h3>
+    <p>Model Context Protocol — des serveurs qui exposent des outils à Claude via stdio/HTTP. Configurés dans <code
+        class="inline">.claude/settings.json</code> au scope projet.</p>
+
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Serveur</th>
+            <th>Package npm</th>
+            <th>Protocole</th>
+            <th>Outils exposés</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><code class="inline">obsidian</code></td>
+            <td><code class="inline">obsidian-mcp-server</code></td>
+            <td>HTTPS :27124</td>
+            <td>
+              <span class="tag">obsidian_read_note</span>
+              <span class="tag">obsidian_update_note</span>
+              <span class="tag">obsidian_global_search</span>
+              <span class="tag">obsidian_list_notes</span>
+              <span class="tag">obsidian_manage_frontmatter</span>
+              <span class="tag">obsidian_manage_tags</span>
+              <span class="tag">obsidian_search_replace</span>
+              <span class="tag">obsidian_delete_note</span>
+            </td>
+          </tr>
+          <tr>
+            <td><code class="inline">pinecone</code></td>
+            <td><code class="inline">@pinecone-database/mcp</code></td>
+            <td>stdio</td>
+            <td>
+              <span class="tag">search-records</span>
+              <span class="tag">upsert-records</span>
+              <span class="tag">list-indexes</span>
+              <span class="tag">describe-index</span>
+              <span class="tag">describe-index-stats</span>
+              <span class="tag">create-index-for-model</span>
+              <span class="tag">search-docs</span>
+              <span class="tag">rerank-documents</span>
+              <span class="tag">cascading-search</span>
+            </td>
+          </tr>
+          <tr>
+            <td><code class="inline">playwright</code></td>
+            <td><code class="inline">@playwright/mcp</code></td>
+            <td>stdio</td>
+            <td>
+              <span class="tag">browser_navigate</span>
+              <span class="tag">browser_click</span>
+              <span class="tag">browser_type</span>
+              <span class="tag">browser_snapshot</span>
+              <span class="tag">browser_screenshot</span>
+              <span class="tag">browser_wait_for</span>
+              <span class="tag">browser_evaluate</span>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3>2.4 Les hooks</h3>
+    <p>Un <strong>hook</strong> est un script shell exécuté par Claude Code à des moments précis du cycle de vie
+      (PreToolUse, PostToolUse, SessionStart…). Il peut injecter du contexte ou bloquer un appel d'outil.</p>
+
+    <div class="callout info">
+      <span class="label">Hook PreToolUse — Graphify</span>
+      <strong>Matcher :</strong> <code class="inline">Glob|Grep</code> — se déclenche avant toute recherche.<br>
+      <strong>Effet :</strong> si <code class="inline">graphify-out/graph.json</code> existe, injecte un message système
+      rappelant à Claude de lire <code class="inline">GRAPH_REPORT.md</code> avant de grep le code brut.<br>
+      <strong>Pourquoi :</strong> économie massive de tokens et évitement des erreurs de dépendances transitives que les
+      LLMs ratent en lecture aveugle.
+    </div>
+
+    <pre data-lang="json"><code class="lang-json">{
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Glob|Grep",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "[ -f graphify-out/graph.json ] &amp;&amp; echo '...' || true"
+          }
+        ]
+      }
+    ]
+  }
+}</code></pre>
+
+    <h3>2.5 Les scripts</h3>
+
+    <div class="card-grid">
+      <div class="card">
+        <div class="meta">POWERSHELL · LAUNCHER</div>
+        <h4>full.ps1</h4>
+        <p><strong>Rôle :</strong> vérifie la présence de tous les composants (hooks, MCP servers, graph, workspace)
+          puis lance Claude Code en mode équipe complète.</p>
+        <p><strong>Vérifications :</strong></p>
+        <ol>
+          <li>Hook Graphify PreToolUse actif</li>
+          <li>MCP servers <code class="inline">obsidian</code> + <code class="inline">pinecone</code> déclarés</li>
+          <li>Knowledge graph présent (<code class="inline">graphify-out/graph.json</code>)</li>
+          <li><code class="inline">_workspace/agents/</code> et <code class="inline">_workspace/sops/</code> présents
+            (compte les fichiers .md)</li>
+        </ol>
+        <p><strong>Usage :</strong> <code class="inline">.\full.ps1</code> — avertit si un composant manque, demande
+          confirmation pour continuer.</p>
+      </div>
+
+      <div class="card qa">
+        <div class="meta">POWERSHELL · LAUNCHER</div>
+        <h4>lite.ps1</h4>
+        <p><strong>Rôle :</strong> lance Claude Code sans hook Graphify, puis exécute un pipeline de sync post-session.
+        </p>
+        <p><strong>Séquence :</strong></p>
+        <ol>
+          <li>Backup <code class="inline">.claude/settings.json</code> → <code class="inline">.lite-backup</code></li>
+          <li>Supprime la clé <code class="inline">hooks</code> du settings</li>
+          <li>Lance <code class="inline">claude</code></li>
+          <li><strong>À la sortie</strong> (finally block) : git diff recap → Graphify rebuild → note Obsidian auto via
+            <code class="inline">claude --print</code> → sync Pinecone → cleanup</li>
+          <li>Restaure <code class="inline">settings.json</code> depuis le backup</li>
+        </ol>
+        <p><strong>Garantie :</strong> le hook revient <em>toujours</em>, même en cas d'erreur ou de Ctrl+C.</p>
+      </div>
+
+      <div class="card architect">
+        <div class="meta">POWERSHELL · GENERATOR</div>
+        <h4>new-project.ps1</h4>
+        <p><strong>Rôle :</strong> dérive un nouveau projet depuis le template sans jamais altérer Espace_Opti.</p>
+        <p><strong>Étapes :</strong></p>
+        <ol>
+          <li>Valide le nom (alphanum + tirets uniquement)</li>
+          <li><code class="inline">robocopy /E /XD /XF</code> vers <code class="inline">Desktop\&lt;Nom&gt;\</code>
+            (exclut <code class="inline">graphify-out</code>, <code class="inline">.git</code>, <code
+              class="inline">.env</code>, <code class="inline">node_modules</code>, <code
+              class="inline">new-project.ps1</code>)</li>
+          <li><code class="inline">git init</code> + commit initial</li>
+          <li>Substitue <code class="inline">Espace_Opti</code> → <code class="inline">NomProjet</code> dans <code
+              class="inline">CLAUDE.md</code></li>
+          <li>Copie <code class="inline">.env.template</code> → <code class="inline">.env</code> (placeholders)</li>
+          <li>Recrée <code class="inline">graphify-out/</code> vide</li>
+          <li>Patche les SOPs avec le nom du projet</li>
+        </ol>
+        <p><strong>Usage :</strong> <code class="inline">.\new-project.ps1 "MailFlow"</code></p>
+      </div>
+
+      <div class="card backend">
+        <div class="meta">PYTHON · SYNC</div>
+        <h4>sync_memory.py</h4>
+        <p><strong>Rôle :</strong> vectorise les notes Obsidian dans Pinecone pour les rendre sémantiquement
+          interrogeables.</p>
+        <p><strong>Pipeline :</strong></p>
+        <ol>
+          <li>Charge <code class="inline">.env</code> (UTF-8 BOM safe)</li>
+          <li>Collecte les <code class="inline">.md</code> du vault</li>
+          <li>Split par headers H1/H2/H3 via LangChain</li>
+          <li>Charge <code class="inline">all-MiniLM-L6-v2</code> (384 dim) en local</li>
+          <li>Auto-migre l'index si sa dimension est incompatible</li>
+          <li>Upsert par batches de 100</li>
+        </ol>
+        <p><strong>Coût :</strong> <strong>0 €</strong>. Pas de clé OpenAI. Premier lancement télécharge ~90 Mo.</p>
+      </div>
+    </div>
+
+    <!-- ═══════════════ SECTION 3 ═══════════════ -->
+    <h2 id="s3"><span class="num">03</span>Les agents en détail</h2>
+    <p>Sept agents, chacun avec un rôle étroit, un budget de tokens, des triggers précis, et des règles dures. Définis
+      dans <code class="inline">_workspace/agents/*.md</code>.</p>
+
+    <div class="card-grid">
+
+      <div class="card architect">
+        <h4>🏛️ Architecte</h4>
+        <div class="meta"><span class="badge token">2000 tokens max</span><span class="badge manual">sur demande</span>
+        </div>
+        <p><strong>Rôle :</strong> à partir d'un PRD validé, décomposer le produit en modules indépendants et
+          parallélisables, avec des contrats d'interface immuables.</p>
+        <p><strong>Skills :</strong> <span class="tag">system-design</span><span class="tag">api-contracts</span><span
+            class="tag">dependency-mapping</span></p>
+        <p><strong>Triggers :</strong> après validation du PRD (fin SOP-002).</p>
+        <p><strong>Entrées :</strong> <code class="inline">PRD.md</code>, <code class="inline">GRAPH_REPORT.md</code>
+          (si code existant), résultats Pinecone similaires.</p>
+        <p><strong>Sorties :</strong> <code class="inline">ARCHITECTURE.md</code> + <code
+            class="inline">modules.json</code>.</p>
+        <p><strong>Règles dures :</strong></p>
+        <ul>
+          <li>Aucun module ne doit dépendre circulairement d'un autre</li>
+          <li>Un module fullstack est toujours scindé en frontend + backend</li>
+          <li>Validation utilisateur obligatoire avant que le dev parallèle démarre</li>
+        </ul>
+        <p><strong>Exemple prompt :</strong> <em>« Lance l'Architecte sur PRD.md. Je veux modules.json et
+            ARCHITECTURE.md avant de valider. »</em></p>
+      </div>
+
+      <div class="card frontend">
+        <h4>🎨 Frontend</h4>
+        <div class="meta"><span class="badge token">3000 tokens max</span><span class="badge manual">en parallèle</span>
+        </div>
+        <p><strong>Rôle :</strong> implémente les modules <code class="inline">owner:frontend</code> de <code
+            class="inline">modules.json</code> en respectant strictement les contrats d'interface.</p>
+        <p><strong>Skills :</strong> <span class="tag">react</span><span class="tag">tailwind</span><span
+            class="tag">component-design</span><span class="tag">accessibility</span></p>
+        <p><strong>Triggers :</strong> après validation de <code class="inline">ARCHITECTURE.md</code> — tourne en
+          parallèle de Backend.</p>
+        <p><strong>Entrées :</strong> <code class="inline">modules.json</code> filtré, <code
+            class="inline">ARCHITECTURE.md</code>, design direction éventuelle.</p>
+        <p><strong>Sorties :</strong> <code class="inline">/src/components/</code> + <code
+            class="inline">/src/pages/</code>.</p>
+        <p><strong>Règles dures :</strong></p>
+        <ul>
+          <li>Ne jamais toucher aux fichiers <code class="inline">owner:backend</code></li>
+          <li>WCAG 2.1 AA minimum (contrast, focus, aria-labels)</li>
+          <li>Si un endpoint manque, bloquer et solliciter l'Architecte</li>
+        </ul>
+        <p><strong>Exemple prompt :</strong> <em>« Tu es l'agent Frontend. Lis _workspace/agents/frontend.md puis
+            implémente les modules owner:frontend. »</em></p>
+      </div>
+
+      <div class="card backend">
+        <h4>⚙️ Backend</h4>
+        <div class="meta"><span class="badge token">3000 tokens max</span><span class="badge manual">en parallèle</span>
+        </div>
+        <p><strong>Rôle :</strong> implémente les modules <code class="inline">owner:backend</code> — routes API, schéma
+          DB, logique métier, services.</p>
+        <p><strong>Skills :</strong> <span class="tag">nodejs</span><span class="tag">postgresql</span><span
+            class="tag">rest-api</span><span class="tag">authentication</span></p>
+        <p><strong>Triggers :</strong> après validation de <code class="inline">ARCHITECTURE.md</code> — en parallèle de
+          Frontend.</p>
+        <p><strong>Entrées :</strong> <code class="inline">modules.json</code>, <code
+            class="inline">ARCHITECTURE.md</code>, recherches Pinecone sur décisions d'auth/persistance.</p>
+        <p><strong>Sorties :</strong> <code class="inline">/src/api/</code>, <code class="inline">/src/db/</code>, <code
+            class="inline">/src/services/</code>, tests sous <code class="inline">/tests/</code>.</p>
+        <p><strong>Règles dures :</strong></p>
+        <ul>
+          <li>Aucun secret en dur — tout passe par variables d'environnement</li>
+          <li>Validation de toute entrée utilisateur avant DB</li>
+          <li>Passwords : bcrypt/argon2 minimum, jamais en clair</li>
+          <li>Tests écrits AVANT l'implémentation (TDD style superpowers)</li>
+        </ul>
+      </div>
+
+      <div class="card security">
+        <h4>🛡️ Sécurité</h4>
+        <div class="meta"><span class="badge token">500 tokens max</span><span class="badge hook">PreToolUse auto</span>
+        </div>
+        <p><strong>Rôle :</strong> intercepte chaque Edit/Write et scanne le <code class="inline">new_string</code>
+          contre 9 patterns OWASP <strong>avant</strong> écriture disque.</p>
+        <p><strong>Skills :</strong> <span class="tag">owasp-top10</span><span
+            class="tag">injection-prevention</span><span class="tag">auth-security</span></p>
+        <p><strong>Triggers :</strong> hook PreToolUse automatique — jamais invoqué à la main.</p>
+        <p><strong>Entrées :</strong> contenu de l'Edit/Write courant, chemin cible.</p>
+        <p><strong>Sorties :</strong> <code class="inline">APPROVED</code> ou <code class="inline">BLOCKED</code> avec
+          pattern, ligne, fix suggéré.</p>
+        <p><strong>Les 9 patterns :</strong> SQLi · Shell injection · XSS · eval/exec · secrets en dur · path traversal
+          · désérialisation unsafe · redirection ouverte · crypto faible.</p>
+        <p><strong>Bypass légitime :</strong> marqueur <code class="inline"># security-ok: raison</code> sur la ligne
+          concernée.</p>
+      </div>
+
+      <div class="card qa">
+        <h4>🧑‍⚖️ QA Review</h4>
+        <div class="meta"><span class="badge token">4000 tokens max</span><span class="badge manual">après chaque
+            module</span></div>
+        <p><strong>Rôle :</strong> lance 4 sous-agents en parallèle sur le diff d'un module terminé et calcule un score
+          de confiance pondéré.</p>
+        <p><strong>Skills :</strong> <span class="tag">code-analysis</span><span class="tag">test-coverage</span><span
+            class="tag">business-logic-validation</span></p>
+        <p><strong>Sous-agents :</strong></p>
+        <ul>
+          <li><strong>logic-reviewer</strong> (30 %) — cas limites, invariants</li>
+          <li><strong>type-reviewer</strong> (20 %) — any/unknown, null safety</li>
+          <li><strong>test-reviewer</strong> (25 %) — % couverture + happy path + erreurs</li>
+          <li><strong>arch-reviewer</strong> (25 %) — respect des contrats, pas de fuites inter-modules</li>
+        </ul>
+        <p><strong>Politique :</strong> score ≥ 80 → passe au Simplifier. Score &lt; 80 → renvoie à l'agent d'origine
+          avec blockers.</p>
+        <p><strong>Sortie :</strong> <code class="inline">REVIEW_REPORT.md</code> avec score ventilé.</p>
+      </div>
+
+      <div class="card simplifier">
+        <h4>🧹 Simplifier</h4>
+        <div class="meta"><span class="badge token">2000 tokens max</span><span class="badge manual">après QA ≥
+            80</span></div>
+        <p><strong>Rôle :</strong> élimine le bruit structurel introduit par les LLMs sans changer le comportement
+          observable.</p>
+        <p><strong>Skills :</strong> <span class="tag">refactoring</span><span class="tag">dry-principle</span><span
+            class="tag">complexity-reduction</span></p>
+        <p><strong>Heuristiques :</strong> wrappers 1-call inlinés, classes mono-méthode devenues fonctions, try/except
+          vides supprimés, commentaires paraphrasants supprimés, variables intermédiaires inlinées, paramètres
+          inutilisés supprimés.</p>
+        <p><strong>Invariant :</strong> les tests doivent passer avant ET après. Si un test casse → rollback immédiat.
+        </p>
+        <p><strong>Sortie :</strong> <code class="inline">SIMPLIFICATION_REPORT.md</code> avec suppressions, métriques
+          LOC, delta.</p>
+      </div>
+
+      <div class="card playwright">
+        <h4>🎭 Playwright</h4>
+        <div class="meta"><span class="badge token">2000 tokens max</span><span class="badge manual">avant
+            livraison</span></div>
+        <p><strong>Rôle :</strong> dernière barrière avant livraison — valide les user stories du PRD dans un vrai
+          Chromium headless.</p>
+        <p><strong>Skills :</strong> <span class="tag">browser-automation</span><span
+            class="tag">form-testing</span><span class="tag">screenshot-capture</span></p>
+        <p><strong>Triggers :</strong> après le Simplifier, avant SOP-004.</p>
+        <p><strong>Entrées :</strong> <code class="inline">PRD.md</code>, application démarrée localement.</p>
+        <p><strong>Sorties :</strong> <code class="inline">TEST_REPORT.md</code> + <code
+            class="inline">screenshots/YYYY-MM-DD/&lt;story&gt;/step-N.png</code>.</p>
+        <p><strong>Règle :</strong> un test en échec = livraison bloquée. Pas de workaround sans validation explicite.
+        </p>
+      </div>
+
+    </div>
+
+    <!-- ═══════════════ SECTION 4 ═══════════════ -->
+    <h2 id="s4"><span class="num">04</span>Les SOPs — Standard Operating Procedures</h2>
+    <p>Quatre procédures formelles qui définissent l'ordre exact des opérations. Pas de variation « on s'adapte » — si
+      une SOP dit « validation utilisateur obligatoire », rien ne passe sans validation.</p>
+
+    <details open>
+      <summary>SOP-001 — Lancer un nouveau projet</summary>
+      <div class="flow">
+        <div class="step start">L'utilisateur tape : <code>.\new-project.ps1 "NomProjet"</code></div>
+        <div class="arrow"></div>
+        <div class="step">Robocopy Espace_Opti → Desktop\NomProjet\ (exclusions appliquées)</div>
+        <div class="arrow"></div>
+        <div class="step">git init + commit initial + patch CLAUDE.md</div>
+        <div class="arrow"></div>
+        <div class="step accent">Lance SOP-002 à l'ouverture de Claude Code dans le nouveau dossier</div>
+        <div class="arrow"></div>
+        <div class="step val">🛑 Attendre la validation du PRD avant toute génération de code</div>
+      </div>
+      <p><strong>Règles :</strong> ne jamais modifier Espace_Opti directement — chaque projet a son propre index
+        Pinecone <code class="inline">&lt;nom-projet&gt;-memory</code>.</p>
+    </details>
+
+    <details open>
+      <summary>SOP-002 — Création du PRD</summary>
+      <div class="flow">
+        <div class="step start">Phase 1 — Idée brute en langage naturel</div>
+        <div class="note">Claude reformule en 5 lignes → demande confirmation</div>
+        <div class="arrow"></div>
+        <div class="step accent">Phase 2 — Questionnaire guidé (8 questions, une par une)</div>
+        <div class="note">Problème · Cibles · MVP · V2 · Stack · B2B/B2C · Délai · Contraintes</div>
+        <div class="arrow"></div>
+        <div class="step">Phase 3 — Génération PRD.md structuré</div>
+        <div class="note">Executive Summary · User Stories · FR · TR · Constraints · MVP · V2 · Metrics</div>
+        <div class="arrow"></div>
+        <div class="step val">🛑 Validation utilisateur obligatoire avant SOP-003</div>
+      </div>
+      <p><strong>Les 8 questions dans l'ordre :</strong></p>
+      <ol>
+        <li>Quel est le problème principal résolu ?</li>
+        <li>Qui sont les utilisateurs cibles ?</li>
+        <li>Quelles sont les 3 fonctionnalités essentielles (MVP) ?</li>
+        <li>Quelles sont les fonctionnalités secondaires (V2) ?</li>
+        <li>Stack technique préférée ?</li>
+        <li>Le projet est-il B2B, B2C ou interne ?</li>
+        <li>Quel est le délai souhaité ?</li>
+        <li>Y a-t-il des contraintes (budget, langue, accessibilité) ?</li>
+      </ol>
+    </details>
+
+    <details open>
+      <summary>SOP-003 — Développement parallèle</summary>
+      <div class="flow">
+        <div class="step accent">1. Architecte → ARCHITECTURE.md + modules.json</div>
+        <div class="arrow"></div>
+        <div class="step val">🛑 Validation utilisateur de l'architecture</div>
+        <div class="arrow"></div>
+        <div class="parallel">
+          <div class="lane">
+            <div class="step" style="border-color:var(--pink);color:var(--pink)">2a. Frontend<br><small>composants UI +
+                pages</small></div>
+          </div>
+          <div class="lane">
+            <div class="step" style="border-color:var(--success);color:var(--success)">2b. Backend<br><small>API + DB +
+                services</small></div>
+          </div>
+        </div>
+        <div class="note">🛡️ Sécurité surveille chaque Edit/Write en temps réel (hook auto)</div>
+        <div class="arrow"></div>
+        <div class="step warn">3. QA Review après chaque module DONE</div>
+        <div class="note">Score ≥ 80 ? → étape 4. Sinon → retour à l'agent.</div>
+        <div class="arrow"></div>
+        <div class="step" style="border-color:var(--cyan);color:var(--cyan)">4. Simplifier — élimine le bruit</div>
+        <div class="arrow"></div>
+        <div class="step" style="border-color:var(--lilac);color:var(--lilac)">5. Playwright — tests E2E sur les user
+          stories</div>
+        <div class="arrow"></div>
+        <div class="step final">6. → SOP-004 Livraison</div>
+      </div>
+      <p><strong>Règles de parallélisme :</strong> un agent = un terminal ; agents isolés par <code
+          class="inline">files_owned</code> dans modules.json ; contrats d'interface immuables ; verrouillage git
+        optimiste sur modules.json.</p>
+    </details>
+
+    <details open>
+      <summary>SOP-004 — Livraison</summary>
+      <div class="flow">
+        <div class="step accent">Checklist : tous modules DONE · QA ≥ 80 · Playwright 0 fail · 0 vuln · Simplifier passé
+        </div>
+        <div class="arrow"></div>
+        <div class="step">1. Génération DEPLOYMENT.md</div>
+        <div class="arrow"></div>
+        <div class="step">2. Note Obsidian ADR : decisions/YYYY-MM-DD-&lt;projet&gt;-livraison.md</div>
+        <div class="arrow"></div>
+        <div class="step">3. python sync_memory.py + rebuild graphe</div>
+        <div class="arrow"></div>
+        <div class="step">4. git commit feat: &lt;projet&gt; v1.0.0 - MVP livré + tag v1.0.0</div>
+        <div class="arrow"></div>
+        <div class="step final">✅ Projet livré — Pas de git push sans ordre explicite</div>
+      </div>
+    </details>
+
+    <!-- ═══════════════ SECTION 5 ═══════════════ -->
+    <h2 id="s5"><span class="num">05</span>Tutoriel complet — exemple MailFlow</h2>
+    <p>Un projet d'exemple : <strong>MailFlow</strong>, plateforme d'envoi d'emails transactionnels avec templates,
+      webhooks et analytics. On va le traverser de l'idée à la livraison.</p>
+
+    <h3>5.1 Démarrage d'une session</h3>
+    <p>Ouvre un terminal dans le dossier du template :</p>
+    <pre data-lang="bash"><code class="lang-bash">cd c:/Users/caste/Desktop/Espace_Opti
+# On va créer un nouveau projet, pas travailler sur Espace_Opti</code></pre>
+
+    <h3>5.2 Créer le projet MailFlow</h3>
+    <pre data-lang="ps1"><code class="lang-ps1">.\new-project.ps1 "MailFlow"</code></pre>
+    <p>Sortie attendue :</p>
+    <pre data-lang="bash"><code class="lang-bash">=============================================
+  NEW PROJECT - derive depuis Espace_Opti
+=============================================
+
+[NEW] Projet       : MailFlow
+[NEW] Destination  : C:\Users\caste\Desktop\MailFlow
+
+[NEW] Copie robocopy en cours...
+[NEW] Copie terminee.
+
+[NEW] Initialisation git...
+[NEW] Repo git initialise et commit initial cree.
+
+[NEW] CLAUDE.md : 'Espace_Opti' remplace par 'MailFlow'.
+[NEW] .env cree depuis .env.template (placeholders uniquement).
+[NEW] Dossier graphify-out/ recree vide.
+[NEW] SOPs patches avec 'MailFlow'.
+
+=============================================
+  Projet 'MailFlow' cree avec succes
+=============================================
+
+Prochaine etape :
+  cd "C:\Users\caste\Desktop\MailFlow"
+  .\full.ps1</code></pre>
+
+    <h3>5.3 Le workflow PRD complet (SOP-002)</h3>
+    <p>Après <code class="inline">.\full.ps1</code> dans MailFlow, Claude lance la Phase 1. Tu décris ton idée :</p>
+    <div class="callout info"><em>« Je veux construire un service d'envoi d'emails transactionnels pour PME.
+        L'utilisateur crée des templates, branche des webhooks, et voit les analytics d'ouverture/clic en temps réel.
+        »</em></div>
+
+    <p>Claude reformule, tu confirmes, puis il pose les 8 questions. Voici un exemple de réponses :</p>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Question</th>
+            <th>Réponse</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>1</td>
+            <td>Problème résolu</td>
+            <td>PMEs qui paient trop cher SendGrid/Mailgun pour 50k mails/mois</td>
+          </tr>
+          <tr>
+            <td>2</td>
+            <td>Cibles</td>
+            <td>Startups B2B SaaS, 10-100 employés, tech-literate</td>
+          </tr>
+          <tr>
+            <td>3</td>
+            <td>MVP (3 features)</td>
+            <td>Templates Handlebars, envoi SMTP avec fallback, dashboard analytics temps réel</td>
+          </tr>
+          <tr>
+            <td>4</td>
+            <td>V2</td>
+            <td>Webhooks entrants, A/B testing, suppressions globales, IP warm-up</td>
+          </tr>
+          <tr>
+            <td>5</td>
+            <td>Stack</td>
+            <td>Next.js 14 + Postgres + Redis + BullMQ (laisser Claude décider des détails)</td>
+          </tr>
+          <tr>
+            <td>6</td>
+            <td>B2B/B2C/interne</td>
+            <td>B2B pur — self-serve + API</td>
+          </tr>
+          <tr>
+            <td>7</td>
+            <td>Délai</td>
+            <td>MVP sous 4 semaines</td>
+          </tr>
+          <tr>
+            <td>8</td>
+            <td>Contraintes</td>
+            <td>RGPD, langue FR+EN, self-hosted possible, pas d'AWS</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <p>Claude génère <code class="inline">PRD.md</code>, tu le relis, tu valides.</p>
+
+    <h3>5.4 Développement parallèle (SOP-003)</h3>
+    <p>L'Architecte produit <code class="inline">ARCHITECTURE.md</code> + <code class="inline">modules.json</code>. Tu
+      valides. Ensuite, 3 terminaux :</p>
+
+    <pre
+      data-lang="ps1"><code class="lang-ps1"># Terminal 1 — Architecte (déjà terminé, garde la session pour les révisions)
+
+# Terminal 2 — Frontend
+cd C:\Users\caste\Desktop\MailFlow
+claude --append-system-prompt "Tu es l'agent FRONTEND. Lis _workspace/agents/frontend.md et filtre modules.json sur owner:frontend."
+
+# Terminal 3 — Backend
+cd C:\Users\caste\Desktop\MailFlow
+claude --append-system-prompt "Tu es l'agent BACKEND. Lis _workspace/agents/backend.md et filtre modules.json sur owner:backend."</code></pre>
+
+    <p>Les deux agents tournent en parallèle. La <strong>Sécurité</strong> (hook PreToolUse du plugin security-guidance)
+      intercepte automatiquement chaque écriture — si le Backend tente un <code
+        class="inline">db.execute(f"SELECT * FROM users WHERE id = {id}")</code>, l'écriture est bloquée avec un
+      diagnostic.</p>
+
+    <h3>5.5 Validation et livraison</h3>
+    <p>Quand un module est marqué <code class="inline">DONE</code> dans <code class="inline">modules.json</code>, dans
+      un 4e terminal :</p>
+    <pre data-lang="bash"><code class="lang-bash">/code-review</code></pre>
+    <p>Exemple de sortie QA :</p>
+    <pre data-lang="bash"><code class="lang-bash">Review — module auth-backend — 2026-04-18
+
+**Score : 87/100 ✅**
+- Logic:  28/30
+- Types:  18/20
+- Tests:  21/25
+- Arch:   20/25
+
+## Blockers (0)
+## Warnings (2)
+- (types) 'any' en ligne 42 — préciser
+- (tests) pas de test pour le cas 'user inexistant'</code></pre>
+
+    <p>Score &gt; 80 → passe au Simplifier (<code class="inline">/simplify</code>) puis aux tests E2E :</p>
+    <pre data-lang="bash"><code class="lang-bash"># Lancer MailFlow en local
+npm run dev
+
+# Dans Claude
+« Utilise playwright pour tester le parcours d'envoi d'un email transactionnel :
+  1. Login avec test@mailflow.io / password123
+  2. Création d'un template "welcome"
+  3. Envoi via POST /api/send
+  4. Vérification du statut "delivered" dans le dashboard
+  Prends une capture à chaque étape. »</code></pre>
+
+    <p>Playwright produit <code class="inline">TEST_REPORT.md</code>. Si tout est vert, SOP-004 : génération
+      DEPLOYMENT.md, note Obsidian ADR, <code class="inline">python sync_memory.py</code>, tag <code
+        class="inline">v1.0.0</code>. Livré.</p>
+
+    <h3>5.6 LITE vs FULL — arbre de décision</h3>
+
+    <div class="decision">
+      <div class="q">Est-ce que la modification mérite une discipline complète ?</div>
+      <div class="branches">
+        <div class="branch lite">
+          <h5>⚡ LITE MODE</h5>
+          <p><strong>Exemples :</strong></p>
+          <ul>
+            <li>« Change la couleur du bouton en #58a6ff »</li>
+            <li>« Corrige la faute dans le commentaire ligne 42 »</li>
+            <li>« Renomme <code class="inline">getUsr</code> en <code class="inline">getUser</code> »</li>
+            <li>« Ajoute un print temporaire pour debug »</li>
+          </ul>
+          <p><strong>Lancer :</strong> <code class="inline">.\lite.ps1</code></p>
+          <p><strong>Durée :</strong> secondes à minutes</p>
+        </div>
+        <div class="branch full">
+          <h5>🏗️ FULL MODE</h5>
+          <p><strong>Exemples :</strong></p>
+          <ul>
+            <li>« Ajoute un système de paiement Stripe »</li>
+            <li>« Refactore le module d'authentification »</li>
+            <li>« Implémente le webhook de SendGrid »</li>
+            <li>« Migre la DB de SQLite vers Postgres »</li>
+          </ul>
+          <p><strong>Lancer :</strong> <code class="inline">.\full.ps1</code></p>
+          <p><strong>Durée :</strong> heures à jours</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="callout tip"><span class="label">Règle d'or</span>Si tu hésites, choisis <strong>FULL</strong>. Le coût
+      d'un hook en trop est toujours inférieur au coût d'un bug sécurité passé entre les mailles d'un LITE mal choisi.
+    </div>
+
+    <!-- ═══════════════ SECTION 6 ═══════════════ -->
+    <h2 id="s6"><span class="num">06</span>Cheat sheet interactive</h2>
+    <p>Toutes les commandes du workspace. Filtre par catégorie ou tape un mot-clé.</p>
+
+    <div class="filter-bar">
+      <input type="text" id="cheatSearch" placeholder="Rechercher une commande, un script, un prompt…">
+      <button class="cat active" data-cat="all">Tout</button>
+      <button class="cat" data-cat="slash">Slash</button>
+      <button class="cat" data-cat="ps1">PowerShell</button>
+      <button class="cat" data-cat="python">Python</button>
+      <button class="cat" data-cat="prompt">Prompts</button>
+      <button class="cat" data-cat="keys">Raccourcis</button>
+      <span id="cheatCount"></span>
+    </div>
+
+    <div class="table-wrap">
+      <table id="cheatTable">
+        <thead>
+          <tr>
+            <th>Catégorie</th>
+            <th>Commande</th>
+            <th>Utilité</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr class="cheat-row" data-cat="slash">
+            <td>slash</td>
+            <td><code class="inline">/mcp</code></td>
+            <td>Liste les serveurs MCP et leur état</td>
+          </tr>
+          <tr class="cheat-row" data-cat="slash">
+            <td>slash</td>
+            <td><code class="inline">/plugin list</code></td>
+            <td>Liste les plugins actifs</td>
+          </tr>
+          <tr class="cheat-row" data-cat="slash">
+            <td>slash</td>
+            <td><code class="inline">/plugin install &lt;name&gt;</code></td>
+            <td>Installe un plugin du marketplace</td>
+          </tr>
+          <tr class="cheat-row" data-cat="slash">
+            <td>slash</td>
+            <td><code class="inline">/plugin marketplace add &lt;repo&gt;</code></td>
+            <td>Ajoute un marketplace tiers (ex. superpowers)</td>
+          </tr>
+          <tr class="cheat-row" data-cat="slash">
+            <td>slash</td>
+            <td><code class="inline">/context</code></td>
+            <td>Affiche l'usage du context window</td>
+          </tr>
+          <tr class="cheat-row" data-cat="slash">
+            <td>slash</td>
+            <td><code class="inline">/help</code></td>
+            <td>Aide intégrée Claude Code</td>
+          </tr>
+          <tr class="cheat-row" data-cat="slash">
+            <td>slash</td>
+            <td><code class="inline">/start-feature &lt;desc&gt;</code></td>
+            <td>Lance le workflow complet d'une feature</td>
+          </tr>
+          <tr class="cheat-row" data-cat="slash">
+            <td>slash</td>
+            <td><code class="inline">/code-review</code></td>
+            <td>Audit multi-agents du diff courant</td>
+          </tr>
+          <tr class="cheat-row" data-cat="slash">
+            <td>slash</td>
+            <td><code class="inline">/simplify</code></td>
+            <td>Purge la sur-ingénierie</td>
+          </tr>
+          <tr class="cheat-row" data-cat="slash">
+            <td>slash</td>
+            <td><code class="inline">/commit</code></td>
+            <td>Commit structuré Conventional Commits</td>
+          </tr>
+          <tr class="cheat-row" data-cat="slash">
+            <td>slash</td>
+            <td><code class="inline">/loop 10m /code-review</code></td>
+            <td>Boucle la code review toutes les 10 min</td>
+          </tr>
+          <tr class="cheat-row" data-cat="slash">
+            <td>slash</td>
+            <td><code class="inline">/loop "&lt;prompt&gt;"</code></td>
+            <td>Boucle auto-cadencée (ralph-loop)</td>
+          </tr>
+          <tr class="cheat-row" data-cat="ps1">
+            <td>ps1</td>
+            <td><code class="inline">.\full.ps1</code></td>
+            <td>Lance le mode équipe complète avec vérifs</td>
+          </tr>
+          <tr class="cheat-row" data-cat="ps1">
+            <td>ps1</td>
+            <td><code class="inline">.\lite.ps1</code></td>
+            <td>Lance le mode rapide + pipeline sync post-session</td>
+          </tr>
+          <tr class="cheat-row" data-cat="ps1">
+            <td>ps1</td>
+            <td><code class="inline">.\new-project.ps1 "Nom"</code></td>
+            <td>Dérive un nouveau projet depuis le template</td>
+          </tr>
+          <tr class="cheat-row" data-cat="ps1">
+            <td>ps1</td>
+            <td><code class="inline">setx OBSIDIAN_API_KEY "..."</code></td>
+            <td>Persiste la clé Obsidian</td>
+          </tr>
+          <tr class="cheat-row" data-cat="ps1">
+            <td>ps1</td>
+            <td><code class="inline">setx PINECONE_API_KEY "..."</code></td>
+            <td>Persiste la clé Pinecone</td>
+          </tr>
+          <tr class="cheat-row" data-cat="python">
+            <td>python</td>
+            <td><code class="inline">python sync_memory.py</code></td>
+            <td>Synchronise le vault Obsidian → Pinecone</td>
+          </tr>
+          <tr class="cheat-row" data-cat="python">
+            <td>python</td>
+            <td><code class="inline">python -m graphify hook status</code></td>
+            <td>Vérifie que le hook PreToolUse est installé</td>
+          </tr>
+          <tr class="cheat-row" data-cat="python">
+            <td>python</td>
+            <td><code
+                class="inline">python -c "from graphify.watch import _rebuild_code; from pathlib import Path; _rebuild_code(Path('.'))"</code>
+            </td>
+            <td>Reconstruit le graphe AST</td>
+          </tr>
+          <tr class="cheat-row" data-cat="prompt">
+            <td>prompt</td>
+            <td><em>« Cherche dans Pinecone toutes les décisions sur X »</em></td>
+            <td>Recherche sémantique mémoire projet</td>
+          </tr>
+          <tr class="cheat-row" data-cat="prompt">
+            <td>prompt</td>
+            <td><em>« D'après Graphify, quels god nodes impacte ce fichier ? »</em></td>
+            <td>Analyse d'impact topologique</td>
+          </tr>
+          <tr class="cheat-row" data-cat="prompt">
+            <td>prompt</td>
+            <td><em>« Crée une note Obsidian dans decisions/ au format ADR sur X »</em></td>
+            <td>Documentation d'une décision</td>
+          </tr>
+          <tr class="cheat-row" data-cat="prompt">
+            <td>prompt</td>
+            <td><em>« Avec superpowers, implémente X en TDD »</em></td>
+            <td>Implémentation avec tests d'abord</td>
+          </tr>
+          <tr class="cheat-row" data-cat="prompt">
+            <td>prompt</td>
+            <td><em>« Utilise playwright pour tester le parcours X »</em></td>
+            <td>Test E2E dans vrai navigateur</td>
+          </tr>
+          <tr class="cheat-row" data-cat="prompt">
+            <td>prompt</td>
+            <td><em>« Lance l'Architecte sur PRD.md »</em></td>
+            <td>Décomposition PRD → modules.json</td>
+          </tr>
+          <tr class="cheat-row" data-cat="keys">
+            <td>keys</td>
+            <td><code class="inline">Esc Esc</code></td>
+            <td>Restaure le dernier message supprimé</td>
+          </tr>
+          <tr class="cheat-row" data-cat="keys">
+            <td>keys</td>
+            <td><code class="inline">Shift+Tab</code></td>
+            <td>Cycle entre les modes (auto/plan/accept)</td>
+          </tr>
+          <tr class="cheat-row" data-cat="keys">
+            <td>keys</td>
+            <td><code class="inline">Ctrl+R</code></td>
+            <td>Recherche dans l'historique de conversation</td>
+          </tr>
+          <tr class="cheat-row" data-cat="keys">
+            <td>keys</td>
+            <td><code class="inline">Ctrl+C</code></td>
+            <td>Interrompt l'agent en cours sans quitter</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- ═══════════════ SECTION 7 ═══════════════ -->
+    <h2 id="s7"><span class="num">07</span>Cycle de vie d'un projet — de l'idée à la livraison</h2>
+    <p>L'arbre complet qu'un projet parcourt. Chaque nœud correspond à une action, un agent ou une validation humaine.
+    </p>
+
+    <div class="lifecycle"><span class="root">💡 IDÉE</span>
+      └── <span class="cmd">.\new-project.ps1 "MailFlow"</span>
+      │
+      ├── git init · CLAUDE.md patché · graphify-out/ vide
+      │
+      └── <span class="cmd">.\full.ps1</span> (dans le nouveau dossier)
+      │
+      └── <span class="sop">SOP-002 · Création du PRD</span>
+      │
+      ├── Phase 1 · Idée brute → reformulation
+      ├── Phase 2 · Questionnaire 8 questions
+      ├── Phase 3 · Génération PRD.md
+      │
+      └── <span class="val">🛑 VALIDATION UTILISATEUR du PRD</span>
+      │
+      └── <span class="agent">🏛️ Architecte</span>
+      │
+      ├── Lit PRD.md + GRAPH_REPORT.md + Pinecone
+      └── Produit ARCHITECTURE.md + modules.json
+      │
+      └── <span class="val">🛑 VALIDATION UTILISATEUR de l'archi</span>
+      │
+      └── <span class="sop">SOP-003 · Développement parallèle</span>
+      │
+      ├── <span class="agent">🎨 Frontend</span> (terminal 2)
+      │ ├── /src/components/
+      │ └── /src/pages/
+      │
+      ├── <span class="agent">⚙️ Backend</span> (terminal 3)
+      │ ├── /src/api/
+      │ ├── /src/db/
+      │ └── /src/services/
+      │
+      └── <span class="agent">🛡️ Sécurité</span> (hook PreToolUse)
+      │
+      └── <span class="milestone">module marqué DONE dans modules.json</span>
+      │
+      └── <span class="agent">🧑‍⚖️ QA Review</span>
+      │
+      ├── logic · types · tests · arch
+      └── Score pondéré
+      │
+      ├── &lt; 80 → retour agent d'origine
+      │
+      └── ≥ 80 → <span class="agent">🧹 Simplifier</span>
+      │
+      └── SIMPLIFICATION_REPORT.md
+      │
+      └── <span class="agent">🎭 Playwright</span>
+      │
+      ├── Tests E2E des user stories
+      └── TEST_REPORT.md + screenshots/
+      │
+      └── <span class="sop">SOP-004 · Livraison</span>
+      │
+      ├── DEPLOYMENT.md
+      ├── Note Obsidian ADR
+      ├── python sync_memory.py
+      ├── Rebuild graphe
+      └── git tag v1.0.0
+      │
+      └── <span class="final">✅ PROJET LIVRÉ</span>
+    </div>
+
+    <!-- ═══════════════ SECTION 8 ═══════════════ -->
+    <h2 id="s8"><span class="num">08</span>Tips, avertissements et maintenance</h2>
+
+    <h3>⛔ Avertissements critiques</h3>
+
+    <div class="callout danger">
+      <span class="label">Ne jamais modifier Espace_Opti directement</span>
+      Toujours passer par <code class="inline">.\new-project.ps1</code> pour dériver un projet. Une modif dans le
+      template se propage silencieusement à tous les futurs projets et devient impossible à tracer.
+    </div>
+
+    <div class="callout danger">
+      <span class="label">Le fichier .env ne doit JAMAIS être commité</span>
+      Il contient les clés Pinecone et Obsidian. Vérifie que <code class="inline">.gitignore</code> exclut <code
+        class="inline">.env</code> dans chaque projet dérivé. Seul <code class="inline">.env.template</code> est
+      commité.
+    </div>
+
+    <div class="callout warn">
+      <span class="label">Obsidian doit être lancé pour que le MCP fonctionne</span>
+      Le serveur <code class="inline">obsidian-mcp-server</code> parle HTTPS à Obsidian sur <code
+        class="inline">127.0.0.1:27124</code>. Si Obsidian est fermé, toute commande MCP <code
+        class="inline">mcp__obsidian__*</code> échouera avec <em>connection refused</em>.
+    </div>
+
+    <div class="callout warn">
+      <span class="label">Après setx, redémarre le terminal</span>
+      <code class="inline">setx</code> ne met à jour que les <strong>futurs</strong> processus. Ferme complètement VS
+      Code (pas juste l'onglet terminal) et relance-le.
+    </div>
+
+    <div class="callout warn">
+      <span class="label">BOM encoding avec PowerShell Set-Content</span>
+      <code class="inline">Set-Content -Encoding UTF8</code> écrit un BOM UTF-8 que certains parsers (python-dotenv
+      notamment) interprètent comme un caractère du premier nom de clé. Préfère <code
+        class="inline">[System.IO.File]::WriteAllText($path, $content, [System.Text.UTF8Encoding]::new($false))</code>
+      pour écrire sans BOM, ou charge avec <code class="inline">encoding='utf-8-sig'</code> côté lecture.
+    </div>
+
+    <h3>💡 Tips &amp; astuces</h3>
+
+    <div class="card-grid">
+      <div class="card">
+        <h4>1 · Un agent par terminal</h4>
+        <p>Ne mets jamais deux agents dans la même session Claude Code. Le partage de contexte les fait dériver — chacun
+          doit avoir son périmètre strict.</p>
+      </div>
+      <div class="card">
+        <h4>2 · Toujours lire GRAPH_REPORT.md avant de grep</h4>
+        <p>Le hook le fait pour toi, mais tu peux aussi le demander explicitement : <em>« Quels god nodes impacte ce
+            changement ? »</em>. Tu gagnes des tokens et tu attrapes les dépendances transitives.</p>
+      </div>
+      <div class="card">
+        <h4>3 · Pinecone avant Graphify</h4>
+        <p>Avant toute feature, commence par <em>« Cherche dans Pinecone les décisions sur X »</em>. Tu retrouves le
+          <strong>pourquoi</strong> avant de chercher le <strong>où</strong>.</p>
+      </div>
+      <div class="card">
+        <h4>4 · Un commit = un code-review</h4>
+        <p>Ne pousse jamais du code sans <code class="inline">/code-review</code>. Même si tu penses que c'est trivial.
+          Les régressions cachées sont la raison d'être de ce pipeline.</p>
+      </div>
+      <div class="card">
+        <h4>5 · Note Obsidian après chaque décision</h4>
+        <p>Toute décision prise en session (<em>« on garde JWT plutôt que sessions »</em>) = une note ADR dans <code
+            class="inline">decisions/</code>. Sinon elle disparaît avec le contexte.</p>
+      </div>
+      <div class="card">
+        <h4>6 · Lance sync_memory.py en fin de session</h4>
+        <p>Le pipeline <code class="inline">.\lite.ps1</code> le fait pour toi automatiquement. En FULL mode, fais-le à
+          la main avant de fermer le terminal.</p>
+      </div>
+      <div class="card">
+        <h4>7 · LITE pour tout ce qui prend &lt; 5 minutes</h4>
+        <p>Renommer une variable, changer une couleur, corriger un commentaire : LITE. Tu gagnes 30-60 secondes par
+          invocation et tu évites de saturer le contexte.</p>
+      </div>
+      <div class="card">
+        <h4>8 · Utilise <code class="inline">/context</code> avant les longs prompts</h4>
+        <p>Vérifie combien de tokens tu as consommés. Si tu es à 70 % + et que la tâche est longue, démarre une nouvelle
+          session plutôt que risquer une troncation.</p>
+      </div>
+      <div class="card">
+        <h4>9 · Esc Esc sauve des vies</h4>
+        <p>Tu as supprimé un message par erreur ? Double-Escape le restaure. Note-le dans ton muscle memory.</p>
+      </div>
+      <div class="card">
+        <h4>10 · Shift+Tab = Plan mode pour les features</h4>
+        <p>Plan mode empêche Claude d'écrire quoi que ce soit tant que tu n'as pas validé le plan. C'est la version
+          intégrée de la phase 1 de SOP-002. Utilise-la dès que la tâche dépasse « corriger un bug évident ».</p>
+      </div>
+      <div class="card">
+        <h4>11 · modules.json est la source de vérité</h4>
+        <p>En développement parallèle, si un agent ne sait pas s'il doit toucher à un fichier, il lit <code
+            class="inline">modules.json</code>. Point final. Pas de négociation en session.</p>
+      </div>
+      <div class="card">
+        <h4>12 · Un test cassé = un commit révert, pas un fix</h4>
+        <p>Si le Simplifier casse un test, on rollback — on ne corrige pas le test. Le Simplifier doit être transparent
+          sur le comportement observable.</p>
+      </div>
+    </div>
+
+    <h3>🔄 Maintenance</h3>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Opération</th>
+            <th>Commande</th>
+            <th>Fréquence</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Mettre à jour les plugins</td>
+            <td><code class="inline">/plugin update</code></td>
+            <td>Hebdomadaire</td>
+          </tr>
+          <tr>
+            <td>Reconstruire le graphe</td>
+            <td><code
+                class="inline">python -c "from graphify.watch import _rebuild_code; from pathlib import Path; _rebuild_code(Path('.'))"</code>
+            </td>
+            <td>Après session FULL</td>
+          </tr>
+          <tr>
+            <td>Vérifier le hook Graphify</td>
+            <td><code class="inline">python -m graphify hook status</code></td>
+            <td>Si doute</td>
+          </tr>
+          <tr>
+            <td>Synchroniser Pinecone</td>
+            <td><code class="inline">python sync_memory.py</code></td>
+            <td>Après décision importante</td>
+          </tr>
+          <tr>
+            <td>Créer un nouveau projet</td>
+            <td><code class="inline">.\new-project.ps1 "Nom"</code></td>
+            <td>Par projet</td>
+          </tr>
+          <tr>
+            <td>Vérifier les MCP</td>
+            <td><code class="inline">/mcp</code></td>
+            <td>Au démarrage</td>
+          </tr>
+          <tr>
+            <td>Nettoyer les sessions anciennes</td>
+            <td>Supprimer <code class="inline">~/.claude/sessions/</code></td>
+            <td>Mensuel</td>
+          </tr>
+          <tr>
+            <td>Mettre à jour Claude Code</td>
+            <td><code class="inline">npm i -g @anthropic-ai/claude-code</code></td>
+            <td>Au bon vouloir</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="callout tip">
+      <span class="label">Le principe fondamental</span>
+      L'ingénieur humain n'écrit presque plus de code. Il orchestre, valide et capitalise. C'est le cœur d'Espace_Opti —
+      et c'est ce qui distingue un espace de travail piloté de la simple utilisation d'un chatbot.
+    </div>
+
+  </main>
+
+  <script>
+    /* ── Code highlighting (minimal tokenizer) ─────────── */
+    (function () {
+      const keywords = {
+        ps1: 'param|function|if|else|elseif|try|catch|finally|return|foreach|for|while|in|Write-Host|Get-Content|Set-Content|Copy-Item|Remove-Item|Test-Path|Join-Path|Resolve-Path|New-Item|Push-Location|Pop-Location|ConvertFrom-Json|ConvertTo-Json|Read-Host|Out-Null|ForEach-Object|Where-Object|Select-Object',
+        py: 'def|class|if|elif|else|try|except|finally|return|import|from|as|for|while|in|not|and|or|True|False|None|with|lambda|print|pass|raise|yield',
+        python: 'def|class|if|elif|else|try|except|finally|return|import|from|as|for|while|in|not|and|or|True|False|None|with|lambda|print|pass|raise|yield',
+        bash: 'if|then|else|fi|for|do|done|while|function|return|echo|cd|export',
+        json: ''
+      };
+      function highlight(el) {
+        const m = el.className.match(/lang-(\w+)/);
+        if (!m) return;
+        const lang = m[1];
+        let txt = el.textContent
+          .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+        const slots = [];
+        const slot = (html) => { slots.push(html); return '\u0000' + (slots.length - 1) + '\u0000'; };
+        txt = txt.replace(/"[^"\n]*"|'[^'\n]*'/g, function (s) { return slot('<span class="tok-str">' + s + '</span>'); });
+        if (lang !== 'json') {
+          txt = txt.replace(/#[^\n]*/g, function (s) { return slot('<span class="tok-com">' + s + '</span>'); });
+        }
+        if (keywords[lang]) {
+          const re = new RegExp('\\b(' + keywords[lang] + ')\\b', 'g');
+          txt = txt.replace(re, '<span class="tok-kw">$1</span>');
+        }
+        txt = txt.replace(/\b\d+(\.\d+)?\b/g, '<span class="tok-num">$&</span>');
+        if (lang === 'ps1' || lang === 'bash') {
+          txt = txt.replace(/\$[A-Za-z_][A-Za-z0-9_]*/g, '<span class="tok-var">$&</span>');
+        }
+        if (lang === 'json') {
+          txt = txt.replace(/"[^"\n]*"(?=\s*:)/g, '<span class="tok-key">$&</span>');
+        }
+        txt = txt.replace(/\u0000(\d+)\u0000/g, function (_, i) { return slots[+i]; });
+        el.innerHTML = txt;
+      }
+      document.querySelectorAll('pre code[class^="lang-"]').forEach(highlight);
+    })();
+
+    /* ── Cheat sheet filter ────────────────────────────── */
+    (function () {
+      const input = document.getElementById('cheatSearch');
+      const rows = Array.prototype.slice.call(document.querySelectorAll('#cheatTable .cheat-row'));
+      const btns = Array.prototype.slice.call(document.querySelectorAll('.filter-bar .cat'));
+      const count = document.getElementById('cheatCount');
+      let currentCat = 'all';
+
+      function render() {
+        const q = input.value.trim().toLowerCase();
+        let n = 0;
+        rows.forEach(function (r) {
+          const catMatch = (currentCat === 'all') || (r.getAttribute('data-cat') === currentCat);
+          const textMatch = q === '' || r.textContent.toLowerCase().indexOf(q) !== -1;
+          if (catMatch && textMatch) { r.classList.add('show'); n++; }
+          else { r.classList.remove('show'); }
+        });
+        count.textContent = n + ' / ' + rows.length;
+      }
+
+      input.addEventListener('input', render);
+      btns.forEach(function (b) {
+        b.addEventListener('click', function () {
+          btns.forEach(function (x) { x.classList.remove('active'); });
+          b.classList.add('active');
+          currentCat = b.getAttribute('data-cat');
+          render();
+        });
+      });
+      render();
+    })();
+
+    /* ── Sidebar active section (IntersectionObserver) ── */
+    (function () {
+      const links = Array.prototype.slice.call(document.querySelectorAll('.sidebar nav a'));
+      const map = {};
+      links.forEach(function (a) {
+        const id = a.getAttribute('href').slice(1);
+        const el = document.getElementById(id);
+        if (el) map[id] = a;
+      });
+      const ids = Object.keys(map);
+      if (!('IntersectionObserver' in window) || ids.length === 0) return;
+
+      const io = new IntersectionObserver(function (entries) {
+        entries.forEach(function (e) {
+          if (e.isIntersecting) {
+            links.forEach(function (l) { l.classList.remove('active'); });
+            map[e.target.id].classList.add('active');
+          }
+        });
+      }, { rootMargin: '-40% 0px -55% 0px', threshold: 0 });
+
+      ids.forEach(function (id) { io.observe(document.getElementById(id)); });
+    })();
+  </script>
+</body>
+
+</html>
