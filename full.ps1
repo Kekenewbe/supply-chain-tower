@@ -83,6 +83,31 @@ Write-Host "  FULL MODE - Entire AI team active" -ForegroundColor Magenta
 Write-Host "=================================================" -ForegroundColor Magenta
 Write-Host ""
 
+# -----------------------------------------------------------------
+# === Pre-checks integrite === (V2 banner #156-#162, adoption 6 helpers
+# scripts/_template/checks/* canoniques cross-projet, doctrine #180).
+# -----------------------------------------------------------------
+Write-Host "=== Pre-checks integrite ===" -ForegroundColor Cyan
+Write-Host ""
+
+$checksDir = Join-Path $root 'scripts\_template\checks'
+$pineconeIndex = 'supply-chain-tower-memory'  # Index canonique Espace_Opti (doctrine #180)
+
+if (Test-Path $checksDir) {
+    & "$checksDir\check-agents.ps1" -ProjectDir $root
+    & "$checksDir\check-hooks.ps1" -ProjectDir $root
+    & "$checksDir\check-mcps.ps1"
+    & "$checksDir\check-keys.ps1"
+    & "$checksDir\check-git.ps1" -ProjectDir $root
+    & "$checksDir\check-pinecone.ps1" -Index $pineconeIndex
+} else {
+    Write-Host "[CHECKS] WARN : scripts/_template/checks/ absent. Pre-checks skip." -ForegroundColor DarkYellow
+}
+
+Write-Host ""
+Write-Host "=== Full mode ===" -ForegroundColor Cyan
+Write-Host ""
+
 if (-not (Test-Path $settings)) {
     Write-Host "[FULL] .claude/settings.json introuvable." -ForegroundColor Red
     exit 1
@@ -90,52 +115,46 @@ if (-not (Test-Path $settings)) {
 
 $json = Get-Content -Raw -Path $settings | ConvertFrom-Json
 
-# 1. Verification des hooks
+# Hook Graphify PreToolUse (spec Espace_Opti, distinct du check-hooks generique)
 $hookOk = $false
 if ($json.PSObject.Properties.Name -contains 'hooks' -and $json.hooks.PSObject.Properties.Name -contains 'PreToolUse') {
     $hookOk = $true
-    Write-Host "[FULL] Hook Graphify PreToolUse   : ACTIF" -ForegroundColor Green
+    Write-Host "[FULL] Hook Graphify PreToolUse : ACTIF" -ForegroundColor Green
 } else {
-    Write-Host "[FULL] Hook Graphify PreToolUse   : INACTIF" -ForegroundColor Red
+    Write-Host "[FULL] Hook Graphify PreToolUse : INACTIF" -ForegroundColor Red
     Write-Host "       Lance .\lite.ps1 puis quitte pour restaurer, ou verifie .claude/settings.json." -ForegroundColor DarkYellow
 }
 
-# 2. Verification des MCP servers declares
-$mcpOk = $false
-if ($json.PSObject.Properties.Name -contains 'mcpServers') {
-    $servers = $json.mcpServers.PSObject.Properties.Name
-    if ($servers.Count -gt 0) {
-        $mcpOk = $true
-        Write-Host "[FULL] MCP servers declares       : $($servers -join ', ')" -ForegroundColor Green
+# Knowledge graph (presence + parsing optionnel nodes/edges depuis GRAPH_REPORT.md)
+$graphPath  = Join-Path $root 'graphify-out\graph.json'
+$reportPath = Join-Path $root 'graphify-out\GRAPH_REPORT.md'
+if (Test-Path $graphPath) {
+    $graphInfo = "PRESENT"
+    if (Test-Path $reportPath) {
+        $reportFirstLines = Get-Content -Path $reportPath -TotalCount 20 -ErrorAction SilentlyContinue
+        $nodes = ($reportFirstLines | Select-String -Pattern '(\d+)\s+nodes' | Select-Object -First 1).Matches.Groups[1].Value
+        $edges = ($reportFirstLines | Select-String -Pattern '(\d+)\s+edges' | Select-Object -First 1).Matches.Groups[1].Value
+        if ($nodes -and $edges) {
+            $graphInfo = "PRESENT ($nodes nodes, $edges edges)"
+        }
     }
-}
-if (-not $mcpOk) {
-    Write-Host "[FULL] MCP servers declares       : AUCUN" -ForegroundColor Red
+    Write-Host "[FULL] Knowledge graph         : $graphInfo" -ForegroundColor Green
+} else {
+    Write-Host "[FULL] Knowledge graph         : ABSENT" -ForegroundColor DarkYellow
 }
 
-# 3. Verification de graphify-out
-if (Test-Path (Join-Path $root 'graphify-out\graph.json')) {
-    Write-Host "[FULL] Knowledge graph graphify   : PRESENT" -ForegroundColor Green
+# SOPs (codifiees dans _workspace/sops)
+$sopsDir = Join-Path $root '_workspace\sops'
+if (Test-Path $sopsDir) {
+    $sopCount = (Get-ChildItem $sopsDir -Filter *.md -ErrorAction SilentlyContinue).Count
+    Write-Host "[FULL] SOPs                    : $sopCount SOPs codifiees" -ForegroundColor Green
 } else {
-    Write-Host "[FULL] Knowledge graph graphify   : ABSENT" -ForegroundColor DarkYellow
-}
-
-# 4. Verification du workspace (agents, SOPs, skills)
-$workspaceDir = Join-Path $root '_workspace'
-$sopsDir      = Join-Path $workspaceDir 'sops'
-$agentsDir    = Join-Path $workspaceDir 'agents'
-if ((Test-Path $sopsDir) -and (Test-Path $agentsDir)) {
-    $sopCount   = (Get-ChildItem $sopsDir   -Filter *.md -ErrorAction SilentlyContinue).Count
-    $agentCount = (Get-ChildItem $agentsDir -Filter *.md -ErrorAction SilentlyContinue).Count
-    Write-Host "[FULL] Equipe d'agents            : $agentCount agents, $sopCount SOPs" -ForegroundColor Green
-} else {
-    Write-Host "[FULL] _workspace/sops ou /agents absent. Les agents et SOPs ne seront pas disponibles." -ForegroundColor DarkYellow
-    Write-Host "       (non bloquant, mais le FULL MODE perd son equipe virtuelle)" -ForegroundColor DarkYellow
+    Write-Host "[FULL] SOPs                    : ABSENT (_workspace/sops introuvable)" -ForegroundColor DarkYellow
 }
 
 Write-Host ""
-if (-not $hookOk -or -not $mcpOk) {
-    Write-Host "[FULL] Certains composants sont inactifs. Continuer quand meme ? (O/N)" -ForegroundColor Yellow
+if (-not $hookOk) {
+    Write-Host "[FULL] Hook PreToolUse inactif. Continuer quand meme ? (O/N)" -ForegroundColor Yellow
     $answer = Read-Host
     if ($answer -notmatch '^[oOyY]') {
         Write-Host "[FULL] Annule." -ForegroundColor Red

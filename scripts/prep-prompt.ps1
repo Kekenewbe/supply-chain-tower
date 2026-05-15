@@ -2,7 +2,7 @@
 # prep-prompt.ps1 v1.0
 # Role : Wrapper humain Notepad pour preparer un brief inbox.
 # Resout : A8 / #95 (Notepad humain inbox sans copier-coller manuel).
-# Generique : OUI. Substitution : {PROJECT_NAME} dans banner.
+# Generique : OUI. Substitution : supply-chain-tower dans banner.
 # Usage : .\prep-prompt.ps1 [-ProjectDir <path>] [-Title "<titre>"] [-NoConfirm]
 
 param(
@@ -13,7 +13,7 @@ param(
 
 $ErrorActionPreference = 'Stop'
 
-$banner = "[PREP-PROMPT] Projet {PROJECT_NAME} - inbox writer"
+$banner = "[PREP-PROMPT] Projet supply-chain-tower - inbox writer"
 Write-Output $banner
 
 # Path inbox relatif au ProjectDir (anti-A37)

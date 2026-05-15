@@ -1,30 +1,31 @@
-# SOP-003 — Développement parallèle
+﻿# SOP-003 â€” DÃ©veloppement parallÃ¨le
 
 ## Principe
-L'Architecte découpe le PRD validé en modules indépendants (`modules.json` + `ARCHITECTURE.md`).
-**Frontend** et **Backend** démarrent en parallèle sur leurs modules respectifs.
-**Sécurité** surveille en temps réel via un hook automatique (pas d'invocation manuelle).
+L'Architecte dÃ©coupe le PRD validÃ© en modules indÃ©pendants (`modules.json` + `ARCHITECTURE.md`).
+**Frontend** et **Backend** dÃ©marrent en parallÃ¨le sur leurs modules respectifs.
+**SÃ©curitÃ©** surveille en temps rÃ©el via un hook automatique (pas d'invocation manuelle).
 
-## Ordre d'exécution
+## Ordre d'exÃ©cution
 
-1. **Architecte** → `ARCHITECTURE.md` + `modules.json`
-   → 🛑 **validation utilisateur obligatoire**
-2. **En parallèle** (deux terminaux Claude Code distincts) :
-   - **Frontend Agent** → composants UI, pages, styles
-   - **Backend Agent** → API, schéma DB, services
-3. **Sécurité** → intercepte automatiquement chaque `Edit`/`Write` (PreToolUse hook)
-4. **QA Review** → déclenché à la fin de chaque module marqué `DONE`
-5. **Simplifier** → après QA Review, uniquement si score ≥ 80 %
-6. **Playwright** → après Simplifier, avant livraison
+1. **Architecte** â†’ `ARCHITECTURE.md` + `modules.json`
+   â†’ ðŸ›‘ **validation utilisateur obligatoire**
+2. **En parallÃ¨le** (deux terminaux Claude Code distincts) :
+   - **Frontend Agent** â†’ composants UI, pages, styles
+   - **Backend Agent** â†’ API, schÃ©ma DB, services
+3. **SÃ©curitÃ©** â†’ intercepte automatiquement chaque `Edit`/`Write` (PreToolUse hook)
+4. **QA Review** â†’ dÃ©clenchÃ© Ã  la fin de chaque module marquÃ© `DONE`
+5. **Simplifier** â†’ aprÃ¨s QA Review, uniquement si score â‰¥ 80 %
+6. **Playwright** â†’ aprÃ¨s Simplifier, avant livraison
 
-## Règles de parallélisme
-- **Un agent = un terminal Claude Code.** Jamais deux agents dans la même session.
-- Chaque agent lit `modules.json` pour connaître son périmètre strict.
-- **Les agents ne modifient pas les fichiers des autres agents.** Si un besoin croisé apparaît, ils passent par l'Architecte pour négocier un nouveau contrat.
-- Les **contrats d'interface** définis dans `ARCHITECTURE.md` sont **immuables** tant que l'Architecte ne les a pas révisés.
-- Les mises à jour de `modules.json` (statut TODO/IN_PROGRESS/DONE) sont atomiques : un seul agent écrit à la fois (verrouillage optimiste via git).
+## RÃ¨gles de parallÃ©lisme
+- **Un agent = un terminal Claude Code.** Jamais deux agents dans la mÃªme session.
+- Chaque agent lit `modules.json` pour connaÃ®tre son pÃ©rimÃ¨tre strict.
+- **Les agents ne modifient pas les fichiers des autres agents.** Si un besoin croisÃ© apparaÃ®t, ils passent par l'Architecte pour nÃ©gocier un nouveau contrat.
+- Les **contrats d'interface** dÃ©finis dans `ARCHITECTURE.md` sont **immuables** tant que l'Architecte ne les a pas rÃ©visÃ©s.
+- Les mises Ã  jour de `modules.json` (statut TODO/IN_PROGRESS/DONE) sont atomiques : un seul agent Ã©crit Ã  la fois (verrouillage optimiste via git).
 
 ## Interruptions acceptables
-- L'utilisateur peut demander à un agent de s'arrêter à tout moment.
-- Une alerte Sécurité `BLOCKED` interrompt l'agent courant : il doit corriger et reprendre.
-- Un échec QA Review < 80 % renvoie l'agent sur le module concerné pour corrections.
+- L'utilisateur peut demander Ã  un agent de s'arrÃªter Ã  tout moment.
+- Une alerte SÃ©curitÃ© `BLOCKED` interrompt l'agent courant : il doit corriger et reprendre.
+- Un Ã©chec QA Review < 80 % renvoie l'agent sur le module concernÃ© pour corrections.
+

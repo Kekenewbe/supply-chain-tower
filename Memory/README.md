@@ -2,7 +2,7 @@
 
 ## Pourquoi cette doctrine
 
-Espace_Opti vit sur 3 jours de pratique empirique (15 commits cumulés VP+Espace_Opti) qui ont révélé une faille structurelle : le contexte stratégique vit en mémoire conversationnelle Claude.ai, donc volatile (anomalie A15).
+supply-chain-tower vit sur 3 jours de pratique empirique (15 commits cumulés VP+supply-chain-tower) qui ont révélé une faille structurelle : le contexte stratégique vit en mémoire conversationnelle Claude.ai, donc volatile (anomalie A15).
 
 Le post Instagram du créateur 5-registres + l'analyse des patterns ReasoningBank (Ruflo) ont convergé sur la même solution : structurer la mémoire d'agent AVANT d'optimiser l'outillage.
 
