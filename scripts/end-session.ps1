@@ -281,9 +281,11 @@ if ($claudeOk -and (-not $SkipChronicler)) {
     $prompt = $promptLines -join "`n"
 
     try {
-        # Syntaxe validee empirique : $prompt | claude --print --model haiku 2>&1
+        # FIX A104 (S18 P1.1) : flag --bare ajoute pour bypass claude-mem SessionEnd hook
+        # --bare = Minimal mode (skip hooks + LSP + plugin sync + auto-memory)
+        # Permet chronicler full mode operationnel sans interception sub-process.
         # stdout contient parfois des code fences (```json ... ```) => strippees en v4.6
-        $chronicleJson = ($prompt | claude --print --model haiku 2>&1) -join "`n"
+        $chronicleJson = ($prompt | claude --bare --print --model haiku 2>&1) -join "`n"
     } catch {
         Write-Warning "[END-SESSION] Invocation claude --print FAIL : $($_.Exception.Message) - fallback v3"
         $chronicleJson = $null

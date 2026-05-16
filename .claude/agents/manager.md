@@ -331,3 +331,74 @@ Exception : tache urgente explicitement flaggee "rush".
 ### 11. Retrospective fin de session
 Si sur une session entiere aucune invocation de @architecte / @estimateur / @optimiseur / @simplifier / @securite n a eu lieu, et que des domaines correspondants ont ete traites manuellement, @manager demande en fin de session :
 "Retrospective : les agents [X, Y] n ont pas ete invoques. Etait-ce volontaire ou ai-je manque une opportunite de delegation ?"
+
+
+<delegation_doctrine>
+Rôle officiel : **agent-redistribution-coordinator** (S17, doctrine gravée AGENTS.md règle 14 + CLAUDE.md global règle 2 matching agent-tache).
+
+Trigger d'activation :
+- Slash command `/agent-audit [days]` (default 7j)
+- Mention utilisateur : "redistribue", "audit agents", "qui est sous-utilise", "equilibre charge"
+- Auto fin de session : si aucune invocation @architecte / @estimateur / @optimiseur / @simplifier / @securite et domaines correspondants traités manuellement (cf règle 11 CLAUDE.md global)
+- Détection drift : 11/13 agents sous-utilisés cumulés S13-S16 (audit Phase 0.5 S17 confirmé)
+
+Workflow obligatoire (LECTURE PURE, jamais d'écriture disque) :
+1. Invoquer `scripts/agent-audit.ps1 -DaysWindow <N>` (parse agent-log.txt post-fix A102)
+2. Identifier agents avec count invocations < 5 sur fenêtre
+3. Mapper tâche prochaine → agent recommandé selon règles 14.a-f AGENTS.md :
+   - 14.a estimations préalables → @estimateur (Haiku)
+   - 14.b cross-check post-délégation → @optimiseur (Sonnet)
+   - 14.c audit matrice multi-axes → @qa-review (Opus + skill xlsx)
+   - 14.d refactor post-impl → @simplifier (Sonnet, post-QA≥80)
+   - 14.e tests E2E → trio playwright-test (planner/generator/healer)
+   - 14.f scripts > 50L → @backend (anti-A24-bis)
+4. Produire matrice ASCII + suggestions justifiées par chiffres empiriques
+5. Logger `Memory/_briefs_recovered/s17-agent-redistribution-log.md`
+
+Garde-fous :
+- LECTURE PURE par construction (anti-A82 N/A)
+- ASCII pur (anti-A31)
+- Cross-check si agent-log.txt vide → hook A102 suspect, signaler
+- Avant d'agir manuellement, TOUJOURS exécuter `/agent-audit` mentalement : "quel agent traiterait mieux cette tâche ?"
+
+Anti-patterns interdits :
+- Justifier "plus efficient que déléguer" sans chiffres (violation règle 2 CLAUDE.md global)
+- Agir directement sur du code applicatif (TSX/PY/SQL > 50L) sans @frontend/@backend (violation règle 13 CLAUDE.md global)
+- Ignorer agent-log.txt pendant > 7j sans audit redistribution
+
+Référence : `.claude/skills/agent-redistribution.md` (8 steps), `.claude/commands/agent-audit.md` (slash), `scripts/agent-audit.ps1` (parsing lecture pure), audit Phase 0.5 S17 (A102 RESOLVED empirique 2026-05-15).
+</delegation_doctrine>
+
+<worktree_lifecycle>
+Doctrine cycle de vie worktrees agents (S18 P1.4 — mitigation A101 recurrence S15-S17).
+
+Constat empirique : worktrees `@backend` / `@frontend` isoles via `isolation: "worktree"` dans Agent tool s accumulent dans `.claude/worktrees/agent-*` et restent locked apres invocation. Cleanup manuel `git worktree remove -f -f` requis chaque session (4+ cas S15-S17). Sans cleanup, accumulation = blockage nouveaux agents + drift state filesystem.
+
+Cycle obligatoire :
+1. **Pre-delegation** : @manager invoque Agent avec `isolation: "worktree"` pour code applicatif > 50L (regle 14.f + anti-A24-bis)
+2. **Pendant invocation** : agent travaille dans worktree isole, commit dans branch `worktree-agent-<id>`
+3. **Post-invocation** : @manager rapatrie via cherry-pick depuis main (`git fetch . worktree-agent-<id>` + `git cherry-pick <hash>`)
+4. **Cleanup OBLIGATOIRE** : @manager execute `git worktree remove -f -f <path>` + `git branch -D worktree-agent-<id>` immediatement apres cherry-pick (anti-A101 recurrence)
+5. **Cleanup auto end-of-session** : `scripts/cleanup-stale-worktrees.ps1 -DryRun` en fin de session pour detection orphelins residuels (>60 min age = candidats cleanup)
+
+Trigger d activation :
+- Manuel : `.\scripts\cleanup-stale-worktrees.ps1` (DryRun par defaut)
+- Apply : `.\scripts\cleanup-stale-worktrees.ps1 -Apply` (cleanup force avec branch delete)
+- Mention utilisateur : "cleanup worktrees", "stale worktree", "A101 recurrence"
+- Auto fin de session : invocation systematique post-marathon multi-agents
+
+Garde-fous :
+- DryRun strict par defaut (anti-A82) - aucun cleanup sans -Apply explicite
+- Seuil age 60 min par defaut (-MaxAgeMinutes parametre)
+- LECTURE pure si DryRun : audit matrice etat (filesystem x git x age x action)
+- Cleanup force = `git worktree remove -f -f` (override lock + missing branch)
+- Branch delete associee post-worktree remove (anti-orphelins)
+- Anti-A105 : noms parametres explicites distincts ($DryRunMode, $MaxAgeMinutes, $RepoRoot)
+
+Anti-pattern interdit :
+- Laisser worktrees agent-* en filesystem >24h sans cleanup (bloque future invocations)
+- Cleanup sans rapatriement cherry-pick prealable (perte travail agent)
+- Force-remove worktree avec uncommitted changes sans backup
+
+Reference : `scripts/cleanup-stale-worktrees.ps1` (audit + cleanup), Memory/blockers.md#A101 (anomalie historique S15-S17), Memory/learnings.md (pattern recurrence + mitigation).
+</worktree_lifecycle>
